@@ -4,9 +4,9 @@
 // ============================================================
 
 const GAME_CONFIG = {
-  gameName: "호그와트 챌린지 2025",
+  gameName: "호그와트 챌린지 2026",
   totalMinutes: 80,
-  adminPassword: "hogwarts2025",
+  adminPassword: "hogwarts2026",
 
   houses: [
     { id: "gryffindor", name: "그리핀도르", color: "#740001", accent: "#D3A625", emoji: "🦁" },
@@ -90,7 +90,7 @@ const GAME_CONFIG = {
       type: "qr",
       maxScore: 100,
       timeLimit: 14,
-      qrSecret: "MARAUDERS-MAP-2025",  // QR 코드에 인코딩할 값
+      qrSecret: "MARAUDERS-MAP-2026",  // QR 코드에 인코딩할 값
       missions: [
         {
           question: "모스부호를 해독하면? (― ・ ― ― / ・ ― ・)",
