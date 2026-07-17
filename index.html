@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>호그와트 챌린지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold:    #D4AF37;
+    --gold-lt: #F0D060;
+    --parchment: #F5E6C8;
+    --ink:     #1A0A00;
+    --deep:    #0D0800;
+    --ember:   #8B1A1A;
+    --stone:   #2A2018;
+    --mist:    rgba(212,175,55,0.08);
+    --font-display: 'Cinzel', serif;
+    --font-body: 'Crimson Text', Georgia, serif;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--deep);
+    color: var(--parchment);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  /* ── 배경 캔버스 ── */
+  #stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+
+  /* ── 레이아웃 ── */
+  .page {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 1.5rem 4rem;
+  }
+
+  /* ── 상단 크레스트 영역 ── */
+  .crest-area {
+    margin-top: 3rem;
+    text-align: center;
+  }
+  .crest-svg { width: 120px; height: 120px; opacity: 0.92; }
+
+  /* ── 타이틀 ── */
+  .title-block { text-align: center; margin-top: 1.5rem; }
+  .subtitle {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 8vw, 3.8rem);
+    font-weight: 900;
+    color: var(--gold-lt);
+    line-height: 1.05;
+    margin: 0.4rem 0 0.2rem;
+    text-shadow: 0 0 40px rgba(212,175,55,0.4), 0 2px 8px rgba(0,0,0,0.8);
+  }
+  .tagline {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--parchment);
+    opacity: 0.7;
+    margin-top: 0.5rem;
+  }
+
+  /* ── 분리선 ── */
+  .divider {
+    width: 240px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 2rem auto;
+    opacity: 0.5;
+  }
+
+  /* ── 팀 로그인 카드 ── */
+  .login-card {
+    width: 100%; max-width: 420px;
+    background: linear-gradient(160deg, #1E1408 0%, #120C04 100%);
+    border: 1px solid rgba(212,175,55,0.25);
+    border-radius: 4px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 8px 48px rgba(0,0,0,0.7), inset 0 1px 0 rgba(212,175,55,0.1);
+    margin: 0 auto;
+  }
+  .login-card h2 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 1.8rem;
+    text-transform: uppercase;
+  }
+
+  .input-wrap { position: relative; margin-bottom: 1rem; }
+  .input-wrap input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 3px;
+    padding: 0.9rem 1.1rem;
+    color: var(--gold-lt);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+    text-align: center;
+    text-transform: uppercase;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .input-wrap input::placeholder { color: rgba(212,175,55,0.3); letter-spacing: 0.1em; }
+  .input-wrap input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
+  }
+
+  .btn-enter {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #8B6914, #C49A2A, #8B6914);
+    border: none; border-radius: 3px;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+  .btn-enter:hover { filter: brightness(1.15); }
+  .btn-enter:active { transform: translateY(1px); }
+
+  .error-msg {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-top: 0.8rem;
+    min-height: 1.2em;
+    font-style: italic;
+  }
+
+  /* ── 링크 영역 ── */
+  .nav-links {
+    display: flex; gap: 2rem; justify-content: center;
+    margin-top: 2.5rem; flex-wrap: wrap;
+  }
+  .nav-links a {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    opacity: 0.6;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; }
+
+  /* ── 기숙사 배너 ── */
+  .houses {
+    display: flex; gap: 1rem; justify-content: center;
+    margin-top: 3rem; flex-wrap: wrap;
+  }
+  .house-badge {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.3rem;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 3px;
+    background: rgba(255,255,255,0.03);
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+    min-width: 80px; text-align: center;
+  }
+  .house-badge:hover { opacity: 1; }
+  .house-badge .emoji { font-size: 1.6rem; }
+
+  /* ── 애니메이션 ── */
+  @keyframes flicker {
+    0%,100% { opacity:1; } 50% { opacity:0.85; }
+  }
+  h1 { animation: flicker 6s ease-in-out infinite; }
+
+  @media (prefers-reduced-motion: reduce) {
+    h1 { animation: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<div class="page">
+  <div class="crest-area">
+    <!-- Hogwarts-style crest SVG -->
+    <svg class="crest-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M60 8 L112 35 L112 85 L60 112 L8 85 L8 35 Z" fill="rgba(212,175,55,0.08)" stroke="#D4AF37" stroke-width="1.5"/>
+      <path d="M60 18 L100 40 L100 80 L60 102 L20 80 L20 40 Z" fill="rgba(212,175,55,0.05)" stroke="rgba(212,175,55,0.4)" stroke-width="0.8"/>
+      <line x1="60" y1="18" x2="60" y2="102" stroke="rgba(212,175,55,0.3)" stroke-width="0.8"/>
+      <line x1="20" y1="60" x2="100" y2="60" stroke="rgba(212,175,55,0.3)" stroke-width="0.8"/>
+      <!-- Lion -->
+      <text x="36" y="52" font-size="18" fill="#740001" opacity="0.9">🦁</text>
+      <!-- Eagle -->
+      <text x="64" y="52" font-size="18" fill="#0E1A40" opacity="0.9">🦅</text>
+      <!-- Badger -->
+      <text x="36" y="82" font-size="18" fill="#ECB939" opacity="0.9">🦡</text>
+      <!-- Serpent -->
+      <text x="64" y="82" font-size="18" fill="#1A472A" opacity="0.9">🐍</text>
+      <text x="60" y="16" font-family="serif" font-size="6" fill="#D4AF37" text-anchor="middle" letter-spacing="1">HOGWARTS</text>
+    </svg>
+  </div>
+
+  <div class="title-block">
+    <p class="subtitle">2025 · 마법사 올림피아드</p>
+    <h1>호그와트<br>챌린지</h1>
+    <p class="tagline">마법은 믿는 자에게만 찾아온다</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="login-card">
+    <h2>팀 코드 입력</h2>
+    <div class="input-wrap">
+      <input
+        type="text"
+        id="teamCode"
+        placeholder="예: GRIFFIN-1"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+        maxlength="10"
+      >
+    </div>
+    <button class="btn-enter" onclick="enterTeam()">입장하기</button>
+    <p class="error-msg" id="errMsg"></p>
+  </div>
+
+  <div class="houses">
+    <div class="house-badge"><span class="emoji">🦁</span>그리핀도르</div>
+    <div class="house-badge"><span class="emoji">🐍</span>슬리데린</div>
+    <div class="house-badge"><span class="emoji">🦅</span>래번클로</div>
+    <div class="house-badge"><span class="emoji">🦡</span>후플푸프</div>
+  </div>
+
+  <nav class="nav-links">
+    <a href="scoreboard.html">📊 실시간 점수판</a>
+    <a href="admin.html">⚙️ 관리자</a>
+  </nav>
+</div>
+
+<script src="config.js"></script>
+<script src="store.js"></script>
+<script>
+// ── 별 배경 ──────────────────────────────────────────────────
+(function() {
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    stars = Array.from({length: 180}, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.2 + 0.2,
+      a: Math.random(),
+      speed: Math.random() * 0.008 + 0.002,
+      phase: Math.random() * Math.PI * 2,
+    }));
+  }
+  function draw(t) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.a = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(240,220,160,${s.a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(draw);
+})();
+
+// ── 팀 입장 ──────────────────────────────────────────────────
+function enterTeam() {
+  const raw = document.getElementById('teamCode').value.trim().toUpperCase();
+  const err = document.getElementById('errMsg');
+
+  if (!raw) { err.textContent = '팀 코드를 입력해 주세요.'; return; }
+  if (!GAME_CONFIG.teams[raw]) {
+    err.textContent = '유효하지 않은 팀 코드입니다. 다시 확인해 주세요.';
+    return;
+  }
+  sessionStorage.setItem('hg_team', raw);
+  window.location.href = 'team.html';
+}
+
+document.getElementById('teamCode').addEventListener('keydown', e => {
+  if (e.key === 'Enter') enterTeam();
+});
+</script>
+</body>
+</html>
