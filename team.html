@@ -188,20 +188,33 @@ document.getElementById('houseName').textContent = HOUSE.emoji + ' ' + HOUSE.nam
 
 // ── 타이머 ──────────────────────────────────────────────────
 let timerInterval;
+
 Store.onGameStarted(started => {
-  if (started) {
-    document.getElementById('gameStatus').textContent = '⚡ 게임 진행 중';
-    clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-      Store.getRemainingSeconds(rem => {
-        const m = Math.floor(rem/60), s = Math.floor(rem%60);
-        const el = document.getElementById('timerDisplay');
-        el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-        el.classList.toggle('urgent', rem < 300);
-        if (rem <= 0) { document.getElementById('gameStatus').textContent = '🏁 게임 종료'; clearInterval(timerInterval); }
-      });
-    }, 1000);
+  const statusEl = document.getElementById('gameStatus');
+  const timerEl = document.getElementById('timerDisplay');
+  if (!started) {
+    statusEl.textContent = '게임 대기 중';
+    timerEl.textContent = `${String(GAME_CONFIG.totalMinutes).padStart(2,'0')}:00`;
+    return;
   }
+  statusEl.textContent = '⚡ 게임 진행 중';
+  clearInterval(timerInterval);
+  // startTime 한 번 읽고 로컬에서 카운트다운
+  firebase.database().ref('game/startTime').once('value', snap => {
+    const startTime = snap.val();
+    if (!startTime) return;
+    timerInterval = setInterval(() => {
+      const elapsed = (Date.now() - startTime) / 1000;
+      const rem = Math.max(0, GAME_CONFIG.totalMinutes * 60 - elapsed);
+      const m = Math.floor(rem/60), s = Math.floor(rem%60);
+      timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      timerEl.classList.toggle('urgent', rem < 300);
+      if (rem <= 0) {
+        statusEl.textContent = '🏁 게임 종료';
+        clearInterval(timerInterval);
+      }
+    }, 1000);
+  });
 });
 
 // ── 1번 자동 완료 ───────────────────────────────────────────
@@ -237,12 +250,35 @@ function renderMain(ts) {
   const finalDone = completedIds.has(7);
 
   if (finalDone) {
+    const verse = TEAM.verse || '';
+    const message = TEAM.message || '';
+    const [text, ref] = verse.includes('—') ? verse.split('—') : [verse, ''];
     document.getElementById('mainContent').innerHTML = `
       <div class="final-done-banner">
-        <div style="font-size:3.5rem;margin-bottom:1rem">🏆</div>
-        <h2>볼드모트를 무찔렀습니다!</h2>
-        <p style="font-family:var(--font-d);font-size:0.75rem;color:var(--gold);margin-top:0.8rem;letter-spacing:0.1em">SAENURI UNPLUGGED CONFERENCE</p>
+        <div style="font-size:3rem;margin-bottom:1.5rem">✝️</div>
+        ${message ? `<p id="typeMsg" style="font-family:var(--font-b);font-size:1rem;line-height:1.8;color:var(--parchment);opacity:0.85;margin-bottom:1.5rem"></p>` : ''}
+        <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.3),transparent);margin-bottom:1.5rem"></div>
+        <p id="typeVerse" style="font-family:var(--font-b);font-size:1.2rem;line-height:1.7;color:var(--parchment);font-style:italic;margin-bottom:0.8rem"></p>
+        <p id="typeRef" style="font-family:var(--font-d);font-size:0.65rem;letter-spacing:0.15em;color:var(--gold);opacity:0.8"></p>
       </div>`;
+    // 타이핑 순서: 메시지 → 성경구절 → 출처
+    if (message) {
+      typeWriter(document.getElementById('typeMsg'), message, 30, () => {
+        setTimeout(() => {
+          typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 40, () => {
+            setTimeout(() => {
+              typeWriter(document.getElementById('typeRef'), ref.trim(), 50);
+            }, 300);
+          });
+        }, 500);
+      });
+    } else {
+      typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 40, () => {
+        setTimeout(() => {
+          typeWriter(document.getElementById('typeRef'), ref.trim(), 50);
+        }, 300);
+      });
+    }
     return;
   }
 
@@ -250,23 +286,16 @@ function renderMain(ts) {
   const finalSt = GAME_CONFIG.stations[6];
 
   if (allSixDone) {
-    // 1~6번 카드 숨기고 7번만 표시
-    const hintsDisplay = GAME_CONFIG.stations.slice(0, 6)
-      .map(s => `<span style="font-family:var(--font-b);font-size:1.3rem;color:#7ed87e;margin-right:0.8rem">${s.hint}</span>`)
-      .join('');
-
     html += `<div class="final-section">
       <div class="final-header">
         <div class="final-riddle-num">${finalSt.riddleNum}</div>
         <div class="final-title">${finalSt.emoji} ${finalSt.title}</div>
       </div>
       <div class="final-body">
-        <div style="padding:0.8rem;background:rgba(80,180,80,0.05);border-radius:3px;margin-bottom:1.2rem;flex-wrap:wrap;display:flex;gap:0.3rem 0">
-          ${hintsDisplay}
-        </div>
-        <div class="tom-riddle-hint">Tom Marvolo Riddle</div>
-        <input type="text" id="finalInput" placeholder="정답 입력 (대소문자 구분)" autocomplete="off">
-        <button class="btn btn-gold" onclick="submitFinal()">볼드모트를 무찔러라 ⚡</button>
+        <div id="hintsDisplay" style="padding:0.8rem;background:rgba(80,180,80,0.05);border-radius:3px;margin-bottom:1.2rem;min-height:2.5rem"></div>
+        <div class="tom-riddle-hint" id="missionText" style="min-height:3rem"></div>
+        <input type="text" id="finalInput" placeholder="정답 입력 (대소문자 구분)" autocomplete="off" style="display:none">
+        <button class="btn btn-gold" id="finalSubmitBtn" onclick="submitFinal()" style="display:none">볼드모트를 무찔러라 ⚡</button>
         <p class="error-msg" id="finalErr"></p>
       </div>
     </div>`;
@@ -289,7 +318,7 @@ function renderMain(ts) {
             <span class="status-badge badge-done">✓ 파괴됨</span>
           </div>
           <div class="card-hint-reveal">
-            <div class="hint-reveal-word">${st.hint}</div>
+            <div class="hint-reveal-word" id="hint-word-${st.id}"></div>
           </div>
         </div>`;
         return;
@@ -328,6 +357,66 @@ function renderMain(ts) {
   }
 
   document.getElementById('mainContent').innerHTML = html;
+
+  // 타이핑 효과 — 완료된 힌트 단어들
+  if (!allSixDone) {
+    GAME_CONFIG.stations.slice(0, 6).forEach(st => {
+      if (completedIds.has(st.id)) {
+        const el = document.getElementById(`hint-word-${st.id}`);
+        if (el) typeWriter(el, st.hint, 80);
+      }
+    });
+  }
+
+  // 타이핑 효과 — 7번 섹션
+  if (allSixDone) {
+    const hintsEl = document.getElementById('hintsDisplay');
+    const missionEl = document.getElementById('missionText');
+    if (hintsEl && missionEl) {
+      // 힌트 단어들 순차 타이핑
+      const hints = GAME_CONFIG.stations.slice(0, 6);
+      let idx = 0;
+      function typeNextHint() {
+        if (idx >= hints.length) {
+          // 힌트 다 끝나면 미션 텍스트 타이핑
+          setTimeout(() => {
+            const line1 = '마지막 호크룩스는 해리 포터 자신이다.';
+            const line2 = '그를 찾아라. 그리고 그의 눈을 바라보며 외쳐라.';
+            const spell = 'AVADA KEDAVRA';
+            typeWriter(missionEl, line1, 40, () => {
+              missionEl.innerHTML += '<br><br>';
+              setTimeout(() => {
+                const part2 = document.createElement('span');
+                missionEl.appendChild(part2);
+                typeWriter(part2, line2, 40, () => {
+                  missionEl.innerHTML += '<br><br>';
+                  setTimeout(() => {
+                    const spellEl = document.createElement('span');
+                    spellEl.style.cssText = 'font-family:var(--font-d);font-size:1.1rem;letter-spacing:0.1em;color:var(--gold-lt)';
+                    missionEl.appendChild(spellEl);
+                    typeWriter(spellEl, spell, 120, () => {
+                      // 다 끝나면 입력창 표시
+                      document.getElementById('finalInput').style.display = 'block';
+                      document.getElementById('finalSubmitBtn').style.display = 'block';
+                    });
+                  }, 400);
+                });
+              }, 300);
+            });
+          }, 500);
+          return;
+        }
+        const hint = hints[idx++];
+        const span = document.createElement('span');
+        span.style.cssText = 'font-family:var(--font-b);font-size:1.3rem;color:#7ed87e;margin-right:0.8rem';
+        hintsEl.appendChild(span);
+        typeWriter(span, hint.hint, 80, () => {
+          setTimeout(typeNextHint, 200);
+        });
+      }
+      typeNextHint();
+    }
+  }
 }
 
 // ── 알파벳 풀 (힌트 단어들 셔플) ───────────────────────────
@@ -345,7 +434,45 @@ function buildLetterPool() {
   ).join('');
 }
 
-// ── 핸들러 ──────────────────────────────────────────────────
+// ── 타이핑 효과 ─────────────────────────────────────────────
+function typeWriter(el, text, speed = 40, callback) {
+  el.textContent = '';
+  let i = 0;
+  function tick() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      setTimeout(tick, speed);
+    } else if (callback) {
+      callback();
+    }
+  }
+  tick();
+}
+
+function typeWriterHTML(el, segments, speed = 40, callback) {
+  // segments: [{text, className, tag}, ...]
+  // 한 글자씩 순차적으로 여러 스타일 텍스트 타이핑
+  let segIdx = 0;
+  function nextSegment() {
+    if (segIdx >= segments.length) { if (callback) callback(); return; }
+    const seg = segments[segIdx++];
+    const span = document.createElement(seg.tag || 'span');
+    if (seg.className) span.className = seg.className;
+    if (seg.style) span.style.cssText = seg.style;
+    el.appendChild(span);
+    let i = 0;
+    function tick() {
+      if (i < seg.text.length) {
+        span.textContent += seg.text[i++];
+        setTimeout(tick, speed);
+      } else {
+        nextSegment();
+      }
+    }
+    tick();
+  }
+  nextSegment();
+}
 function toggleHint(btn) {
   const hint = btn.nextElementSibling;
   hint.classList.toggle('visible');
