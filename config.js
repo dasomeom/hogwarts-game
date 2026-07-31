@@ -11,7 +11,8 @@ const FIREBASE_CONFIG = {
   storageBucket: "unpl-2026.firebasestorage.app",
   messagingSenderId: "218391862369",
   appId: "1:218391862369:web:cdfe50431df75b29555e20",
-  measurementId: "G-NEGVTW26SM"
+  measurementId: "G-NEGVTW26SM",
+  databaseURL: "https://unpl-2026-default-rtdb.firebaseio.com/",
 };
 
 const GAME_CONFIG = {
