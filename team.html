@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>팀 대시보드 — 호그와트 챌린지</title>
+<title>호크룩스 챌린지</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,134 +14,144 @@
   }
   body { background: var(--deep); color: var(--parchment); font-family: var(--font-b); min-height: 100vh; }
 
+  /* ── 헤더 ── */
   header {
-    background: linear-gradient(180deg, #1A0E04 0%, #0D0800 100%);
+    background: linear-gradient(180deg, #1A0E04, #0D0800);
     border-bottom: 1px solid rgba(212,175,55,0.2);
     padding: 1rem 1.5rem;
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;
   }
-  .team-id { font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; }
-  .team-name { font-family: var(--font-d); font-size: 1.1rem; font-weight: 700; color: var(--gold-lt); }
-  .house-tag { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.15em; color: var(--parchment); opacity: 0.6; }
-  .score-label { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.15em; color: var(--gold); opacity: 0.7; text-transform: uppercase; }
-  .score-num { font-family: var(--font-d); font-size: 2rem; font-weight: 700; color: var(--gold-lt); }
+  .team-id { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; }
+  .team-name { font-family: var(--font-d); font-size: 1rem; font-weight: 700; color: var(--gold-lt); }
+  .house-tag { font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.15em; opacity: 0.6; }
 
+  /* ── 타이머 ── */
   .timer-bar {
-    background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(212,175,55,0.1);
+    background: rgba(0,0,0,0.5); border-bottom: 1px solid rgba(212,175,55,0.1);
     padding: 0.6rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
   }
-  #gameStatus { font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--gold); opacity: 0.7; text-transform: uppercase; }
-  #timerDisplay { font-family: var(--font-d); font-size: 1.8rem; font-weight: 700; color: var(--gold-lt); text-shadow: 0 0 20px rgba(212,175,55,0.5); }
+  #gameStatus { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.1em; color: var(--gold); opacity: 0.7; text-transform: uppercase; }
+  #timerDisplay { font-family: var(--font-d); font-size: 1.8rem; font-weight: 700; color: var(--gold-lt); text-shadow: 0 0 20px rgba(212,175,55,0.4); }
   #timerDisplay.urgent { color: #ff6b6b; animation: pulse 1s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-  .progress-track { padding: 1.2rem 1.5rem 0.5rem; display: flex; gap: 0.5rem; }
-  .progress-step { flex: 1; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08); transition: background 0.4s; }
-  .progress-step.done { background: var(--gold); }
-  .progress-step.active { background: rgba(212,175,55,0.5); }
-
-  main { padding: 1rem 1.5rem 6rem; max-width: 600px; margin: 0 auto; }
-
-  .station-card {
-    background: linear-gradient(160deg, #1E1408, #120C04);
-    border: 1px solid rgba(212,175,55,0.18); border-radius: 4px;
-    padding: 1.8rem 1.5rem; margin-bottom: 1.5rem; transition: border-color 0.3s;
+  /* ── 진행 트랙 ── */
+  .progress-track { padding: 1rem 1.5rem 0.3rem; display: flex; gap: 0.4rem; align-items: center; }
+  .progress-pip {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1.5px solid rgba(212,175,55,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-family: var(--font-d); color: rgba(212,175,55,0.3);
+    transition: all 0.4s; flex-shrink: 0;
   }
-  .station-card.active { border-color: rgba(212,175,55,0.5); box-shadow: 0 0 20px rgba(212,175,55,0.08); }
-  .station-card.done { border-color: rgba(100,200,100,0.3); opacity: 0.7; }
-  .station-card.locked { opacity: 0.35; pointer-events: none; }
+  .progress-pip.done { background: var(--gold); border-color: var(--gold); color: var(--ink); font-size: 0.8rem; }
+  .progress-pip.locked { opacity: 0.3; }
+  .progress-line { flex: 1; height: 1px; background: rgba(212,175,55,0.15); }
 
-  .station-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
-  .station-emoji { font-size: 2rem; line-height: 1; }
-  .station-meta { flex: 1; }
-  .station-num { font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.2em; color: var(--gold); opacity: 0.6; text-transform: uppercase; }
-  .station-name { font-family: var(--font-d); font-size: 1.15rem; font-weight: 700; color: var(--gold-lt); margin: 0.1rem 0; }
-  .station-loc { font-size: 0.85rem; color: var(--parchment); opacity: 0.6; font-style: italic; }
-  .station-badge { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.12em; padding: 0.3rem 0.7rem; border-radius: 2px; text-transform: uppercase; border: 1px solid; white-space: nowrap; }
-  .badge-active { background: rgba(212,175,55,0.1); border-color: var(--gold); color: var(--gold); }
-  .badge-done { background: rgba(80,180,80,0.1); border-color: #5cb85c; color: #5cb85c; }
-  .badge-next { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.4); }
+  /* ── 메인 ── */
+  main { padding: 1rem 1.5rem 5rem; max-width: 600px; margin: 0 auto; }
 
-  .station-desc { font-size: 0.95rem; line-height: 1.6; opacity: 0.8; margin-bottom: 1.2rem; }
-  .mission-area { border-top: 1px solid rgba(212,175,55,0.12); padding-top: 1.2rem; }
-  .mission-label { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.18em; color: var(--gold); opacity: 0.7; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .mission-q { font-size: 1rem; font-style: italic; line-height: 1.5; margin-bottom: 1rem; }
+  /* ── 호크룩스 카드 ── */
+  .horcrux-card {
+    background: linear-gradient(160deg, #1E1408, #120C04);
+    border: 1px solid rgba(212,175,55,0.15);
+    border-radius: 4px; margin-bottom: 1.2rem; overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .horcrux-card.active { border-color: rgba(212,175,55,0.45); box-shadow: 0 0 24px rgba(212,175,55,0.07); }
+  .horcrux-card.done { border-color: rgba(100,200,100,0.25); }
+  .horcrux-card.locked { opacity: 0.3; pointer-events: none; }
+  .horcrux-card.auto-done { border-color: rgba(100,200,100,0.25); opacity: 0.75; }
 
-  input[type="text"], textarea {
+  .card-header {
+    padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 1rem; cursor: pointer;
+  }
+  .horcrux-img {
+    width: 52px; height: 52px; border-radius: 3px; object-fit: cover;
+    border: 1px solid rgba(212,175,55,0.2); background: rgba(255,255,255,0.04);
+    display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0;
+  }
+  .horcrux-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 3px; display: none; }
+  .horcrux-img img.loaded { display: block; }
+  .card-meta { flex: 1; min-width: 0; }
+  .card-riddle-num { font-family: var(--font-d); font-size: 0.55rem; letter-spacing: 0.2em; color: var(--gold); opacity: 0.6; text-transform: uppercase; }
+  .card-title { font-family: var(--font-d); font-size: 0.8rem; font-weight: 700; color: var(--gold-lt); line-height: 1.3; margin-top: 0.15rem; }
+  .card-status { flex-shrink: 0; }
+  .status-badge { font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.1em; padding: 0.25rem 0.6rem; border-radius: 2px; border: 1px solid; text-transform: uppercase; }
+  .badge-done { color: #5cb85c; border-color: #5cb85c; background: rgba(80,180,80,0.08); }
+  .badge-active { color: var(--gold); border-color: var(--gold); background: rgba(212,175,55,0.08); }
+  .badge-locked { color: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.1); }
+  .badge-auto { color: #5cb85c; border-color: #5cb85c; background: rgba(80,180,80,0.08); }
+
+  /* 완료된 카드 — 정답 단어 표시 */
+  .card-answer {
+    padding: 0.8rem 1.5rem 1rem;
+    border-top: 1px solid rgba(212,175,55,0.1);
+    background: rgba(80,180,80,0.04);
+  }
+  .answer-label { font-family: var(--font-d); font-size: 0.55rem; letter-spacing: 0.2em; color: #5cb85c; opacity: 0.7; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .answer-word { font-family: var(--font-d); font-size: 1.3rem; color: #7ed87e; letter-spacing: 0.08em; }
+
+  /* 활성 카드 — 미션 영역 */
+  .card-body { padding: 0 1.5rem 1.5rem; border-top: 1px solid rgba(212,175,55,0.1); }
+  .mission-label { font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.18em; color: var(--gold); opacity: 0.65; text-transform: uppercase; margin: 1rem 0 0.5rem; }
+  .mission-q { font-size: 0.95rem; font-style: italic; line-height: 1.6; margin-bottom: 1rem; opacity: 0.85; }
+
+  input[type="text"] {
     width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.25);
     border-radius: 3px; padding: 0.8rem 1rem; color: var(--parchment);
     font-family: var(--font-b); font-size: 1rem; outline: none; transition: border-color 0.2s; margin-bottom: 0.8rem;
   }
   input[type="text"]:focus { border-color: var(--gold); }
 
-  .hint-toggle { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.1em; color: var(--gold); opacity: 0.5; cursor: pointer; text-transform: uppercase; background: none; border: none; padding: 0; margin-bottom: 0.5rem; transition: opacity 0.2s; display: block; }
-  .hint-toggle:hover { opacity: 0.9; }
-  .hint-text { font-style: italic; font-size: 0.85rem; opacity: 0.5; margin-bottom: 0.8rem; display: none; }
-  .hint-text.visible { display: block; }
-
-  .btn { font-family: var(--font-d); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; border: none; border-radius: 3px; padding: 0.8rem 1.5rem; cursor: pointer; transition: filter 0.2s; display: inline-block; text-align: center; }
+  .btn { font-family: var(--font-d); font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; border: none; border-radius: 3px; padding: 0.75rem 1.4rem; cursor: pointer; transition: filter 0.2s; display: inline-block; text-align: center; }
   .btn:hover { filter: brightness(1.15); }
   .btn-gold { background: linear-gradient(135deg, #8B6914, #C49A2A, #8B6914); color: var(--ink); font-weight: 700; }
-  .btn-ghost { background: transparent; border: 1px solid rgba(212,175,55,0.3); color: var(--gold); }
   .btn-block { width: 100%; }
+  .error-msg { color: #ff6b6b; font-style: italic; font-size: 0.82rem; min-height: 1.1em; margin-top: 0.4rem; }
+  .hint-toggle { font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--gold); opacity: 0.5; cursor: pointer; text-transform: uppercase; background: none; border: none; padding: 0; margin-bottom: 0.5rem; display: block; transition: opacity 0.2s; }
+  .hint-toggle:hover { opacity: 0.9; }
+  .hint-text { font-style: italic; font-size: 0.82rem; opacity: 0.5; margin-bottom: 0.8rem; display: none; }
+  .hint-text.visible { display: block; }
 
-  .photo-drop { border: 2px dashed rgba(212,175,55,0.25); border-radius: 4px; padding: 2rem 1rem; text-align: center; cursor: pointer; transition: border-color 0.2s; margin-bottom: 0.8rem; position: relative; }
-  .photo-drop:hover { border-color: var(--gold); }
-  .photo-drop input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; margin: 0; }
-  .photo-drop p { font-size: 0.85rem; opacity: 0.5; }
-  .photo-drop .drop-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-  #photoPreview { width: 100%; border-radius: 4px; margin-bottom: 0.8rem; display: none; max-height: 220px; object-fit: cover; }
+  /* ── 7번 anagram 섹션 ── */
+  .anagram-section {
+    background: linear-gradient(160deg, #1A0A00, #0D0500);
+    border: 1px solid rgba(212,175,55,0.4);
+    border-radius: 4px; padding: 1.5rem; margin-top: 2rem;
+    box-shadow: 0 0 30px rgba(212,175,55,0.08);
+  }
+  .anagram-section.hidden { display: none; }
+  .anagram-title { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.25em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.3rem; }
+  .anagram-subtitle { font-family: var(--font-d); font-size: 1rem; color: var(--gold-lt); margin-bottom: 1.2rem; }
+  .letter-pool {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.2rem;
+    padding: 1rem; background: rgba(212,175,55,0.05); border-radius: 3px;
+    min-height: 60px;
+  }
+  .letter-tile {
+    width: 32px; height: 36px; background: linear-gradient(180deg, #2A1F08, #1A1204);
+    border: 1px solid rgba(212,175,55,0.35); border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-d); font-size: 1rem; font-weight: 700;
+    color: var(--gold-lt); flex-shrink: 0;
+  }
+  .letter-tile.space { background: transparent; border-color: transparent; width: 12px; }
+  .anagram-hint { font-size: 0.8rem; font-style: italic; opacity: 0.5; margin-bottom: 1rem; }
 
-  .voice-area { text-align: center; padding: 1rem 0; }
-  .spell-display { font-family: var(--font-d); font-size: 1.6rem; color: var(--gold-lt); text-shadow: 0 0 20px rgba(212,175,55,0.5); margin-bottom: 0.3rem; }
-  .spell-phonetic { font-style: italic; opacity: 0.6; font-size: 0.9rem; margin-bottom: 1.5rem; }
-  #micBtn { width: 72px; height: 72px; border-radius: 50%; background: radial-gradient(circle, #8B1A1A, #500000); border: 2px solid rgba(212,175,55,0.4); cursor: pointer; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; transition: box-shadow 0.2s; }
-  #micBtn.listening { animation: glow-red 1s ease-in-out infinite; }
-  @keyframes glow-red { 0%,100%{box-shadow:0 0 10px rgba(139,26,26,0.4)} 50%{box-shadow:0 0 30px rgba(200,50,50,0.8)} }
+  /* 최종 완료 */
+  .final-done {
+    text-align: center; padding: 2rem 1rem;
+    background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 4px; margin-top: 2rem;
+  }
+  .final-done h2 { font-family: var(--font-d); font-size: 1.4rem; color: var(--gold-lt); margin-bottom: 0.5rem; }
+  .final-done p { font-style: italic; opacity: 0.7; font-size: 0.9rem; }
 
-  .done-banner { text-align: center; padding: 1.5rem; background: rgba(80,180,80,0.06); border: 1px solid rgba(80,180,80,0.2); border-radius: 4px; }
-  .done-banner .score-earned { font-family: var(--font-d); font-size: 2rem; color: var(--gold-lt); }
-
-  .score-summary { background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.15); border-radius: 4px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; }
-  .section-label { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.2em; color: var(--gold); opacity: 0.5; text-transform: uppercase; margin: 2rem 0 1rem; }
-  .error-msg { color: #ff6b6b; font-style: italic; font-size: 0.85rem; min-height: 1.2em; margin-top: 0.5rem; }
-
-  /* 배틀 */
-  .battle-btn-wrap { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 10; }
-  .battle-fab { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #8B1A1A, #C0392B); border: 2px solid rgba(212,175,55,0.4); color: white; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(139,26,26,0.5); }
-  .battle-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 20; display: none; align-items: center; justify-content: center; padding: 1rem; }
-  .battle-modal.open { display: flex; }
-  .battle-box { background: #1E1408; border: 1px solid rgba(212,175,55,0.3); border-radius: 4px; padding: 2rem; width: 100%; max-width: 380px; }
-  .battle-box h2 { font-family: var(--font-d); font-size: 1rem; color: var(--gold); text-align: center; margin-bottom: 1.5rem; letter-spacing: 0.15em; }
-  .spell-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
-  .spell-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.2); border-radius: 3px; padding: 0.8rem; cursor: pointer; text-align: center; transition: all 0.2s; color: var(--parchment); font-family: var(--font-b); }
-  .spell-btn:hover { border-color: var(--gold); background: rgba(212,175,55,0.08); }
-  .spell-btn.selected { border-color: var(--gold); background: rgba(212,175,55,0.15); }
-  .spell-btn .spell-emoji { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; }
-  .spell-btn .spell-name { font-size: 0.75rem; }
-  .battle-result { text-align: center; padding: 1.5rem 0; }
-  .battle-result .result-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-  .battle-result h3 { font-family: var(--font-d); font-size: 1.2rem; color: var(--gold-lt); margin-bottom: 0.5rem; }
-
-  /* 배틀 알림 */
-  .battle-alert { position: fixed; top: 0; left: 0; right: 0; background: #8B1A1A; padding: 1rem 1.5rem; z-index: 30; display: none; align-items: center; justify-content: space-between; gap: 1rem; }
-  .battle-alert.show { display: flex; }
-  .battle-alert p { font-family: var(--font-d); font-size: 0.8rem; color: white; }
-  .alert-btns { display: flex; gap: 0.5rem; }
-  .btn-accept { background: #27ae60; color: white; font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.1em; border: none; border-radius: 3px; padding: 0.5rem 1rem; cursor: pointer; }
-  .btn-decline { background: rgba(255,255,255,0.2); color: white; font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.1em; border: none; border-radius: 3px; padding: 0.5rem 1rem; cursor: pointer; }
+  .section-divider { height: 1px; background: linear-gradient(90deg,transparent,rgba(212,175,55,0.2),transparent); margin: 1.5rem 0; }
 </style>
 </head>
 <body>
-
-<!-- 배틀 알림 배너 -->
-<div class="battle-alert" id="battleAlert">
-  <p id="battleAlertText">배틀 신청이 왔습니다!</p>
-  <div class="alert-btns">
-    <button class="btn-accept" id="acceptBtn">수락 ⚔️</button>
-    <button class="btn-decline" id="declineBtn">거절</button>
-  </div>
-</div>
 
 <header>
   <div>
@@ -149,9 +159,8 @@
     <div class="team-name" id="teamName">팀 이름</div>
     <div class="house-tag" id="houseName">기숙사</div>
   </div>
-  <div style="text-align:right">
-    <div class="score-label">현재 점수</div>
-    <div class="score-num" id="headerScore">0</div>
+  <div>
+    <a href="scoreboard.html" style="font-family:var(--font-d);font-size:0.65rem;letter-spacing:0.1em;color:var(--gold);opacity:0.5;text-decoration:none;text-transform:uppercase">점수판 →</a>
   </div>
 </header>
 
@@ -164,20 +173,6 @@
 
 <main id="mainContent"></main>
 
-<!-- 배틀 FAB -->
-<div class="battle-btn-wrap">
-  <button class="battle-fab" onclick="openBattleModal()" title="배틀 신청">⚔️</button>
-</div>
-
-<!-- 배틀 모달 -->
-<div class="battle-modal" id="battleModal">
-  <div class="battle-box">
-    <h2 id="battleModalTitle">⚔️ 주문 배틀</h2>
-    <div id="battleModalContent"></div>
-    <button class="btn btn-ghost btn-block" style="margin-top:1rem" onclick="closeBattleModal()">닫기</button>
-  </div>
-</div>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="config.js"></script>
@@ -188,7 +183,6 @@ if (!TEAM_CODE || !GAME_CONFIG.teams[TEAM_CODE]) window.location.href = 'index.h
 
 const TEAM = GAME_CONFIG.teams[TEAM_CODE];
 const HOUSE = GAME_CONFIG.houses.find(h => h.id === TEAM.house);
-const MY_ORDER = GAME_CONFIG.stationOrder[TEAM_CODE];
 
 document.getElementById('teamCode').textContent = TEAM_CODE;
 document.getElementById('teamName').textContent = TEAM.displayName;
@@ -212,128 +206,182 @@ Store.onGameStarted(started => {
   }
 });
 
-// ── 팀 상태 실시간 구독 ─────────────────────────────────────
+// ── 1번 자동 완료 ───────────────────────────────────────────
+Store.getTeamState(TEAM_CODE, ts => {
+  if (!ts?.stations?.[1]?.completed) {
+    Store.completeStation(TEAM_CODE, 1, GAME_CONFIG.stations[0].maxScore);
+  }
+});
+
+// ── 실시간 상태 구독 ────────────────────────────────────────
 Store.onTeamState(TEAM_CODE, ts => {
-  document.getElementById('headerScore').textContent = ts.total || 0;
   renderProgress(ts);
-  renderStations(ts);
+  renderMain(ts);
 });
 
 // ── 진행 트랙 ───────────────────────────────────────────────
 function renderProgress(ts) {
-  document.getElementById('progressTrack').innerHTML = MY_ORDER.map((sid, i) => {
-    const done = ts?.stations?.[sid]?.completed;
-    const currentIdx = getCurrentIdx(ts);
-    return `<div class="progress-step ${done ? 'done' : i === currentIdx ? 'active' : ''}"></div>`;
-  }).join('');
+  const stations = GAME_CONFIG.stations;
+  let html = '';
+  stations.forEach((st, i) => {
+    const done = ts?.stations?.[st.id]?.completed;
+    if (i > 0) html += `<div class="progress-line"></div>`;
+    html += `<div class="progress-pip ${done ? 'done' : 'locked'}">${done ? '✓' : i+1}</div>`;
+  });
+  document.getElementById('progressTrack').innerHTML = html;
 }
 
-function getCurrentIdx(ts) {
-  for (let i = 0; i < MY_ORDER.length; i++) {
-    if (!ts?.stations?.[MY_ORDER[i]]?.completed) return i;
-  }
-  return MY_ORDER.length;
-}
+// ── 메인 렌더 ───────────────────────────────────────────────
+function renderMain(ts) {
+  const stations = GAME_CONFIG.stations;
+  const completedIds = new Set(
+    Object.entries(ts?.stations || {}).filter(([,v]) => v.completed).map(([k]) => Number(k))
+  );
+  const allSixDone = [1,2,3,4,5,6].every(id => completedIds.has(id));
+  const finalDone = completedIds.has(7);
 
-// ── 스테이션 렌더 ───────────────────────────────────────────
-function renderStations(ts) {
-  const currentIdx = getCurrentIdx(ts);
-  let html = `<div class="score-summary">
-    <div><div class="score-label">팀 누적 점수</div><div class="score-num">${ts?.total || 0}</div></div>
-    <div style="text-align:right"><div class="score-label">완료</div><div class="score-num">${Object.values(ts?.stations||{}).filter(s=>s.completed).length} / ${MY_ORDER.length}</div></div>
-  </div>`;
+  let html = '';
 
-  if (currentIdx >= MY_ORDER.length) {
-    html += `<div class="done-banner"><div style="font-size:3rem;margin-bottom:1rem">🏆</div><div class="score-earned">${ts?.total||0}점</div><p>모든 스테이션 완료!</p><a href="scoreboard.html" class="btn btn-gold" style="margin-top:1.2rem;display:inline-block">점수판 보기</a></div>`;
+  if (finalDone) {
+    html = `<div class="final-done">
+      <div style="font-size:3rem;margin-bottom:1rem">🏆</div>
+      <h2>호크룩스를 모두 파괴했습니다!</h2>
+      <p style="margin-top:0.8rem;font-family:var(--font-d);font-size:0.9rem;color:var(--gold)">볼드모트는 무너졌다.</p>
+    </div>`;
     document.getElementById('mainContent').innerHTML = html;
     return;
   }
 
-  html += `<p class="section-label">미션 스테이션</p>`;
-  MY_ORDER.forEach((sid, idx) => {
-    const station = GAME_CONFIG.stations.find(s => s.id === sid);
-    const done = ts?.stations?.[sid]?.completed;
-    const isActive = idx === currentIdx;
-    let cardClass = 'station-card' + (done ? ' done' : isActive ? ' active' : ' locked');
-    let badge = done ? '<span class="station-badge badge-done">✓ 완료</span>' : isActive ? '<span class="station-badge badge-active">▶ 현재</span>' : '<span class="station-badge badge-next">대기</span>';
+  // 1~6 호크룩스 카드
+  stations.slice(0, 6).forEach((st, idx) => {
+    const done = completedIds.has(st.id);
+    const isFirst = st.id === 1;
 
-    html += `<div class="${cardClass}">
-      <div class="station-header">
-        <span class="station-emoji">${station.emoji}</span>
-        <div class="station-meta">
-          <div class="station-num">스테이션 ${idx+1}</div>
-          <div class="station-name">${station.name}</div>
-          <div class="station-loc">📍 ${station.location}</div>
-        </div>${badge}
-      </div>
-      <p class="station-desc">${station.description}</p>`;
+    if (isFirst) {
+      // 1번: 자동완료, 정답 단어만 표시
+      html += `<div class="horcrux-card auto-done">
+        <div class="card-header">
+          <div class="horcrux-img">${st.emoji || '📔'}</div>
+          <div class="card-meta">
+            <div class="card-riddle-num">${st.riddleNum}</div>
+            <div class="card-title">${st.title}</div>
+          </div>
+          <div class="card-status"><span class="status-badge badge-auto">✓ 완료</span></div>
+        </div>
+        <div class="card-answer">
+          <div class="answer-label">해독된 단어</div>
+          <div class="answer-word">${st.answerWord}</div>
+        </div>
+      </div>`;
+      return;
+    }
 
     if (done) {
-      html += `<div class="done-banner"><div class="score-earned">+${ts.stations[sid].score}점</div><p>미션 완료!</p></div>`;
-    } else if (isActive) {
-      html += renderMission(station);
+      html += `<div class="horcrux-card done">
+        <div class="card-header">
+          <div class="horcrux-img">${st.emoji || '💎'}${st.image ? `<img src="${st.image}" onload="this.classList.add('loaded')">` : ''}</div>
+          <div class="card-meta">
+            <div class="card-riddle-num">${st.riddleNum}</div>
+            <div class="card-title">${st.title}</div>
+          </div>
+          <div class="card-status"><span class="status-badge badge-done">✓ 파괴됨</span></div>
+        </div>
+        <div class="card-answer">
+          <div class="answer-label">해독된 단어</div>
+          <div class="answer-word">${st.answerWord}</div>
+        </div>
+      </div>`;
+      return;
     }
-    html += `</div>`;
+
+    // 미완료
+    html += `<div class="horcrux-card active" id="card-${st.id}">
+      <div class="card-header">
+        <div class="horcrux-img">${st.emoji || '💎'}${st.image ? `<img src="${st.image}" onload="this.classList.add('loaded')">` : ''}</div>
+        <div class="card-meta">
+          <div class="card-riddle-num">${st.riddleNum}</div>
+          <div class="card-title">${st.title}</div>
+        </div>
+        <div class="card-status"><span class="status-badge badge-active">진행 중</span></div>
+      </div>
+      <div class="card-body">
+        ${renderMission(st)}
+      </div>
+    </div>`;
   });
+
+  // 7번 anagram 섹션
+  const finalStation = stations[6];
+  if (allSixDone) {
+    const letters = buildLetterPool(ts);
+    html += `<div class="section-divider"></div>
+    <div class="anagram-section" id="anagramSection">
+      <div class="anagram-title">최후의 호크룩스</div>
+      <div class="anagram-subtitle">${finalStation.title}</div>
+      <div class="mission-label">해독된 알파벳</div>
+      <div class="letter-pool">${letters}</div>
+      <p class="anagram-hint">위 알파벳을 조합해 정답을 맞춰라</p>
+      <input type="text" id="finalInput" placeholder="정답을 입력하세요" autocomplete="off">
+      <button class="btn btn-gold btn-block" onclick="submitFinal()">볼드모트를 무찔러라 ⚡</button>
+      <p class="error-msg" id="finalErr"></p>
+    </div>`;
+  } else {
+    const remaining = [1,2,3,4,5,6].filter(id => !completedIds.has(id)).length;
+    html += `<div class="section-divider"></div>
+    <div class="anagram-section" style="opacity:0.3;pointer-events:none">
+      <div class="anagram-title">최후의 호크룩스</div>
+      <div class="anagram-subtitle">${finalStation.title}</div>
+      <p style="font-style:italic;opacity:0.7;font-size:0.85rem">호크룩스 ${remaining}개를 더 파괴해야 잠금이 해제됩니다</p>
+    </div>`;
+  }
 
   document.getElementById('mainContent').innerHTML = html;
 }
 
+// ── 알파벳 풀 생성 ──────────────────────────────────────────
+function buildLetterPool(ts) {
+  const stations = GAME_CONFIG.stations;
+  // 2~6번 answerWord 모아서 셔플
+  let letters = [];
+  stations.slice(1, 6).forEach(st => {
+    if (st.answerWord) {
+      st.answerWord.split('').forEach(ch => letters.push(ch));
+    }
+  });
+  // Fisher-Yates shuffle (팀 코드 기반 시드로 일관성 유지)
+  const seed = TEAM_CODE.split('').reduce((a,c) => a + c.charCodeAt(0), 0);
+  for (let i = letters.length - 1; i > 0; i--) {
+    const j = (seed * (i + 1)) % (i + 1);
+    [letters[i], letters[j]] = [letters[j], letters[i]];
+  }
+  return letters.map(ch =>
+    ch === ' ' ? `<div class="letter-tile space"></div>` : `<div class="letter-tile">${ch}</div>`
+  ).join('');
+}
+
+// ── 미션 렌더 ───────────────────────────────────────────────
 function renderMission(station) {
   const m = station.missions?.[0];
+  if (!m) return '<p style="opacity:0.5;font-style:italic;padding:1rem 0">미션 준비 중...</p>';
+
   if (station.type === 'quiz') {
-    return `<div class="mission-area">
-      <div class="mission-label">미션</div>
+    return `<div class="mission-label">수수께끼</div>
       <p class="mission-q">${m.question}</p>
-      <input type="text" id="quizInput" placeholder="정답을 입력하세요" autocomplete="off">
-      <button class="hint-toggle" onclick="toggleHint(this)">💡 힌트 보기</button>
-      <p class="hint-text">${m.hint}</p>
-      <button class="btn btn-gold btn-block" onclick="submitQuiz(${station.id},'${m.answer}')">정답 제출</button>
-      <p class="error-msg" id="quizErr"></p>
-    </div>`;
+      ${m.hint ? `<button class="hint-toggle" onclick="toggleHint(this)">💡 힌트 보기</button><p class="hint-text">${m.hint}</p>` : ''}
+      <input type="text" id="quiz-${station.id}" placeholder="정답을 입력하세요" autocomplete="off">
+      <button class="btn btn-gold btn-block" onclick="submitQuiz(${station.id})">호크룩스 파괴 ⚡</button>
+      <p class="error-msg" id="err-${station.id}"></p>`;
   }
   if (station.type === 'photo') {
-    return `<div class="mission-area">
-      <div class="mission-label">미션</div>
+    return `<div class="mission-label">미션</div>
       <p class="mission-q">${m.instruction}</p>
-      <div class="photo-drop">
-        <input type="file" id="photoInput" accept="image/*" capture="environment" onchange="previewPhoto(this)">
-        <div class="drop-icon">📸</div><p>여기를 눌러 사진 촬영</p>
+      <div style="border:2px dashed rgba(212,175,55,0.25);border-radius:4px;padding:2rem;text-align:center;position:relative;margin-bottom:0.8rem">
+        <input type="file" id="photo-${station.id}" accept="image/*" capture="environment" onchange="previewPhoto(this,${station.id})" style="position:absolute;inset:0;opacity:0;cursor:pointer">
+        <div style="font-size:2rem;margin-bottom:0.5rem">📸</div>
+        <p style="font-size:0.85rem;opacity:0.5">눌러서 사진 촬영</p>
       </div>
-      <img id="photoPreview" src="" alt="미리보기">
-      <button class="btn btn-gold btn-block" id="photoSubmitBtn" onclick="submitPhoto(${station.id})" disabled style="opacity:0.4">사진 제출</button>
-    </div>`;
-  }
-  if (station.type === 'qr') {
-    return `<div class="mission-area">
-      <div class="mission-label">미션</div>
-      <p class="mission-q">${m.question}</p>
-      <input type="text" id="quizInput" placeholder="모스부호 해독 정답" autocomplete="off">
-      <button class="hint-toggle" onclick="toggleHint(this)">💡 힌트 보기</button>
-      <p class="hint-text">${m.hint}</p>
-      <button class="btn btn-gold btn-block" style="margin-bottom:0.8rem" onclick="unlockQR('${m.answer}')">정답 확인</button>
-      <div id="qrUnlocked" style="display:none;text-align:center;padding:1rem;background:rgba(212,175,55,0.08);border-radius:4px">
-        <p style="font-family:var(--font-d);font-size:0.7rem;color:var(--gold);margin-bottom:0.8rem">QR 코드를 찾아 스캔하세요 📷</p>
-        <input type="text" id="qrInput" placeholder="QR 스캔 결과 입력" style="margin-top:0.8rem">
-        <button class="btn btn-gold btn-block" onclick="submitQR(${station.id},'${station.qrSecret}')">QR 인증</button>
-      </div>
-      <p class="error-msg" id="quizErr"></p>
-    </div>`;
-  }
-  if (station.type === 'voice') {
-    const spells = station.missions;
-    const sp = spells[Math.floor(Math.random()*spells.length)];
-    return `<div class="mission-area">
-      <div class="mission-label">주문을 외쳐라</div>
-      <div class="voice-area">
-        <div class="spell-display">${sp.spell}</div>
-        <div class="spell-phonetic">"${sp.pronunciation}"</div>
-        <button id="micBtn" onclick="startVoice('${sp.spell}')">🎙️</button>
-        <p id="voiceResult">버튼을 눌러 주문을 외치세요</p>
-        <div id="voiceScore"></div>
-        <button class="btn btn-gold" id="voiceSubmitBtn" onclick="submitVoice(${station.id})" style="display:none;margin-top:1rem">이 점수로 제출</button>
-      </div>
-    </div>`;
+      <img id="preview-${station.id}" src="" style="width:100%;border-radius:4px;margin-bottom:0.8rem;display:none;max-height:200px;object-fit:cover">
+      <button class="btn btn-gold btn-block" id="photoBtn-${station.id}" onclick="submitPhoto(${station.id})" disabled style="opacity:0.4">사진 제출</button>`;
   }
   return '';
 }
@@ -345,49 +393,27 @@ function toggleHint(btn) {
   btn.textContent = hint.classList.contains('visible') ? '💡 힌트 숨기기' : '💡 힌트 보기';
 }
 
-function submitQuiz(stationId, correct) {
-  const val = document.getElementById('quizInput')?.value.trim();
-  const err = document.getElementById('quizErr');
+function submitQuiz(stationId) {
+  const val = document.getElementById(`quiz-${stationId}`)?.value.trim();
+  const err = document.getElementById(`err-${stationId}`);
   if (!val) { if(err) err.textContent = '정답을 입력해 주세요.'; return; }
+  const station = GAME_CONFIG.stations.find(s => s.id === stationId);
+  const correct = station.missions?.[0]?.answer;
   const norm = s => s.replace(/\s/g,'').toLowerCase();
   if (norm(val) === norm(correct)) {
-    const station = GAME_CONFIG.stations.find(s => s.id === stationId);
     Store.completeStation(TEAM_CODE, stationId, station.maxScore);
   } else {
     if(err) err.textContent = '틀렸습니다. 다시 시도해 보세요.';
   }
 }
 
-function unlockQR(correct) {
-  const val = document.getElementById('quizInput')?.value.trim();
-  const norm = s => s.replace(/\s/g,'').toLowerCase();
-  const err = document.getElementById('quizErr');
-  if (norm(val) === norm(correct)) {
-    document.getElementById('qrUnlocked').style.display = 'block';
-    if(err) { err.textContent = '✓ 정답! QR 코드를 찾으세요.'; err.style.color = '#5cb85c'; }
-  } else {
-    if(err) err.textContent = '틀렸습니다.';
-  }
-}
-
-function submitQR(stationId, secret) {
-  const val = document.getElementById('qrInput')?.value.trim().toUpperCase();
-  if (val === secret) {
-    const station = GAME_CONFIG.stations.find(s => s.id === stationId);
-    Store.completeStation(TEAM_CODE, stationId, station.maxScore);
-  } else {
-    alert('QR 코드 값이 올바르지 않습니다.');
-  }
-}
-
-function previewPhoto(input) {
-  const file = input.files[0];
-  if (!file) return;
+function previewPhoto(input, stationId) {
+  const file = input.files[0]; if(!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    const img = document.getElementById('photoPreview');
+    const img = document.getElementById(`preview-${stationId}`);
     img.src = e.target.result; img.style.display = 'block';
-    const btn = document.getElementById('photoSubmitBtn');
+    const btn = document.getElementById(`photoBtn-${stationId}`);
     btn.disabled = false; btn.style.opacity = '1';
   };
   reader.readAsDataURL(file);
@@ -398,152 +424,18 @@ function submitPhoto(stationId) {
   Store.completeStation(TEAM_CODE, stationId, station.maxScore);
 }
 
-let voiceFinalScore = 0;
-function startVoice(target) {
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    document.getElementById('voiceResult').textContent = 'Chrome 브라우저를 사용해 주세요.'; return;
-  }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recog = new SR(); recog.lang = 'en-US';
-  const btn = document.getElementById('micBtn');
-  btn.classList.add('listening');
-  document.getElementById('voiceResult').textContent = '듣고 있습니다…';
-  recog.onresult = e => {
-    const heard = e.results[0][0].transcript.trim();
-    const t = target.toLowerCase().replace(/\s/g,'');
-    const h = heard.toLowerCase().replace(/\s/g,'');
-    let match = 0;
-    for (let i = 0; i < Math.min(t.length,h.length); i++) if(t[i]===h[i]) match++;
-    voiceFinalScore = Math.round((match/Math.max(t.length,h.length))*100);
-    document.getElementById('voiceResult').textContent = `"${heard}"`;
-    document.getElementById('voiceScore').innerHTML = `<div style="font-family:var(--font-d);font-size:2rem;color:var(--gold)">${voiceFinalScore}점</div>`;
-    document.getElementById('voiceSubmitBtn').style.display = 'inline-block';
-    btn.classList.remove('listening');
-  };
-  recog.onerror = () => { document.getElementById('voiceResult').textContent = '인식 실패. 다시 시도해 주세요.'; btn.classList.remove('listening'); };
-  recog.start();
-}
-
-function submitVoice(stationId) {
-  Store.completeStation(TEAM_CODE, stationId, voiceFinalScore);
-}
-
-// ── 배틀 시스템 ─────────────────────────────────────────────
-let pendingBattleId = null;
-
-Store.onBattleRequest(TEAM_CODE, battles => {
-  if (battles.length > 0) {
-    const b = battles[0];
-    pendingBattleId = b.id;
-    document.getElementById('battleAlertText').textContent = `⚔️ ${GAME_CONFIG.teams[b.from]?.displayName || b.from}이 배틀을 신청했습니다!`;
-    document.getElementById('battleAlert').classList.add('show');
-    document.getElementById('acceptBtn').onclick = () => acceptBattle(b.id, b.from);
-    document.getElementById('declineBtn').onclick = () => {
-      Store.declineBattle(b.id);
-      document.getElementById('battleAlert').classList.remove('show');
-    };
+function submitFinal() {
+  const val = document.getElementById('finalInput')?.value.trim();
+  const err = document.getElementById('finalErr');
+  if (!val) { if(err) err.textContent = '정답을 입력해 주세요.'; return; }
+  const finalStation = GAME_CONFIG.stations[6];
+  const correct = finalStation.missions?.[0]?.answer;
+  // 대소문자 구분해서 체크
+  if (val === correct) {
+    Store.completeStation(TEAM_CODE, 7, finalStation.maxScore);
   } else {
-    document.getElementById('battleAlert').classList.remove('show');
+    if(err) err.textContent = '틀렸습니다. 알파벳을 다시 조합해 보세요.';
   }
-});
-
-function acceptBattle(battleId, fromTeam) {
-  document.getElementById('battleAlert').classList.remove('show');
-  Store.acceptBattle(battleId, () => showSpellSelect(battleId));
-}
-
-function openBattleModal() {
-  document.getElementById('battleModalTitle').textContent = '⚔️ 배틀 신청';
-  document.getElementById('battleModalContent').innerHTML = `
-    <p style="font-size:0.9rem;opacity:0.7;margin-bottom:1rem;font-style:italic">상대 팀 코드를 입력하세요</p>
-    <input type="text" id="battleTargetInput" placeholder="예: SLYTH-1" style="text-transform:uppercase">
-    <button class="btn btn-gold btn-block" onclick="sendBattleRequest()">배틀 신청 ⚔️</button>
-    <p class="error-msg" id="battleErr"></p>
-  `;
-  document.getElementById('battleModal').classList.add('open');
-}
-
-function closeBattleModal() {
-  document.getElementById('battleModal').classList.remove('open');
-}
-
-function sendBattleRequest() {
-  const target = document.getElementById('battleTargetInput')?.value.trim().toUpperCase();
-  const err = document.getElementById('battleErr');
-  if (!target || !GAME_CONFIG.teams[target]) { err.textContent = '유효한 팀 코드를 입력해 주세요.'; return; }
-  if (target === TEAM_CODE) { err.textContent = '자기 팀에게 신청할 수 없습니다.'; return; }
-  if (GAME_CONFIG.teams[target].house === TEAM.house) { err.textContent = '같은 기숙사끼리는 배틀할 수 없습니다.'; return; }
-
-  Store.requestBattle(TEAM_CODE, target, result => {
-    if (result.error) { err.textContent = result.error; return; }
-    document.getElementById('battleModalContent').innerHTML = `<p style="text-align:center;font-style:italic;opacity:0.7;padding:1rem 0">상대팀의 수락을 기다리는 중…⏳</p>`;
-    Store.onBattleResult(result.battleId, b => {
-      if (b.status === 'accepted') showSpellSelect(result.battleId);
-    });
-    // 수락 감지
-    const ref = firebase.database().ref(`battles/pending/${result.battleId}/status`);
-    ref.on('value', snap => {
-      if (snap.val() === 'accepted') {
-        ref.off();
-        showSpellSelect(result.battleId);
-      }
-    });
-  });
-}
-
-const SPELLS = [
-  { name: 'Expelliarmus', emoji: '⚡' },
-  { name: 'Protego', emoji: '🛡️' },
-  { name: 'Stupefy', emoji: '💫' },
-  { name: 'Petrificus Totalus', emoji: '🧊' },
-  { name: 'Avada Kedavra', emoji: '☠️' },
-];
-
-function showSpellSelect(battleId) {
-  document.getElementById('battleModalTitle').textContent = '주문을 선택하라!';
-  document.getElementById('battleModalContent').innerHTML = `
-    <p style="font-size:0.85rem;opacity:0.6;text-align:center;margin-bottom:1rem;font-style:italic">상대방은 볼 수 없습니다</p>
-    <div class="spell-grid">
-      ${SPELLS.map(s => `<button class="spell-btn" onclick="selectSpell(this,'${s.name}','${battleId}')"><span class="spell-emoji">${s.emoji}</span><span class="spell-name">${s.name}</span></button>`).join('')}
-    </div>
-    <p id="spellWait" style="text-align:center;font-style:italic;opacity:0.6;display:none">상대방 선택 대기 중…</p>
-  `;
-  document.getElementById('battleModal').classList.add('open');
-}
-
-function selectSpell(btn, spell, battleId) {
-  document.querySelectorAll('.spell-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  document.getElementById('spellWait').style.display = 'block';
-
-  Store.submitSpell(battleId, TEAM_CODE, spell, result => {
-    if (result.waiting) {
-      Store.onBattleResult(battleId, b => showBattleResult(b));
-    } else {
-      showBattleResult(result);
-    }
-  });
-}
-
-function showBattleResult(b) {
-  const won = b.winner === TEAM_CODE;
-  const draw = b.result === 'draw';
-  const spells = b.spells || {};
-  const mySpell = spells[TEAM_CODE];
-  const opponentCode = b.from === TEAM_CODE ? b.to : b.from;
-  const opSpell = spells[opponentCode];
-  const myEmoji = SPELLS.find(s=>s.name===mySpell)?.emoji || '✨';
-  const opEmoji = SPELLS.find(s=>s.name===opSpell)?.emoji || '✨';
-
-  document.getElementById('battleModalTitle').textContent = draw ? '무승부!' : won ? '승리! 🎉' : '패배...';
-  document.getElementById('battleModalContent').innerHTML = `
-    <div class="battle-result">
-      <div class="result-icon">${draw ? '🤝' : won ? '🏆' : '💀'}</div>
-      <div style="display:flex;justify-content:center;gap:2rem;margin:1rem 0;font-size:2rem">${myEmoji} vs ${opEmoji}</div>
-      <p style="font-size:0.85rem;opacity:0.7">${mySpell} vs ${opSpell}</p>
-      <h3 style="margin-top:1rem">${draw ? '비겼습니다!' : won ? `+${Store.BATTLE_POINTS}점 획득!` : `-${Store.BATTLE_POINTS}점...`}</h3>
-    </div>
-  `;
 }
 </script>
 </body>
