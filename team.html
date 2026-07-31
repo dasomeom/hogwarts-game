@@ -261,23 +261,30 @@ function renderMain(ts) {
         <p id="typeVerse" style="font-family:var(--font-b);font-size:1.2rem;line-height:1.7;color:var(--parchment);font-style:italic;margin-bottom:0.8rem"></p>
         <p id="typeRef" style="font-family:var(--font-d);font-size:0.65rem;letter-spacing:0.15em;color:var(--gold);opacity:0.8"></p>
       </div>`;
-    // 타이핑 순서: 메시지 → 성경구절 → 출처
-    if (message) {
-      typeWriter(document.getElementById('typeMsg'), message, 30, () => {
-        setTimeout(() => {
-          typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 40, () => {
-            setTimeout(() => {
-              typeWriter(document.getElementById('typeRef'), ref.trim(), 50);
-            }, 300);
-          });
-        }, 500);
-      });
+    // 타이핑 순서: 메시지 → 성경구절 → 출처 (최초 1회만)
+    if (!typedHints.has('done')) {
+      typedHints.add('done');
+      if (message) {
+        typeWriter(document.getElementById('typeMsg'), message, 30, () => {
+          setTimeout(() => {
+            typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 40, () => {
+              setTimeout(() => {
+                typeWriter(document.getElementById('typeRef'), ref.trim(), 50);
+              }, 300);
+            });
+          }, 500);
+        });
+      } else {
+        typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 40, () => {
+          setTimeout(() => {
+            typeWriter(document.getElementById('typeRef'), ref.trim(), 50);
+          }, 300);
+        });
+      }
     } else {
-      typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 40, () => {
-        setTimeout(() => {
-          typeWriter(document.getElementById('typeRef'), ref.trim(), 50);
-        }, 300);
-      });
+      if (message) document.getElementById('typeMsg').textContent = message;
+      document.getElementById('typeVerse').textContent = `"${text.trim()}"`;
+      document.getElementById('typeRef').textContent = ref.trim();
     }
     return;
   }
@@ -358,18 +365,24 @@ function renderMain(ts) {
 
   document.getElementById('mainContent').innerHTML = html;
 
-  // 타이핑 효과 — 완료된 힌트 단어들
+  // 타이핑 효과 — 완료된 힌트 단어들 (새로 완료된 것만)
   if (!allSixDone) {
     GAME_CONFIG.stations.slice(0, 6).forEach(st => {
       if (completedIds.has(st.id)) {
         const el = document.getElementById(`hint-word-${st.id}`);
-        if (el) typeWriter(el, st.hint, 80);
+        if (el && !typedHints.has(st.id)) {
+          typedHints.add(st.id);
+          typeWriter(el, st.hint, 80);
+        } else if (el && typedHints.has(st.id)) {
+          el.textContent = st.hint;
+        }
       }
     });
   }
 
-  // 타이핑 효과 — 7번 섹션
-  if (allSixDone) {
+  // 타이핑 효과 — 7번 섹션 (최초 1회만)
+  if (allSixDone && !typedHints.has('final')) {
+    typedHints.add('final');
     const hintsEl = document.getElementById('hintsDisplay');
     const missionEl = document.getElementById('missionText');
     if (hintsEl && missionEl) {
@@ -433,6 +446,9 @@ function buildLetterPool() {
     `<div class="letter-tile">${ch}</div>`
   ).join('');
 }
+
+// ── 이미 타이핑된 힌트 추적 ────────────────────────────────
+const typedHints = new Set();
 
 // ── 타이핑 효과 ─────────────────────────────────────────────
 function typeWriter(el, text, speed = 40, callback) {
