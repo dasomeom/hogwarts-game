@@ -78,7 +78,6 @@
     border-top: 1px solid rgba(212,175,55,0.1);
     background: rgba(80,180,80,0.04);
   }
-  .hint-reveal-label { font-family: var(--font-d); font-size: 0.5rem; letter-spacing: 0.2em; color: #5cb85c; opacity: 0.7; text-transform: uppercase; margin-bottom: 0.3rem; }
   .hint-reveal-word {
     font-family: var(--font-b); font-size: 1.4rem; letter-spacing: 0.05em;
     background: linear-gradient(90deg, #7ed87e, #a0f0a0);
@@ -137,10 +136,9 @@
     margin: 0.8rem 0 1rem;
     padding: 0.8rem 1rem;
     background: rgba(139,26,26,0.1); border: 1px solid rgba(139,26,26,0.3); border-radius: 3px;
-    font-family: var(--font-d); font-size: 0.75rem; letter-spacing: 0.05em;
+    font-family: var(--font-d); font-size: 0.85rem; letter-spacing: 0.05em;
     color: #ff9999; text-align: center;
   }
-  .tom-riddle-hint span { opacity: 0.5; font-size: 0.55rem; display: block; margin-bottom: 0.3rem; letter-spacing: 0.2em; text-transform: uppercase; }
 
   .locked-msg { font-style: italic; opacity: 0.5; font-size: 0.85rem; padding: 1rem; text-align: center; }
 
@@ -249,78 +247,74 @@ function renderMain(ts) {
   }
 
   let html = '';
-
-  // 1~6번 카드
-  GAME_CONFIG.stations.slice(0, 6).forEach(st => {
-    const done = completedIds.has(st.id);
-
-    if (done) {
-      const imgHtml = st.image
-        ? `<div class="horcrux-img-wrap"><img src="${st.image}" onload="this.classList.add('loaded')"><span style="position:absolute">${st.emoji}</span></div>`
-        : `<div class="horcrux-emoji">${st.emoji}</div>`;
-      html += `<div class="horcrux-card done">
-        <div class="card-header">
-          ${imgHtml}
-          <div class="card-meta">
-            <div class="card-riddle-num">${st.riddleNum}</div>
-            <div class="card-title">${st.title}</div>
-          </div>
-          <span class="status-badge badge-done">✓ 파괴됨</span>
-        </div>
-        <div class="card-hint-reveal">
-          <div class="hint-reveal-label">해독된 단어</div>
-          <div class="hint-reveal-word">${st.hint}</div>
-        </div>
-      </div>`;
-      return;
-    }
-
-    // 미완료 (활성)
-    const imgHtml = st.image
-      ? `<div class="horcrux-img-wrap"><img src="${st.image}" onload="this.classList.add('loaded')"><span style="position:absolute">${st.emoji}</span></div>`
-      : `<div class="horcrux-emoji">${st.emoji}</div>`;
-    const m = st.missions?.[0] || {};
-    html += `<div class="horcrux-card active">
-      <div class="card-header">
-        ${imgHtml}
-        <div class="card-meta">
-          <div class="card-riddle-num">${st.riddleNum}</div>
-          <div class="card-title">${st.title}</div>
-        </div>
-        <span class="status-badge badge-active">진행 중</span>
-      </div>
-      <div class="card-body">
-        ${m.question ? `<div class="mission-label">수수께끼</div><p class="mission-q">${m.question}</p>` : ''}
-        ${m.hint ? `<button class="hint-toggle" onclick="toggleHint(this)">💡 힌트 보기</button><p class="hint-text">${m.hint}</p>` : ''}
-        <input type="text" id="quiz-${st.id}" placeholder="정답 입력" autocomplete="off" inputmode="numeric">
-        <button class="btn btn-gold" onclick="submitQuiz(${st.id})">호크룩스 파괴 ⚡</button>
-        <p class="error-msg" id="err-${st.id}"></p>
-      </div>
-    </div>`;
-  });
-
-  // 7번 최종 섹션
   const finalSt = GAME_CONFIG.stations[6];
+
   if (allSixDone) {
-    const letters = buildLetterPool();
+    // 1~6번 카드 숨기고 7번만 표시
+    const hintsDisplay = GAME_CONFIG.stations.slice(0, 6)
+      .map(s => `<span style="font-family:var(--font-b);font-size:1.3rem;color:#7ed87e;margin-right:0.8rem">${s.hint}</span>`)
+      .join('');
+
     html += `<div class="final-section">
       <div class="final-header">
         <div class="final-riddle-num">${finalSt.riddleNum}</div>
         <div class="final-title">${finalSt.emoji} ${finalSt.title}</div>
       </div>
       <div class="final-body">
-        <div class="letter-pool-label">해독된 알파벳</div>
-        <div class="letter-pool">${letters}</div>
-        <div class="tom-riddle-hint">
-          <span>아나그램 힌트</span>
-          Tom Marvolo Riddle
+        <div style="padding:0.8rem;background:rgba(80,180,80,0.05);border-radius:3px;margin-bottom:1.2rem;flex-wrap:wrap;display:flex;gap:0.3rem 0">
+          ${hintsDisplay}
         </div>
+        <div class="tom-riddle-hint">Tom Marvolo Riddle</div>
         <input type="text" id="finalInput" placeholder="정답 입력 (대소문자 구분)" autocomplete="off">
         <button class="btn btn-gold" onclick="submitFinal()">볼드모트를 무찔러라 ⚡</button>
         <p class="error-msg" id="finalErr"></p>
       </div>
     </div>`;
   } else {
+    // 1~6번 카드 표시
+    GAME_CONFIG.stations.slice(0, 6).forEach(st => {
+      const done = completedIds.has(st.id);
+      const imgHtml = st.image
+        ? `<div class="horcrux-img-wrap"><img src="${st.image}" onload="this.classList.add('loaded')"></div>`
+        : `<div class="horcrux-emoji">${st.emoji}</div>`;
+
+      if (done) {
+        html += `<div class="horcrux-card done">
+          <div class="card-header">
+            ${imgHtml}
+            <div class="card-meta">
+              <div class="card-riddle-num">${st.riddleNum}</div>
+              <div class="card-title">${st.title}</div>
+            </div>
+            <span class="status-badge badge-done">✓ 파괴됨</span>
+          </div>
+          <div class="card-hint-reveal">
+            <div class="hint-reveal-word">${st.hint}</div>
+          </div>
+        </div>`;
+        return;
+      }
+
+      const m = st.missions?.[0] || {};
+      html += `<div class="horcrux-card active">
+        <div class="card-header">
+          ${imgHtml}
+          <div class="card-meta">
+            <div class="card-riddle-num">${st.riddleNum}</div>
+            <div class="card-title">${st.title}</div>
+          </div>
+          <span class="status-badge badge-active">진행 중</span>
+        </div>
+        <div class="card-body">
+          ${m.question ? `<div class="mission-label">수수께끼</div><p class="mission-q">${m.question}</p>` : ''}
+          <input type="text" id="quiz-${st.id}" placeholder="정답 입력" autocomplete="off" inputmode="numeric">
+          <button class="btn btn-gold" onclick="submitQuiz(${st.id})">호크룩스 파괴 ⚡</button>
+          <p class="error-msg" id="err-${st.id}"></p>
+        </div>
+      </div>`;
+    });
+
+    // 잠긴 7번
     const remaining = [1,2,3,4,5,6].filter(id => !completedIds.has(id)).length;
     html += `<div class="final-section locked">
       <div class="final-header">

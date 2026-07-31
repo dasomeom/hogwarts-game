@@ -73,10 +73,25 @@ const Store = {
   _recalcTotal(teamCode, callback) {
     db.ref(`scores/${teamCode}`).once('value', snap => {
       const data = snap.val() || {};
-      const stationSum = Object.values(data.stations || {}).reduce((s, v) => s + (v.score || 0), 0);
-      const bonusSum = Object.values(data.bonuses || {}).reduce((s, b) => s + (b.points || 0), 0);
+
+      // 문제 완료 점수 (1~6: 100점, 7: 1000점)
+      const stationSum = Object.entries(data.stations || {}).reduce((s, [id, v]) => {
+        if (!v.completed) return s;
+        return s + (Number(id) === 7 ? 1000 : 100);
+      }, 0);
+
+      // 힌트 감점: -100점/회
+      const hintPenalty = (data.hintCount || 0) * 100;
+
+      // 시간 감점: -10점/분 (완료 처리된 경우에만)
+      const timePenalty = data.finishTime
+        ? Math.floor(data.finishTime / 60) * 10
+        : 0;
+
+      // 수동 조정
       const adjustSum = Object.values(data.adjustments || {}).reduce((s, a) => s + (a.delta || 0), 0);
-      const total = stationSum + bonusSum + adjustSum;
+
+      const total = stationSum - hintPenalty - timePenalty + adjustSum;
       db.ref(`scores/${teamCode}/total`).set(total, () => { if(callback) callback(); });
     });
   },
@@ -100,6 +115,9 @@ const Store = {
           code, ...info,
           total: data.total || 0,
           stationsCompleted: Object.values(data.stations || {}).filter(s => s.completed).length,
+          stations: data.stations || {},
+          finishTime: data.finishTime || null,
+          hintCount: data.hintCount || 0,
         };
       });
       teams.sort((a, b) => b.total - a.total);
@@ -232,3 +250,23 @@ const Store = {
     });
   },
 };
+
+  // ── 힌트 지급 (어드민) ───────────────────────────────────
+  giveHint(teamCode, callback) {
+    db.ref(`scores/${teamCode}/hintCount`).transaction(count => (count || 0) + 1, () => {
+      this._recalcTotal(teamCode, callback);
+    });
+  },
+
+  // ── 완료 처리 (어드민) ───────────────────────────────────
+  markFinish(teamCode, callback) {
+    db.ref('game/startTime').once('value', snap => {
+      const startTime = snap.val();
+      const elapsedSeconds = startTime ? (Date.now() - startTime) / 1000 : 0;
+      db.ref(`scores/${teamCode}/finishTime`).set(elapsedSeconds, () => {
+        this._recalcTotal(teamCode, () => {
+          if (callback) callback(elapsedSeconds);
+        });
+      });
+    });
+  },

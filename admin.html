@@ -6,101 +6,101 @@
 <title>어드민 — 호그와트 챌린지</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --gold:#D4AF37; --gold-lt:#F0D060; --parchment:#F5E6C8;
-    --ink:#1A0A00; --deep:#0D0800; --stone:#1E1408; --danger:#8B1A1A;
-    --font-d:'Cinzel',serif; --font-b:'Crimson Text',Georgia,serif;
+    --gold: #D4AF37; --gold-lt: #F0D060; --parchment: #F5E6C8;
+    --ink: #1A0A00; --deep: #0D0800; --stone: #1E1408;
+    --font-d: 'Cinzel', serif; --font-b: 'Crimson Text', Georgia, serif;
   }
-  body { background:var(--deep); color:var(--parchment); font-family:var(--font-b); min-height:100vh; }
+  body { background: var(--deep); color: var(--parchment); font-family: var(--font-b); min-height: 100vh; }
 
-  /* ── 로그인 오버레이 ── */
-  #loginOverlay {
-    position:fixed; inset:0; background:var(--deep); z-index:100;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .login-box {
-    background:#1E1408; border:1px solid rgba(212,175,55,0.25);
-    border-radius:4px; padding:2.5rem 2rem; width:340px; text-align:center;
-  }
-  .login-box h2 { font-family:var(--font-d); font-size:1rem; color:var(--gold); letter-spacing:0.2em; margin-bottom:1.5rem; }
+  /* ── 로그인 ── */
+  #loginOverlay { position: fixed; inset: 0; background: var(--deep); z-index: 100; display: flex; align-items: center; justify-content: center; }
+  .login-box { background: #1E1408; border: 1px solid rgba(212,175,55,0.25); border-radius: 4px; padding: 2.5rem 2rem; width: 320px; text-align: center; }
+  .login-box h2 { font-family: var(--font-d); font-size: 0.9rem; color: var(--gold); letter-spacing: 0.2em; margin-bottom: 1.5rem; }
 
   input[type="password"], input[type="text"], input[type="number"], select {
-    width:100%; background:rgba(255,255,255,0.04);
-    border:1px solid rgba(212,175,55,0.25); border-radius:3px;
-    padding:0.8rem 1rem; color:var(--parchment);
-    font-family:var(--font-b); font-size:1rem; outline:none;
-    transition:border-color 0.2s; margin-bottom:0.8rem;
+    width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.25); border-radius: 3px;
+    padding: 0.75rem 1rem; color: var(--parchment); font-family: var(--font-b); font-size: 1rem; outline: none;
+    transition: border-color 0.2s; margin-bottom: 0.8rem;
   }
-  input:focus, select:focus { border-color:var(--gold); }
+  input:focus, select:focus { border-color: var(--gold); }
+  #loginErr { color: #ff6b6b; font-size: 0.85rem; font-style: italic; min-height: 1.2em; margin-top: 0.3rem; }
 
-  .btn { font-family:var(--font-d); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; border:none; border-radius:3px; padding:0.8rem 1.5rem; cursor:pointer; transition:filter 0.2s; }
-  .btn:hover { filter:brightness(1.15); }
-  .btn-gold { background:linear-gradient(135deg,#8B6914,#C49A2A,#8B6914); color:var(--ink); font-weight:700; }
-  .btn-ghost { background:transparent; border:1px solid rgba(212,175,55,0.3); color:var(--gold); }
-  .btn-danger { background:#8B1A1A; color:#fff; }
-  .btn-sm { padding:0.4rem 0.8rem; font-size:0.65rem; }
-  .btn-block { width:100%; }
-
-  #loginErr { color:#ff6b6b; font-size:0.85rem; font-style:italic; min-height:1.2em; margin-top:0.4rem; }
+  .btn { font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; border: none; border-radius: 3px; padding: 0.75rem 1.4rem; cursor: pointer; transition: filter 0.2s; }
+  .btn:hover { filter: brightness(1.15); }
+  .btn-gold { background: linear-gradient(135deg, #8B6914, #C49A2A, #8B6914); color: var(--ink); font-weight: 700; }
+  .btn-ghost { background: transparent; border: 1px solid rgba(212,175,55,0.3); color: var(--gold); }
+  .btn-danger { background: #8B1A1A; color: #fff; }
+  .btn-green { background: #1a5c2a; color: #7ed87e; border: 1px solid #2a8c3a; }
+  .btn-block { width: 100%; }
+  .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.6rem; }
 
   /* ── 헤더 ── */
   header {
-    background:linear-gradient(180deg,#1A0E04,#0D0800);
-    border-bottom:1px solid rgba(212,175,55,0.2);
-    padding:1rem 1.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;
+    background: linear-gradient(180deg, #1A0E04, #0D0800);
+    border-bottom: 1px solid rgba(212,175,55,0.2);
+    padding: 0.9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
   }
-  header h1 { font-family:var(--font-d); font-size:1.1rem; color:var(--gold-lt); letter-spacing:0.1em; }
-  #adminTimer { font-family:var(--font-d); font-size:1.5rem; color:var(--gold); text-shadow:0 0 15px rgba(212,175,55,0.4); }
+  header h1 { font-family: var(--font-d); font-size: 0.95rem; color: var(--gold-lt); letter-spacing: 0.1em; }
+  #adminTimer { font-family: var(--font-d); font-size: 1.6rem; color: var(--gold); text-shadow: 0 0 15px rgba(212,175,55,0.4); }
+  #adminTimer.urgent { color: #ff6b6b; }
 
   /* ── 레이아웃 ── */
-  .page { padding:1.5rem; max-width:1000px; margin:0 auto; }
-  .section-label { font-family:var(--font-d); font-size:0.65rem; letter-spacing:0.2em; color:var(--gold); opacity:0.5; text-transform:uppercase; margin-bottom:1rem; margin-top:2rem; }
+  .page { padding: 1.2rem 1.5rem 4rem; max-width: 1100px; margin: 0 auto; }
+  .section-label { font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.22em; color: var(--gold); opacity: 0.5; text-transform: uppercase; margin: 1.8rem 0 0.8rem; }
 
-  /* ── 컨트롤 패널 ── */
-  .control-panel {
-    display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-bottom:2rem;
-  }
-  .ctrl-card {
-    background:#1E1408; border:1px solid rgba(212,175,55,0.15);
-    border-radius:4px; padding:1.2rem; text-align:center;
-  }
-  .ctrl-card h3 { font-family:var(--font-d); font-size:0.7rem; letter-spacing:0.12em; color:var(--gold); opacity:0.7; text-transform:uppercase; margin-bottom:0.8rem; }
-  .ctrl-card .big-num { font-family:var(--font-d); font-size:2rem; color:var(--gold-lt); margin-bottom:0.5rem; }
+  /* ── 게임 컨트롤 ── */
+  .ctrl-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+  .ctrl-card { background: #1E1408; border: 1px solid rgba(212,175,55,0.15); border-radius: 4px; padding: 1.2rem; flex: 1; min-width: 140px; text-align: center; }
+  .ctrl-card h3 { font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.12em; color: var(--gold); opacity: 0.6; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .ctrl-card .big { font-family: var(--font-d); font-size: 1.8rem; color: var(--gold-lt); margin-bottom: 0.5rem; }
 
-  /* ── 점수 조정 ── */
-  .adjust-panel {
-    background:#1E1408; border:1px solid rgba(212,175,55,0.15); border-radius:4px; padding:1.5rem; margin-bottom:1.5rem;
+  /* ── 팀 그리드 ── */
+  .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.8rem; }
+  .team-card {
+    background: #1E1408; border: 1px solid rgba(212,175,55,0.12); border-radius: 4px; padding: 1rem 1.1rem;
+    transition: border-color 0.2s;
   }
-  .adjust-panel h3 { font-family:var(--font-d); font-size:0.75rem; letter-spacing:0.15em; color:var(--gold); text-transform:uppercase; margin-bottom:1.2rem; }
-  .adjust-row { display:grid; grid-template-columns:1fr 100px 1fr auto; gap:0.7rem; align-items:end; }
-  @media(max-width:600px) { .adjust-row { grid-template-columns:1fr 1fr; } }
-  label { font-size:0.75rem; opacity:0.6; display:block; margin-bottom:0.2rem; font-family:var(--font-d); letter-spacing:0.08em; }
+  .team-card.finished { border-color: rgba(100,200,100,0.3); }
+  .team-card.finished .team-card-header { opacity: 0.8; }
 
-  /* ── 팀 현황 테이블 ── */
-  .team-table { border:1px solid rgba(212,175,55,0.15); border-radius:4px; overflow:auto; }
-  table { width:100%; border-collapse:collapse; font-size:0.85rem; }
-  th { font-family:var(--font-d); font-size:0.6rem; letter-spacing:0.15em; color:var(--gold); opacity:0.6; text-transform:uppercase; padding:0.7rem 1rem; text-align:left; border-bottom:1px solid rgba(212,175,55,0.12); background:rgba(212,175,55,0.04); white-space:nowrap; }
-  td { padding:0.6rem 1rem; border-bottom:1px solid rgba(255,255,255,0.04); vertical-align:middle; }
-  tr:last-child td { border-bottom:none; }
-  tr:hover td { background:rgba(212,175,55,0.03); }
-  .score-cell { font-family:var(--font-d); font-size:1rem; color:var(--gold-lt); font-weight:700; }
-  .station-dots { display:flex; gap:3px; }
-  .dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.1); }
-  .dot.done { background:var(--gold); }
+  .team-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.7rem; }
+  .team-card-name { font-family: var(--font-d); font-size: 0.78rem; color: var(--gold-lt); }
+  .team-card-house { font-size: 0.75rem; opacity: 0.5; font-style: italic; }
+  .team-card-score { font-family: var(--font-d); font-size: 1.3rem; color: var(--gold); }
+
+  /* 진행 도트 */
+  .station-dots { display: flex; gap: 3px; margin-bottom: 0.7rem; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.08); }
+  .dot.done { background: var(--gold); }
+  .dot.final { background: #ff6b6b; }
+
+  /* 액션 버튼 행 */
+  .team-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .hint-btn { background: rgba(139,26,26,0.3); border: 1px solid rgba(139,26,26,0.5); color: #ff9999; font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer; transition: background 0.2s; }
+  .hint-btn:hover { background: rgba(139,26,26,0.5); }
+  .finish-btn { background: rgba(27,92,42,0.4); border: 1px solid rgba(42,140,58,0.5); color: #7ed87e; font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer; transition: background 0.2s; }
+  .finish-btn:hover { background: rgba(27,92,42,0.6); }
+  .finish-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .finished-tag { font-family: var(--font-d); font-size: 0.58rem; color: #5cb85c; letter-spacing: 0.08em; padding: 0.35rem 0.5rem; }
+
+  /* finish time 표시 */
+  .finish-time-display { font-size: 0.8rem; color: #5cb85c; font-style: italic; margin-top: 0.4rem; }
+  .hint-count { font-size: 0.75rem; color: #ff9999; opacity: 0.7; margin-top: 0.2rem; }
 
   /* ── 로그 ── */
-  .log-area { background:#120C04; border:1px solid rgba(212,175,55,0.1); border-radius:4px; padding:1rem; font-size:0.8rem; font-family:monospace; max-height:200px; overflow-y:auto; }
-  .log-line { opacity:0.6; margin-bottom:0.3rem; }
-  .log-line.success { color:#5cb85c; opacity:0.8; }
-  .log-line.warn { color:var(--gold); opacity:0.8; }
+  .log-area { background: #120C04; border: 1px solid rgba(212,175,55,0.1); border-radius: 4px; padding: 0.8rem; font-size: 0.78rem; font-family: monospace; max-height: 180px; overflow-y: auto; }
+  .log-line { opacity: 0.6; margin-bottom: 0.25rem; }
+  .log-line.success { color: #5cb85c; opacity: 0.85; }
+  .log-line.warn { color: var(--gold); opacity: 0.85; }
+  .log-line.hint { color: #ff9999; opacity: 0.85; }
 
-  .divider { height:1px; background:linear-gradient(90deg,transparent,rgba(212,175,55,0.2),transparent); margin:2rem 0; }
+  .divider { height: 1px; background: linear-gradient(90deg,transparent,rgba(212,175,55,0.15),transparent); margin: 1.5rem 0; }
 </style>
 </head>
 <body>
 
-<!-- 로그인 오버레이 -->
 <div id="loginOverlay">
   <div class="login-box">
     <h2>⚙️ 관리자 접속</h2>
@@ -112,111 +112,57 @@
 
 <header>
   <div>
-    <h1>⚙️ 호그와트 챌린지 — 어드민</h1>
+    <h1>⚙️ 호그와트 챌린지 2026 — 어드민</h1>
   </div>
-  <div style="display:flex;align-items:center;gap:1.5rem">
-    <span id="adminTimer">—:--</span>
+  <div style="display:flex;align-items:center;gap:1.2rem">
+    <span id="adminTimer">대기 중</span>
     <a href="scoreboard.html" class="btn btn-ghost btn-sm">점수판 →</a>
   </div>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="config.js"></script>
-<script src="store.js"></script>
 </header>
 
 <div class="page">
 
   <!-- 게임 컨트롤 -->
   <p class="section-label" style="margin-top:0">게임 컨트롤</p>
-  <div class="control-panel">
+  <div class="ctrl-row">
     <div class="ctrl-card">
       <h3>게임 상태</h3>
-      <div class="big-num" id="gameStateNum">대기</div>
-      <button class="btn btn-gold btn-block" id="startBtn" onclick="startGame()">게임 시작</button>
+      <div class="big" id="gameStateDisplay">대기</div>
+      <button class="btn btn-gold btn-block" id="startBtn" onclick="startGame()">⚡ 게임 시작</button>
     </div>
     <div class="ctrl-card">
-      <h3>완료 팀 수</h3>
-      <div class="big-num" id="completedCount">0</div>
-      <p style="font-size:0.8rem;opacity:0.5">/ 20팀</p>
+      <h3>완료 팀</h3>
+      <div class="big" id="finishedCount">0</div>
+      <p style="font-size:0.78rem;opacity:0.5">팀 완료 리포트</p>
     </div>
     <div class="ctrl-card">
-      <h3>1위 팀</h3>
-      <div class="big-num" id="topTeam">—</div>
-      <p style="font-size:0.8rem;opacity:0.5" id="topScore">0점</p>
+      <h3>경과 시간</h3>
+      <div class="big" id="elapsedDisplay">0분</div>
+      <p style="font-size:0.78rem;opacity:0.5">게임 시작 기준</p>
     </div>
     <div class="ctrl-card">
       <h3>리셋</h3>
-      <p style="font-size:0.8rem;opacity:0.5;margin-bottom:0.8rem">모든 점수와 상태 초기화</p>
+      <p style="font-size:0.78rem;opacity:0.5;margin-bottom:0.6rem">모든 데이터 초기화</p>
       <button class="btn btn-danger btn-block" onclick="resetGame()">전체 리셋</button>
-    </div>
-  </div>
-
-  <!-- 점수 수동 조정 -->
-  <div class="adjust-panel">
-    <h3>점수 수동 조정</h3>
-    <div class="adjust-row">
-      <div>
-        <label>팀 선택</label>
-        <select id="adjustTeam"></select>
-      </div>
-      <div>
-        <label>점수 (±)</label>
-        <input type="number" id="adjustDelta" value="0" step="10">
-      </div>
-      <div>
-        <label>사유</label>
-        <input type="text" id="adjustReason" placeholder="예: 보너스 미션 완료">
-      </div>
-      <div style="padding-bottom:0.8rem">
-        <button class="btn btn-gold" onclick="applyAdjust()">적용</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 보너스 지급 -->
-  <div class="adjust-panel">
-    <h3>보너스 지급</h3>
-    <div class="adjust-row">
-      <div>
-        <label>팀 선택</label>
-        <select id="bonusTeam"></select>
-      </div>
-      <div>
-        <label>보너스 종류</label>
-        <select id="bonusType">
-          ${GAME_CONFIG?.bonusEvents?.map(b => `<option value="${b.id}" data-pts="${b.points}">${b.name} (+${b.points}점)</option>`).join('') || ''}
-        </select>
-      </div>
-      <div></div>
-      <div style="padding-bottom:0.8rem">
-        <button class="btn btn-gold" onclick="applyBonus()">지급</button>
-      </div>
     </div>
   </div>
 
   <div class="divider"></div>
 
   <!-- 팀 현황 -->
-  <p class="section-label">팀 현황</p>
-  <div class="team-table">
-    <table>
-      <thead>
-        <tr>
-          <th>순위</th><th>팀</th><th>기숙사</th><th>점수</th><th>스테이션 진행</th>
-        </tr>
-      </thead>
-      <tbody id="teamTableBody"></tbody>
-    </table>
-  </div>
+  <p class="section-label">팀 현황 — 힌트 지급 / 완료 처리</p>
+  <div class="team-grid" id="teamGrid"></div>
 
-  <!-- 활동 로그 -->
+  <!-- 로그 -->
   <p class="section-label">활동 로그</p>
-  <div class="log-area" id="logArea">
-    <div class="log-line">로그가 여기에 표시됩니다…</div>
-  </div>
+  <div class="log-area" id="logArea"><div class="log-line">대기 중...</div></div>
 
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="config.js"></script>
+<script src="store.js"></script>
 <script>
 // ── 로그인 ──────────────────────────────────────────────────
 function adminLogin() {
@@ -232,108 +178,127 @@ document.getElementById('pwInput').addEventListener('keydown', e => { if(e.key==
 
 // ── 초기화 ──────────────────────────────────────────────────
 function init() {
-  const teamSelect = document.getElementById('adjustTeam');
-  const bonusSelect = document.getElementById('bonusTeam');
-  const bonusType = document.getElementById('bonusType');
-
-  Object.entries(GAME_CONFIG.teams).forEach(([code, t]) => {
-    const opt = new Option(t.displayName, code);
-    const opt2 = new Option(t.displayName, code);
-    teamSelect.add(opt);
-    bonusSelect.add(opt2);
+  // 타이머
+  let timerInterval;
+  Store.onGameStarted(started => {
+    if (started) {
+      document.getElementById('gameStateDisplay').textContent = '진행 중';
+      document.getElementById('startBtn').textContent = '진행 중';
+      document.getElementById('startBtn').disabled = true;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        Store.getRemainingSeconds(rem => {
+          const elapsed = GAME_CONFIG.totalMinutes * 60 - rem;
+          const m = Math.floor(elapsed / 60);
+          const s = Math.floor(elapsed % 60);
+          document.getElementById('adminTimer').textContent =
+            `${String(Math.floor(GAME_CONFIG.totalMinutes*60 - elapsed)).padStart(0,'0')}`;
+          // show remaining
+          const remM = Math.floor(rem/60), remS = Math.floor(rem%60);
+          document.getElementById('adminTimer').textContent =
+            `${String(remM).padStart(2,'0')}:${String(remS).padStart(2,'0')}`;
+          document.getElementById('adminTimer').classList.toggle('urgent', rem < 300);
+          document.getElementById('elapsedDisplay').textContent = `${m}분 ${s}초`;
+        });
+      }, 1000);
+    }
   });
 
-  // 보너스 타입 동적 생성
-  bonusType.innerHTML = GAME_CONFIG.bonusEvents.map(b =>
-    `<option value="${b.id}" data-pts="${b.points}">${b.name} (+${b.points}점)</option>`
-  ).join('');
-
-  render();
-  setInterval(render, 3000);
+  // 팀 현황 실시간
+  Store.onLeaderboard(({ teams }) => {
+    renderTeamGrid(teams);
+    const finished = teams.filter(t => t.finishTime).length;
+    document.getElementById('finishedCount').textContent = finished;
+  });
 }
 
-// ── 렌더 ────────────────────────────────────────────────────
-function render() {
-  const { teams, houseScores } = Store.getLeaderboard();
-
-  // 타이머
-  const timerEl = document.getElementById('adminTimer');
-  if (Store.isGameStarted()) {
-    const rem = Store.getRemainingSeconds();
-    const m = Math.floor(rem/60), s = Math.floor(rem%60);
-    timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    document.getElementById('gameStateNum').textContent = rem > 0 ? '진행 중' : '종료';
-    document.getElementById('startBtn').textContent = '진행 중';
-    document.getElementById('startBtn').disabled = true;
-  }
-
-  // 통계
-  const allDone = teams.filter(t => t.stationsCompleted === GAME_CONFIG.stations.length).length;
-  document.getElementById('completedCount').textContent = allDone;
-  if (teams[0]) {
-    document.getElementById('topTeam').textContent = teams[0].displayName.replace(/^.+ /,'');
-    document.getElementById('topScore').textContent = teams[0].total + '점';
-  }
-
-  // 팀 테이블
-  document.getElementById('teamTableBody').innerHTML = teams.map((t, i) => {
+// ── 팀 그리드 렌더 ──────────────────────────────────────────
+function renderTeamGrid(teams) {
+  document.getElementById('teamGrid').innerHTML = teams.map(t => {
     const house = GAME_CONFIG.houses.find(h => h.id === t.house);
-    const stationOrder = GAME_CONFIG.stationOrder[t.code] || [];
-    const ts = Store.getTeamState(t.code);
-    const dots = stationOrder.map(sid => {
-      const done = ts?.stations[sid]?.completed;
-      return `<div class="dot ${done?'done':''}"></div>`;
+    const isFinished = !!t.finishTime;
+    const hintCount = t.hintCount || 0;
+
+    // 스테이션 도트
+    const dots = GAME_CONFIG.stations.map(st => {
+      const done = t.stations?.[st.id]?.completed;
+      const isFinal = st.id === 7;
+      return `<div class="dot ${done ? (isFinal ? 'final' : 'done') : ''}"></div>`;
     }).join('');
-    return `<tr>
-      <td style="font-family:var(--font-d);opacity:0.7">${i+1}</td>
-      <td><div style="font-family:var(--font-d);font-size:0.8rem">${t.displayName}</div></td>
-      <td style="opacity:0.6;font-size:0.8rem">${house?.emoji} ${house?.name}</td>
-      <td class="score-cell">${t.total}</td>
-      <td><div class="station-dots">${dots}</div></td>
-    </tr>`;
+
+    // finish time 표시
+    let finishDisplay = '';
+    if (isFinished && t.finishTime) {
+      const mins = Math.floor(t.finishTime / 60);
+      const secs = Math.floor(t.finishTime % 60);
+      const timePenalty = Math.floor(t.finishTime / 60) * 10;
+      finishDisplay = `<div class="finish-time-display">✓ ${mins}분 ${secs}초 완료 (시간 감점: -${timePenalty}점)</div>`;
+    }
+
+    const hintDisplay = hintCount > 0
+      ? `<div class="hint-count">힌트 ${hintCount}회 사용 (-${hintCount * 100}점)</div>`
+      : '';
+
+    return `<div class="team-card ${isFinished ? 'finished' : ''}">
+      <div class="team-card-header">
+        <div>
+          <div class="team-card-name">${t.displayName}</div>
+          <div class="team-card-house">${house?.emoji} ${house?.name}</div>
+        </div>
+        <div class="team-card-score">${t.total}점</div>
+      </div>
+      <div class="station-dots">${dots}</div>
+      ${finishDisplay}
+      ${hintDisplay}
+      <div class="team-actions">
+        <button class="hint-btn" onclick="giveHint('${t.code}')">💡 힌트 지급 (-100점)</button>
+        ${isFinished
+          ? `<span class="finished-tag">✓ 완료 처리됨</span>`
+          : `<button class="finish-btn" onclick="markFinish('${t.code}')">🏁 완료 처리</button>`
+        }
+      </div>
+    </div>`;
   }).join('');
 }
 
 // ── 게임 시작 ──────────────────────────────────────────────
 function startGame() {
-  if (!Store.isGameStarted()) {
+  if (confirm('게임을 시작할까요? 모든 팀의 타이머가 동시에 시작됩니다.')) {
     Store.startGame();
-    addLog('✓ 게임이 시작되었습니다!', 'success');
-    render();
+    addLog('⚡ 게임 시작!', 'success');
   }
 }
 
-// ── 점수 조정 ──────────────────────────────────────────────
-function applyAdjust() {
-  const code = document.getElementById('adjustTeam').value;
-  const delta = parseInt(document.getElementById('adjustDelta').value);
-  const reason = document.getElementById('adjustReason').value || '수동 조정';
-  if (!code || isNaN(delta) || delta === 0) { alert('팀과 점수를 확인해 주세요.'); return; }
-  Store.adjustScore(code, delta, reason);
-  addLog(`${delta > 0 ? '+' : ''}${delta}점 → ${GAME_CONFIG.teams[code].displayName} (${reason})`, delta >= 0 ? 'success' : 'warn');
-  render();
+// ── 힌트 지급 ──────────────────────────────────────────────
+function giveHint(teamCode) {
+  const teamName = GAME_CONFIG.teams[teamCode]?.displayName;
+  if (!confirm(`${teamName}에게 힌트를 지급할까요? (-100점)`)) return;
+  Store.giveHint(teamCode, () => {
+    addLog(`💡 힌트 지급 → ${teamName} (-100점)`, 'hint');
+  });
 }
 
-// ── 보너스 지급 ────────────────────────────────────────────
-function applyBonus() {
-  const code = document.getElementById('bonusTeam').value;
-  const bonusSel = document.getElementById('bonusType');
-  const bonusId = bonusSel.value;
-  const pts = parseInt(bonusSel.options[bonusSel.selectedIndex].dataset.pts);
-  Store.addBonus(code, bonusId, pts);
-  addLog(`🎁 보너스 +${pts}점 → ${GAME_CONFIG.teams[code].displayName}`, 'success');
-  render();
+// ── 완료 처리 ──────────────────────────────────────────────
+function markFinish(teamCode) {
+  const teamName = GAME_CONFIG.teams[teamCode]?.displayName;
+  if (!confirm(`${teamName} 완료 처리할까요? 현재 경과 시간이 기록됩니다.`)) return;
+  Store.markFinish(teamCode, (elapsedSeconds) => {
+    const m = Math.floor(elapsedSeconds / 60);
+    const s = Math.floor(elapsedSeconds % 60);
+    addLog(`🏁 완료 → ${teamName} (${m}분 ${s}초, 시간 감점 -${m*10}점)`, 'success');
+  });
 }
 
 // ── 리셋 ───────────────────────────────────────────────────
 function resetGame() {
-  if (confirm('정말 모든 점수와 게임 상태를 초기화할까요? 되돌릴 수 없습니다.')) {
-    Store.reset();
-    addLog('⚠️ 전체 리셋 완료', 'warn');
-    document.getElementById('startBtn').disabled = false;
-    document.getElementById('startBtn').textContent = '게임 시작';
-    document.getElementById('gameStateNum').textContent = '대기';
-    render();
+  if (confirm('정말 모든 데이터를 초기화할까요? 되돌릴 수 없습니다.')) {
+    Store.reset(() => {
+      addLog('⚠️ 전체 리셋 완료', 'warn');
+      document.getElementById('startBtn').disabled = false;
+      document.getElementById('startBtn').textContent = '⚡ 게임 시작';
+      document.getElementById('gameStateDisplay').textContent = '대기';
+      document.getElementById('adminTimer').textContent = '대기 중';
+    });
   }
 }
 
