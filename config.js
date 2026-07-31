@@ -3,6 +3,17 @@
 // 여기서 팀, 기숙사, 스테이션 정보를 수정하세요
 // ============================================================
 
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDUOF_mumMAG8k--d6ABspcmySiA6iKlA4",
+  authDomain: "unpl-2026.firebaseapp.com",
+  projectId: "unpl-2026",
+  storageBucket: "unpl-2026.firebasestorage.app",
+  messagingSenderId: "218391862369",
+  appId: "1:218391862369:web:cdfe50431df75b29555e20",
+  measurementId: "G-NEGVTW26SM"
+};
+
 const GAME_CONFIG = {
   gameName: "호그와트 챌린지 2026",
   totalMinutes: 80,
