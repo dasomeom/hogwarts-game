@@ -9,12 +9,11 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --gold: #D4AF37; --gold-lt: #F0D060; --parchment: #F5E6C8;
-    --ink: #1A0A00; --deep: #0D0800; --stone: #1E1408;
+    --ink: #1A0A00; --deep: #0D0800;
     --font-d: 'Cinzel', serif; --font-b: 'Crimson Text', Georgia, serif;
   }
   body { background: var(--deep); color: var(--parchment); font-family: var(--font-b); min-height: 100vh; }
 
-  /* ── 헤더 ── */
   header {
     background: linear-gradient(180deg, #1A0E04, #0D0800);
     border-bottom: 1px solid rgba(212,175,55,0.2);
@@ -25,7 +24,6 @@
   .team-name { font-family: var(--font-d); font-size: 1rem; font-weight: 700; color: var(--gold-lt); }
   .house-tag { font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.15em; opacity: 0.6; }
 
-  /* ── 타이머 ── */
   .timer-bar {
     background: rgba(0,0,0,0.5); border-bottom: 1px solid rgba(212,175,55,0.1);
     padding: 0.6rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
@@ -35,120 +33,124 @@
   #timerDisplay.urgent { color: #ff6b6b; animation: pulse 1s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-  /* ── 진행 트랙 ── */
   .progress-track { padding: 1rem 1.5rem 0.3rem; display: flex; gap: 0.4rem; align-items: center; }
   .progress-pip {
     width: 28px; height: 28px; border-radius: 50%;
     border: 1.5px solid rgba(212,175,55,0.25);
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.7rem; font-family: var(--font-d); color: rgba(212,175,55,0.3);
+    font-size: 0.65rem; font-family: var(--font-d); color: rgba(212,175,55,0.3);
     transition: all 0.4s; flex-shrink: 0;
   }
-  .progress-pip.done { background: var(--gold); border-color: var(--gold); color: var(--ink); font-size: 0.8rem; }
-  .progress-pip.locked { opacity: 0.3; }
+  .progress-pip.done { background: var(--gold); border-color: var(--gold); color: var(--ink); }
   .progress-line { flex: 1; height: 1px; background: rgba(212,175,55,0.15); }
 
-  /* ── 메인 ── */
   main { padding: 1rem 1.5rem 5rem; max-width: 600px; margin: 0 auto; }
 
   /* ── 호크룩스 카드 ── */
   .horcrux-card {
     background: linear-gradient(160deg, #1E1408, #120C04);
     border: 1px solid rgba(212,175,55,0.15);
-    border-radius: 4px; margin-bottom: 1.2rem; overflow: hidden;
+    border-radius: 4px; margin-bottom: 1rem; overflow: hidden;
     transition: border-color 0.3s, box-shadow 0.3s;
   }
   .horcrux-card.active { border-color: rgba(212,175,55,0.45); box-shadow: 0 0 24px rgba(212,175,55,0.07); }
   .horcrux-card.done { border-color: rgba(100,200,100,0.25); }
-  .horcrux-card.locked { opacity: 0.3; pointer-events: none; }
-  .horcrux-card.auto-done { border-color: rgba(100,200,100,0.25); opacity: 0.75; }
 
-  .card-header {
-    padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 1rem; cursor: pointer;
+  .card-header { padding: 1rem 1.2rem; display: flex; align-items: center; gap: 0.9rem; }
+  .horcrux-emoji { font-size: 1.8rem; flex-shrink: 0; width: 44px; text-align: center; }
+  .horcrux-img-wrap {
+    width: 44px; height: 44px; border-radius: 3px; overflow: hidden;
+    border: 1px solid rgba(212,175,55,0.2); flex-shrink: 0;
+    background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center;
   }
-  .horcrux-img {
-    width: 52px; height: 52px; border-radius: 3px; object-fit: cover;
-    border: 1px solid rgba(212,175,55,0.2); background: rgba(255,255,255,0.04);
-    display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0;
-  }
-  .horcrux-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 3px; display: none; }
-  .horcrux-img img.loaded { display: block; }
+  .horcrux-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .horcrux-img-wrap img.loaded { display: block; }
   .card-meta { flex: 1; min-width: 0; }
-  .card-riddle-num { font-family: var(--font-d); font-size: 0.55rem; letter-spacing: 0.2em; color: var(--gold); opacity: 0.6; text-transform: uppercase; }
-  .card-title { font-family: var(--font-d); font-size: 0.8rem; font-weight: 700; color: var(--gold-lt); line-height: 1.3; margin-top: 0.15rem; }
-  .card-status { flex-shrink: 0; }
-  .status-badge { font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.1em; padding: 0.25rem 0.6rem; border-radius: 2px; border: 1px solid; text-transform: uppercase; }
+  .card-riddle-num { font-family: var(--font-d); font-size: 0.52rem; letter-spacing: 0.2em; color: var(--gold); opacity: 0.6; text-transform: uppercase; }
+  .card-title { font-family: var(--font-d); font-size: 0.78rem; font-weight: 700; color: var(--gold-lt); line-height: 1.3; margin-top: 0.1rem; }
+  .status-badge { font-family: var(--font-d); font-size: 0.55rem; letter-spacing: 0.1em; padding: 0.22rem 0.55rem; border-radius: 2px; border: 1px solid; text-transform: uppercase; white-space: nowrap; }
   .badge-done { color: #5cb85c; border-color: #5cb85c; background: rgba(80,180,80,0.08); }
   .badge-active { color: var(--gold); border-color: var(--gold); background: rgba(212,175,55,0.08); }
-  .badge-locked { color: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.1); }
-  .badge-auto { color: #5cb85c; border-color: #5cb85c; background: rgba(80,180,80,0.08); }
 
-  /* 완료된 카드 — 정답 단어 표시 */
-  .card-answer {
-    padding: 0.8rem 1.5rem 1rem;
+  /* 완료 → 힌트 단어 표시 */
+  .card-hint-reveal {
+    padding: 0.7rem 1.2rem 0.9rem;
     border-top: 1px solid rgba(212,175,55,0.1);
     background: rgba(80,180,80,0.04);
   }
-  .answer-label { font-family: var(--font-d); font-size: 0.55rem; letter-spacing: 0.2em; color: #5cb85c; opacity: 0.7; text-transform: uppercase; margin-bottom: 0.4rem; }
-  .answer-word { font-family: var(--font-d); font-size: 1.3rem; color: #7ed87e; letter-spacing: 0.08em; }
+  .hint-reveal-label { font-family: var(--font-d); font-size: 0.5rem; letter-spacing: 0.2em; color: #5cb85c; opacity: 0.7; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .hint-reveal-word {
+    font-family: var(--font-d); font-size: 1.4rem; letter-spacing: 0.05em;
+    background: linear-gradient(90deg, #7ed87e, #a0f0a0);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
 
-  /* 활성 카드 — 미션 영역 */
-  .card-body { padding: 0 1.5rem 1.5rem; border-top: 1px solid rgba(212,175,55,0.1); }
-  .mission-label { font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.18em; color: var(--gold); opacity: 0.65; text-transform: uppercase; margin: 1rem 0 0.5rem; }
-  .mission-q { font-size: 0.95rem; font-style: italic; line-height: 1.6; margin-bottom: 1rem; opacity: 0.85; }
+  /* 활성 카드 미션 */
+  .card-body { padding: 0 1.2rem 1.2rem; border-top: 1px solid rgba(212,175,55,0.1); }
+  .mission-label { font-family: var(--font-d); font-size: 0.55rem; letter-spacing: 0.18em; color: var(--gold); opacity: 0.65; text-transform: uppercase; margin: 0.9rem 0 0.4rem; }
+  .mission-q { font-size: 0.92rem; font-style: italic; line-height: 1.6; margin-bottom: 0.9rem; opacity: 0.85; }
 
   input[type="text"] {
     width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.25);
-    border-radius: 3px; padding: 0.8rem 1rem; color: var(--parchment);
-    font-family: var(--font-b); font-size: 1rem; outline: none; transition: border-color 0.2s; margin-bottom: 0.8rem;
+    border-radius: 3px; padding: 0.75rem 1rem; color: var(--parchment);
+    font-family: var(--font-b); font-size: 1rem; outline: none; transition: border-color 0.2s; margin-bottom: 0.7rem;
   }
   input[type="text"]:focus { border-color: var(--gold); }
-
-  .btn { font-family: var(--font-d); font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; border: none; border-radius: 3px; padding: 0.75rem 1.4rem; cursor: pointer; transition: filter 0.2s; display: inline-block; text-align: center; }
+  .btn { font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; border: none; border-radius: 3px; padding: 0.75rem 1.4rem; cursor: pointer; transition: filter 0.2s; width: 100%; text-align: center; }
   .btn:hover { filter: brightness(1.15); }
   .btn-gold { background: linear-gradient(135deg, #8B6914, #C49A2A, #8B6914); color: var(--ink); font-weight: 700; }
-  .btn-block { width: 100%; }
-  .error-msg { color: #ff6b6b; font-style: italic; font-size: 0.82rem; min-height: 1.1em; margin-top: 0.4rem; }
-  .hint-toggle { font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--gold); opacity: 0.5; cursor: pointer; text-transform: uppercase; background: none; border: none; padding: 0; margin-bottom: 0.5rem; display: block; transition: opacity 0.2s; }
-  .hint-toggle:hover { opacity: 0.9; }
-  .hint-text { font-style: italic; font-size: 0.82rem; opacity: 0.5; margin-bottom: 0.8rem; display: none; }
+  .error-msg { color: #ff6b6b; font-style: italic; font-size: 0.8rem; min-height: 1.1em; margin-top: 0.4rem; }
+  .hint-toggle { font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.1em; color: var(--gold); opacity: 0.45; cursor: pointer; text-transform: uppercase; background: none; border: none; padding: 0; margin-bottom: 0.4rem; display: block; transition: opacity 0.2s; }
+  .hint-toggle:hover { opacity: 0.8; }
+  .hint-text { font-style: italic; font-size: 0.8rem; opacity: 0.5; margin-bottom: 0.7rem; display: none; }
   .hint-text.visible { display: block; }
 
-  /* ── 7번 anagram 섹션 ── */
-  .anagram-section {
-    background: linear-gradient(160deg, #1A0A00, #0D0500);
+  /* ── 7번 최종 섹션 ── */
+  .final-section {
     border: 1px solid rgba(212,175,55,0.4);
-    border-radius: 4px; padding: 1.5rem; margin-top: 2rem;
+    border-radius: 4px; margin-top: 1.5rem; overflow: hidden;
     box-shadow: 0 0 30px rgba(212,175,55,0.08);
   }
-  .anagram-section.hidden { display: none; }
-  .anagram-title { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.25em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.3rem; }
-  .anagram-subtitle { font-family: var(--font-d); font-size: 1rem; color: var(--gold-lt); margin-bottom: 1.2rem; }
-  .letter-pool {
-    display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.2rem;
-    padding: 1rem; background: rgba(212,175,55,0.05); border-radius: 3px;
-    min-height: 60px;
+  .final-section.locked { opacity: 0.3; pointer-events: none; }
+  .final-header {
+    background: linear-gradient(160deg, #2A1A04, #1A0E02);
+    padding: 1rem 1.2rem; border-bottom: 1px solid rgba(212,175,55,0.2);
   }
+  .final-riddle-num { font-family: var(--font-d); font-size: 0.52rem; letter-spacing: 0.2em; color: var(--gold); opacity: 0.6; text-transform: uppercase; }
+  .final-title { font-family: var(--font-d); font-size: 1rem; color: var(--gold-lt); margin-top: 0.2rem; }
+  .final-body { padding: 1.2rem; background: linear-gradient(160deg, #1E1408, #120C04); }
+
+  /* 알파벳 타일 풀 */
+  .letter-pool-label { font-family: var(--font-d); font-size: 0.52rem; letter-spacing: 0.2em; color: var(--gold); opacity: 0.6; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .letter-pool { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.5rem; padding: 0.8rem; background: rgba(212,175,55,0.04); border-radius: 3px; min-height: 52px; }
   .letter-tile {
-    width: 32px; height: 36px; background: linear-gradient(180deg, #2A1F08, #1A1204);
-    border: 1px solid rgba(212,175,55,0.35); border-radius: 3px;
+    width: 30px; height: 34px;
+    background: linear-gradient(180deg, #2A1F08, #1A1204);
+    border: 1px solid rgba(212,175,55,0.3); border-radius: 2px;
     display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-d); font-size: 1rem; font-weight: 700;
-    color: var(--gold-lt); flex-shrink: 0;
+    font-family: var(--font-d); font-size: 0.95rem; font-weight: 700; color: var(--gold-lt);
   }
-  .letter-tile.space { background: transparent; border-color: transparent; width: 12px; }
-  .anagram-hint { font-size: 0.8rem; font-style: italic; opacity: 0.5; margin-bottom: 1rem; }
+  .letter-tile.space-tile { width: 10px; background: transparent; border-color: transparent; }
+
+  /* Tom Marvolo Riddle 표시 */
+  .tom-riddle-hint {
+    margin: 0.8rem 0 1rem;
+    padding: 0.8rem 1rem;
+    background: rgba(139,26,26,0.1); border: 1px solid rgba(139,26,26,0.3); border-radius: 3px;
+    font-family: var(--font-d); font-size: 0.75rem; letter-spacing: 0.05em;
+    color: #ff9999; text-align: center;
+  }
+  .tom-riddle-hint span { opacity: 0.5; font-size: 0.55rem; display: block; margin-bottom: 0.3rem; letter-spacing: 0.2em; text-transform: uppercase; }
+
+  .locked-msg { font-style: italic; opacity: 0.5; font-size: 0.85rem; padding: 1rem; text-align: center; }
 
   /* 최종 완료 */
-  .final-done {
-    text-align: center; padding: 2rem 1rem;
+  .final-done-banner {
+    text-align: center; padding: 2.5rem 1rem;
     background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.3);
-    border-radius: 4px; margin-top: 2rem;
+    border-radius: 4px; margin-top: 1.5rem;
   }
-  .final-done h2 { font-family: var(--font-d); font-size: 1.4rem; color: var(--gold-lt); margin-bottom: 0.5rem; }
-  .final-done p { font-style: italic; opacity: 0.7; font-size: 0.9rem; }
-
-  .section-divider { height: 1px; background: linear-gradient(90deg,transparent,rgba(212,175,55,0.2),transparent); margin: 1.5rem 0; }
+  .final-done-banner h2 { font-family: var(--font-d); font-size: 1.3rem; color: var(--gold-lt); margin-bottom: 0.5rem; }
 </style>
 </head>
 <body>
@@ -159,9 +161,7 @@
     <div class="team-name" id="teamName">팀 이름</div>
     <div class="house-tag" id="houseName">기숙사</div>
   </div>
-  <div>
-    <a href="scoreboard.html" style="font-family:var(--font-d);font-size:0.65rem;letter-spacing:0.1em;color:var(--gold);opacity:0.5;text-decoration:none;text-transform:uppercase">점수판 →</a>
-  </div>
+  <a href="scoreboard.html" style="font-family:var(--font-d);font-size:0.6rem;letter-spacing:0.1em;color:var(--gold);opacity:0.45;text-decoration:none;text-transform:uppercase">점수판 →</a>
 </header>
 
 <div class="timer-bar">
@@ -213,7 +213,7 @@ Store.getTeamState(TEAM_CODE, ts => {
   }
 });
 
-// ── 실시간 상태 구독 ────────────────────────────────────────
+// ── 실시간 구독 ─────────────────────────────────────────────
 Store.onTeamState(TEAM_CODE, ts => {
   renderProgress(ts);
   renderMain(ts);
@@ -221,172 +221,137 @@ Store.onTeamState(TEAM_CODE, ts => {
 
 // ── 진행 트랙 ───────────────────────────────────────────────
 function renderProgress(ts) {
-  const stations = GAME_CONFIG.stations;
   let html = '';
-  stations.forEach((st, i) => {
+  GAME_CONFIG.stations.forEach((st, i) => {
     const done = ts?.stations?.[st.id]?.completed;
     if (i > 0) html += `<div class="progress-line"></div>`;
-    html += `<div class="progress-pip ${done ? 'done' : 'locked'}">${done ? '✓' : i+1}</div>`;
+    html += `<div class="progress-pip ${done ? 'done' : ''}">${done ? '✓' : i+1}</div>`;
   });
   document.getElementById('progressTrack').innerHTML = html;
 }
 
 // ── 메인 렌더 ───────────────────────────────────────────────
 function renderMain(ts) {
-  const stations = GAME_CONFIG.stations;
   const completedIds = new Set(
     Object.entries(ts?.stations || {}).filter(([,v]) => v.completed).map(([k]) => Number(k))
   );
   const allSixDone = [1,2,3,4,5,6].every(id => completedIds.has(id));
   const finalDone = completedIds.has(7);
 
-  let html = '';
-
   if (finalDone) {
-    html = `<div class="final-done">
-      <div style="font-size:3rem;margin-bottom:1rem">🏆</div>
-      <h2>호크룩스를 모두 파괴했습니다!</h2>
-      <p style="margin-top:0.8rem;font-family:var(--font-d);font-size:0.9rem;color:var(--gold)">볼드모트는 무너졌다.</p>
-    </div>`;
-    document.getElementById('mainContent').innerHTML = html;
+    document.getElementById('mainContent').innerHTML = `
+      <div class="final-done-banner">
+        <div style="font-size:3.5rem;margin-bottom:1rem">🏆</div>
+        <h2>볼드모트를 무찔렀습니다!</h2>
+        <p style="font-family:var(--font-d);font-size:0.75rem;color:var(--gold);margin-top:0.8rem;letter-spacing:0.1em">SAENURI UNPLUGGED CONFERENCE</p>
+      </div>`;
     return;
   }
 
-  // 1~6 호크룩스 카드
-  stations.slice(0, 6).forEach((st, idx) => {
-    const done = completedIds.has(st.id);
-    const isFirst = st.id === 1;
+  let html = '';
 
-    if (isFirst) {
-      // 1번: 자동완료, 정답 단어만 표시
-      html += `<div class="horcrux-card auto-done">
-        <div class="card-header">
-          <div class="horcrux-img">${st.emoji || '📔'}</div>
-          <div class="card-meta">
-            <div class="card-riddle-num">${st.riddleNum}</div>
-            <div class="card-title">${st.title}</div>
-          </div>
-          <div class="card-status"><span class="status-badge badge-auto">✓ 완료</span></div>
-        </div>
-        <div class="card-answer">
-          <div class="answer-label">해독된 단어</div>
-          <div class="answer-word">${st.answerWord}</div>
-        </div>
-      </div>`;
-      return;
-    }
+  // 1~6번 카드
+  GAME_CONFIG.stations.slice(0, 6).forEach(st => {
+    const done = completedIds.has(st.id);
 
     if (done) {
+      const imgHtml = st.image
+        ? `<div class="horcrux-img-wrap"><img src="${st.image}" onload="this.classList.add('loaded')"><span style="position:absolute">${st.emoji}</span></div>`
+        : `<div class="horcrux-emoji">${st.emoji}</div>`;
       html += `<div class="horcrux-card done">
         <div class="card-header">
-          <div class="horcrux-img">${st.emoji || '💎'}${st.image ? `<img src="${st.image}" onload="this.classList.add('loaded')">` : ''}</div>
+          ${imgHtml}
           <div class="card-meta">
             <div class="card-riddle-num">${st.riddleNum}</div>
             <div class="card-title">${st.title}</div>
           </div>
-          <div class="card-status"><span class="status-badge badge-done">✓ 파괴됨</span></div>
+          <span class="status-badge badge-done">✓ 파괴됨</span>
         </div>
-        <div class="card-answer">
-          <div class="answer-label">해독된 단어</div>
-          <div class="answer-word">${st.answerWord}</div>
+        <div class="card-hint-reveal">
+          <div class="hint-reveal-label">해독된 단어</div>
+          <div class="hint-reveal-word">${st.hint}</div>
         </div>
       </div>`;
       return;
     }
 
-    // 미완료
-    html += `<div class="horcrux-card active" id="card-${st.id}">
+    // 미완료 (활성)
+    const imgHtml = st.image
+      ? `<div class="horcrux-img-wrap"><img src="${st.image}" onload="this.classList.add('loaded')"><span style="position:absolute">${st.emoji}</span></div>`
+      : `<div class="horcrux-emoji">${st.emoji}</div>`;
+    const m = st.missions?.[0] || {};
+    html += `<div class="horcrux-card active">
       <div class="card-header">
-        <div class="horcrux-img">${st.emoji || '💎'}${st.image ? `<img src="${st.image}" onload="this.classList.add('loaded')">` : ''}</div>
+        ${imgHtml}
         <div class="card-meta">
           <div class="card-riddle-num">${st.riddleNum}</div>
           <div class="card-title">${st.title}</div>
         </div>
-        <div class="card-status"><span class="status-badge badge-active">진행 중</span></div>
+        <span class="status-badge badge-active">진행 중</span>
       </div>
       <div class="card-body">
-        ${renderMission(st)}
+        ${m.question ? `<div class="mission-label">수수께끼</div><p class="mission-q">${m.question}</p>` : ''}
+        ${m.hint ? `<button class="hint-toggle" onclick="toggleHint(this)">💡 힌트 보기</button><p class="hint-text">${m.hint}</p>` : ''}
+        <input type="text" id="quiz-${st.id}" placeholder="정답 입력" autocomplete="off" inputmode="numeric">
+        <button class="btn btn-gold" onclick="submitQuiz(${st.id})">호크룩스 파괴 ⚡</button>
+        <p class="error-msg" id="err-${st.id}"></p>
       </div>
     </div>`;
   });
 
-  // 7번 anagram 섹션
-  const finalStation = stations[6];
+  // 7번 최종 섹션
+  const finalSt = GAME_CONFIG.stations[6];
   if (allSixDone) {
-    const letters = buildLetterPool(ts);
-    html += `<div class="section-divider"></div>
-    <div class="anagram-section" id="anagramSection">
-      <div class="anagram-title">최후의 호크룩스</div>
-      <div class="anagram-subtitle">${finalStation.title}</div>
-      <div class="mission-label">해독된 알파벳</div>
-      <div class="letter-pool">${letters}</div>
-      <p class="anagram-hint">위 알파벳을 조합해 정답을 맞춰라</p>
-      <input type="text" id="finalInput" placeholder="정답을 입력하세요" autocomplete="off">
-      <button class="btn btn-gold btn-block" onclick="submitFinal()">볼드모트를 무찔러라 ⚡</button>
-      <p class="error-msg" id="finalErr"></p>
+    const letters = buildLetterPool();
+    html += `<div class="final-section">
+      <div class="final-header">
+        <div class="final-riddle-num">${finalSt.riddleNum}</div>
+        <div class="final-title">${finalSt.emoji} ${finalSt.title}</div>
+      </div>
+      <div class="final-body">
+        <div class="letter-pool-label">해독된 알파벳</div>
+        <div class="letter-pool">${letters}</div>
+        <div class="tom-riddle-hint">
+          <span>아나그램 힌트</span>
+          Tom Marvolo Riddle
+        </div>
+        <input type="text" id="finalInput" placeholder="정답 입력 (대소문자 구분)" autocomplete="off">
+        <button class="btn btn-gold" onclick="submitFinal()">볼드모트를 무찔러라 ⚡</button>
+        <p class="error-msg" id="finalErr"></p>
+      </div>
     </div>`;
   } else {
     const remaining = [1,2,3,4,5,6].filter(id => !completedIds.has(id)).length;
-    html += `<div class="section-divider"></div>
-    <div class="anagram-section" style="opacity:0.3;pointer-events:none">
-      <div class="anagram-title">최후의 호크룩스</div>
-      <div class="anagram-subtitle">${finalStation.title}</div>
-      <p style="font-style:italic;opacity:0.7;font-size:0.85rem">호크룩스 ${remaining}개를 더 파괴해야 잠금이 해제됩니다</p>
+    html += `<div class="final-section locked">
+      <div class="final-header">
+        <div class="final-riddle-num">${finalSt.riddleNum}</div>
+        <div class="final-title">${finalSt.emoji} ${finalSt.title}</div>
+      </div>
+      <div class="final-body">
+        <p class="locked-msg">🔒 호크룩스 ${remaining}개를 더 파괴해야 잠금이 해제됩니다</p>
+      </div>
     </div>`;
   }
 
   document.getElementById('mainContent').innerHTML = html;
 }
 
-// ── 알파벳 풀 생성 ──────────────────────────────────────────
-function buildLetterPool(ts) {
-  const stations = GAME_CONFIG.stations;
-  // 2~6번 answerWord 모아서 셔플
-  let letters = [];
-  stations.slice(1, 6).forEach(st => {
-    if (st.answerWord) {
-      st.answerWord.split('').forEach(ch => letters.push(ch));
-    }
-  });
-  // Fisher-Yates shuffle (팀 코드 기반 시드로 일관성 유지)
-  const seed = TEAM_CODE.split('').reduce((a,c) => a + c.charCodeAt(0), 0);
+// ── 알파벳 풀 (힌트 단어들 셔플) ───────────────────────────
+function buildLetterPool() {
+  const hints = GAME_CONFIG.stations.slice(0, 6).map(s => s.hint).join('');
+  let letters = hints.split('');
+  // 시드 기반 셔플 (팀마다 다르게)
+  const seed = TEAM_CODE.split('').reduce((a,c) => a + c.charCodeAt(0), 42);
   for (let i = letters.length - 1; i > 0; i--) {
-    const j = (seed * (i + 1)) % (i + 1);
+    const j = Math.abs((seed * 31 + i * 17) % (i + 1));
     [letters[i], letters[j]] = [letters[j], letters[i]];
   }
   return letters.map(ch =>
-    ch === ' ' ? `<div class="letter-tile space"></div>` : `<div class="letter-tile">${ch}</div>`
+    `<div class="letter-tile">${ch}</div>`
   ).join('');
 }
 
-// ── 미션 렌더 ───────────────────────────────────────────────
-function renderMission(station) {
-  const m = station.missions?.[0];
-  if (!m) return '<p style="opacity:0.5;font-style:italic;padding:1rem 0">미션 준비 중...</p>';
-
-  if (station.type === 'quiz') {
-    return `<div class="mission-label">수수께끼</div>
-      <p class="mission-q">${m.question}</p>
-      ${m.hint ? `<button class="hint-toggle" onclick="toggleHint(this)">💡 힌트 보기</button><p class="hint-text">${m.hint}</p>` : ''}
-      <input type="text" id="quiz-${station.id}" placeholder="정답을 입력하세요" autocomplete="off">
-      <button class="btn btn-gold btn-block" onclick="submitQuiz(${station.id})">호크룩스 파괴 ⚡</button>
-      <p class="error-msg" id="err-${station.id}"></p>`;
-  }
-  if (station.type === 'photo') {
-    return `<div class="mission-label">미션</div>
-      <p class="mission-q">${m.instruction}</p>
-      <div style="border:2px dashed rgba(212,175,55,0.25);border-radius:4px;padding:2rem;text-align:center;position:relative;margin-bottom:0.8rem">
-        <input type="file" id="photo-${station.id}" accept="image/*" capture="environment" onchange="previewPhoto(this,${station.id})" style="position:absolute;inset:0;opacity:0;cursor:pointer">
-        <div style="font-size:2rem;margin-bottom:0.5rem">📸</div>
-        <p style="font-size:0.85rem;opacity:0.5">눌러서 사진 촬영</p>
-      </div>
-      <img id="preview-${station.id}" src="" style="width:100%;border-radius:4px;margin-bottom:0.8rem;display:none;max-height:200px;object-fit:cover">
-      <button class="btn btn-gold btn-block" id="photoBtn-${station.id}" onclick="submitPhoto(${station.id})" disabled style="opacity:0.4">사진 제출</button>`;
-  }
-  return '';
-}
-
-// ── 미션 핸들러 ─────────────────────────────────────────────
+// ── 핸들러 ──────────────────────────────────────────────────
 function toggleHint(btn) {
   const hint = btn.nextElementSibling;
   hint.classList.toggle('visible');
@@ -398,30 +363,11 @@ function submitQuiz(stationId) {
   const err = document.getElementById(`err-${stationId}`);
   if (!val) { if(err) err.textContent = '정답을 입력해 주세요.'; return; }
   const station = GAME_CONFIG.stations.find(s => s.id === stationId);
-  const correct = station.missions?.[0]?.answer;
-  const norm = s => s.replace(/\s/g,'').toLowerCase();
-  if (norm(val) === norm(correct)) {
+  if (val === station.answer) {
     Store.completeStation(TEAM_CODE, stationId, station.maxScore);
   } else {
     if(err) err.textContent = '틀렸습니다. 다시 시도해 보세요.';
   }
-}
-
-function previewPhoto(input, stationId) {
-  const file = input.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = document.getElementById(`preview-${stationId}`);
-    img.src = e.target.result; img.style.display = 'block';
-    const btn = document.getElementById(`photoBtn-${stationId}`);
-    btn.disabled = false; btn.style.opacity = '1';
-  };
-  reader.readAsDataURL(file);
-}
-
-function submitPhoto(stationId) {
-  const station = GAME_CONFIG.stations.find(s => s.id === stationId);
-  Store.completeStation(TEAM_CODE, stationId, station.maxScore);
 }
 
 function submitFinal() {
@@ -429,12 +375,10 @@ function submitFinal() {
   const err = document.getElementById('finalErr');
   if (!val) { if(err) err.textContent = '정답을 입력해 주세요.'; return; }
   const finalStation = GAME_CONFIG.stations[6];
-  const correct = finalStation.missions?.[0]?.answer;
-  // 대소문자 구분해서 체크
-  if (val === correct) {
+  if (val === finalStation.answer) {
     Store.completeStation(TEAM_CODE, 7, finalStation.maxScore);
   } else {
-    if(err) err.textContent = '틀렸습니다. 알파벳을 다시 조합해 보세요.';
+    if(err) err.textContent = '틀렸습니다. 대소문자를 확인하세요.';
   }
 }
 </script>

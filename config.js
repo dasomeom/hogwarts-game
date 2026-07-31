@@ -15,7 +15,6 @@ const FIREBASE_CONFIG = {
   databaseURL: "https://unpl-2026-default-rtdb.firebaseio.com",
 };
 
-
 const GAME_CONFIG = {
   gameName: "호그와트 챌린지 2026",
   totalMinutes: 80,
@@ -28,6 +27,7 @@ const GAME_CONFIG = {
     { id: "hufflepuff", name: "후플푸프",   color: "#ECB939", accent: "#60605B", emoji: "🦡" },
   ],
  
+  // ← 소소가 이미 수정한 팀 목록 유지
   teams: {
     "GRIFFIN-1": { name: "그리핀도르 1팀", house: "gryffindor", displayName: "🦁 그리핀도르 1" },
     "GRIFFIN-2": { name: "그리핀도르 2팀", house: "gryffindor", displayName: "🦁 그리핀도르 2" },
@@ -55,17 +55,18 @@ const GAME_CONFIG = {
     "HUFFL-6":   { name: "후플푸프 6팀",   house: "hufflepuff", displayName: "🦡 후플푸프 6" },
   },
  
-  // ── 호크룩스 스테이션 (7개) ──────────────────────────────
+  // ── 호크룩스 스테이션 ────────────────────────────────────
   stations: [
     {
       id: 1,
       riddleNum: "1ST HORCRUX RIDDLE",
       title: "TOM RIDDLE'S DIARY",
       emoji: "📔",
-      image: "",           // 나중에 이미지 경로 추가
-      type: "auto",        // 팀 코드 입력시 자동 완료
+      image: "",
+      type: "auto",
       maxScore: 100,
-      answerWord: "",      // ← 1번 정답 단어 입력
+      answer: "7154",
+      hint: "glUe",
       missions: []
     },
     {
@@ -76,13 +77,10 @@ const GAME_CONFIG = {
       image: "",
       type: "quiz",
       maxScore: 100,
-      answerWord: "",      // ← 2번 정답 단어 입력
+      answer: "7183",
+      hint: "force",
       missions: [
-        {
-          question: "",    // ← 문제 입력
-          answer: "",      // ← 정답 입력
-          hint: "",
-        }
+        { question: "", hint: "" }
       ]
     },
     {
@@ -93,9 +91,10 @@ const GAME_CONFIG = {
       image: "",
       type: "quiz",
       maxScore: 100,
-      answerWord: "",
+      answer: "2572",
+      hint: "rinSe",
       missions: [
-        { question: "", answer: "", hint: "" }
+        { question: "", hint: "" }
       ]
     },
     {
@@ -106,9 +105,10 @@ const GAME_CONFIG = {
       image: "",
       type: "quiz",
       maxScore: 100,
-      answerWord: "",
+      answer: "2106",
+      hint: "pun",
       missions: [
-        { question: "", answer: "", hint: "" }
+        { question: "", hint: "" }
       ]
     },
     {
@@ -119,9 +119,10 @@ const GAME_CONFIG = {
       image: "",
       type: "quiz",
       maxScore: 100,
-      answerWord: "",
+      answer: "1517",
+      hint: "nudge",
       missions: [
-        { question: "", answer: "", hint: "" }
+        { question: "", hint: "" }
       ]
     },
     {
@@ -132,9 +133,10 @@ const GAME_CONFIG = {
       image: "",
       type: "quiz",
       maxScore: 100,
-      answerWord: "",
+      answer: "1245",
+      hint: "Cane",
       missions: [
-        { question: "", answer: "", hint: "" }
+        { question: "", hint: "" }
       ]
     },
     {
@@ -143,16 +145,11 @@ const GAME_CONFIG = {
       title: "HARRY POTTER",
       emoji: "⚡",
       image: "",
-      type: "quiz",
-      maxScore: 200,       // 최종 문제 배점 높게
-      answerWord: "",
-      missions: [
-        {
-          question: "6개의 호크룩스에서 해독한 알파벳을 조합하여 정답을 맞춰라.",
-          answer: "Saenuri Unplugged Conference",  // 대소문자 구분
-          hint: "",
-        }
-      ]
+      type: "final",
+      maxScore: 200,
+      answer: "Saenuri Unplugged Conference",
+      hint: "",
+      missions: []
     },
   ],
  
