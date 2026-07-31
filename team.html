@@ -192,6 +192,10 @@
 
   @media(prefers-reduced-motion:reduce){.station-card,.btn{transition:none;}}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="config.js"></script>
+<script src="store.js"></script>
 </head>
 <body>
 <header>
@@ -217,10 +221,6 @@
   <!-- JS로 렌더링 -->
 </main>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="config.js"></script>
-<script src="store.js"></script>
 <script>
 // ── 팀 확인 ────────────────────────────────────────────────
 const TEAM_CODE = sessionStorage.getItem('hg_team');
