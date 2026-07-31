@@ -2,6 +2,10 @@
 // STORE — localStorage 기반 게임 상태 관리
 // ============================================================
 
+// Firebase 초기화
+firebase.initializeApp(FIREBASE_CONFIG);
+const db = firebase.database();
+
 const STORE_KEY = "hg_state";
 const GAME_START_KEY = "hg_start";
 
