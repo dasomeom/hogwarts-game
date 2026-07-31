@@ -14,7 +14,6 @@
   }
   body { background: var(--deep); color: var(--parchment); font-family: var(--font-b); min-height: 100vh; }
 
-  /* ── 헤더 ── */
   header {
     background: linear-gradient(180deg, #1A0E04 0%, #0D0800 100%);
     border-bottom: 1px solid rgba(212,175,55,0.2);
@@ -24,52 +23,33 @@
   .team-id { font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; }
   .team-name { font-family: var(--font-d); font-size: 1.1rem; font-weight: 700; color: var(--gold-lt); }
   .house-tag { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.15em; color: var(--parchment); opacity: 0.6; }
+  .score-label { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.15em; color: var(--gold); opacity: 0.7; text-transform: uppercase; }
+  .score-num { font-family: var(--font-d); font-size: 2rem; font-weight: 700; color: var(--gold-lt); }
 
-  /* ── 타이머 배너 ── */
   .timer-bar {
-    background: rgba(0,0,0,0.6);
-    border-bottom: 1px solid rgba(212,175,55,0.1);
-    padding: 0.6rem 1.5rem;
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(212,175,55,0.1);
+    padding: 0.6rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
   }
   #gameStatus { font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--gold); opacity: 0.7; text-transform: uppercase; }
-  #timerDisplay {
-    font-family: var(--font-d); font-size: 1.8rem; font-weight: 700;
-    color: var(--gold-lt); letter-spacing: 0.05em;
-    text-shadow: 0 0 20px rgba(212,175,55,0.5);
-    min-width: 80px; text-align: right;
-  }
+  #timerDisplay { font-family: var(--font-d); font-size: 1.8rem; font-weight: 700; color: var(--gold-lt); text-shadow: 0 0 20px rgba(212,175,55,0.5); }
   #timerDisplay.urgent { color: #ff6b6b; animation: pulse 1s ease-in-out infinite; }
-  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-  /* ── 진행 상태 ── */
-  .progress-track {
-    padding: 1.2rem 1.5rem 0.5rem;
-    display: flex; gap: 0.5rem;
-  }
-  .progress-step {
-    flex: 1; height: 4px; border-radius: 2px;
-    background: rgba(255,255,255,0.08);
-    transition: background 0.4s;
-  }
+  .progress-track { padding: 1.2rem 1.5rem 0.5rem; display: flex; gap: 0.5rem; }
+  .progress-step { flex: 1; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08); transition: background 0.4s; }
   .progress-step.done { background: var(--gold); }
   .progress-step.active { background: rgba(212,175,55,0.5); }
 
-  /* ── 메인 콘텐츠 ── */
-  main { padding: 1rem 1.5rem 5rem; max-width: 600px; margin: 0 auto; }
+  main { padding: 1rem 1.5rem 6rem; max-width: 600px; margin: 0 auto; }
 
-  /* ── 스테이션 카드 ── */
   .station-card {
     background: linear-gradient(160deg, #1E1408, #120C04);
-    border: 1px solid rgba(212,175,55,0.18);
-    border-radius: 4px;
-    padding: 1.8rem 1.5rem;
-    margin-bottom: 1.5rem;
-    transition: border-color 0.3s;
+    border: 1px solid rgba(212,175,55,0.18); border-radius: 4px;
+    padding: 1.8rem 1.5rem; margin-bottom: 1.5rem; transition: border-color 0.3s;
   }
   .station-card.active { border-color: rgba(212,175,55,0.5); box-shadow: 0 0 20px rgba(212,175,55,0.08); }
   .station-card.done { border-color: rgba(100,200,100,0.3); opacity: 0.7; }
-  .station-card.locked { opacity: 0.4; pointer-events: none; }
+  .station-card.locked { opacity: 0.35; pointer-events: none; }
 
   .station-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
   .station-emoji { font-size: 2rem; line-height: 1; }
@@ -77,127 +57,92 @@
   .station-num { font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.2em; color: var(--gold); opacity: 0.6; text-transform: uppercase; }
   .station-name { font-family: var(--font-d); font-size: 1.15rem; font-weight: 700; color: var(--gold-lt); margin: 0.1rem 0; }
   .station-loc { font-size: 0.85rem; color: var(--parchment); opacity: 0.6; font-style: italic; }
-  .station-badge {
-    font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.12em;
-    padding: 0.3rem 0.7rem; border-radius: 2px; text-transform: uppercase;
-    border: 1px solid;
-  }
+  .station-badge { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.12em; padding: 0.3rem 0.7rem; border-radius: 2px; text-transform: uppercase; border: 1px solid; white-space: nowrap; }
   .badge-active { background: rgba(212,175,55,0.1); border-color: var(--gold); color: var(--gold); }
   .badge-done { background: rgba(80,180,80,0.1); border-color: #5cb85c; color: #5cb85c; }
   .badge-next { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.4); }
 
-  .station-desc { font-size: 0.95rem; line-height: 1.6; color: var(--parchment); opacity: 0.8; margin-bottom: 1.2rem; }
-
-  /* ── 미션 입력 영역 ── */
+  .station-desc { font-size: 0.95rem; line-height: 1.6; opacity: 0.8; margin-bottom: 1.2rem; }
   .mission-area { border-top: 1px solid rgba(212,175,55,0.12); padding-top: 1.2rem; }
   .mission-label { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.18em; color: var(--gold); opacity: 0.7; text-transform: uppercase; margin-bottom: 0.5rem; }
   .mission-q { font-size: 1rem; font-style: italic; line-height: 1.5; margin-bottom: 1rem; }
 
   input[type="text"], textarea {
-    width: 100%;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(212,175,55,0.25);
-    border-radius: 3px;
-    padding: 0.8rem 1rem;
-    color: var(--parchment);
-    font-family: var(--font-b);
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 0.8rem;
-    resize: vertical;
+    width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.25);
+    border-radius: 3px; padding: 0.8rem 1rem; color: var(--parchment);
+    font-family: var(--font-b); font-size: 1rem; outline: none; transition: border-color 0.2s; margin-bottom: 0.8rem;
   }
-  input[type="text"]:focus, textarea:focus { border-color: var(--gold); }
+  input[type="text"]:focus { border-color: var(--gold); }
 
-  .hint-toggle {
-    font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.1em;
-    color: var(--gold); opacity: 0.5; cursor: pointer; text-transform: uppercase;
-    background: none; border: none; padding: 0; margin-bottom: 0.5rem;
-    transition: opacity 0.2s;
-  }
+  .hint-toggle { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.1em; color: var(--gold); opacity: 0.5; cursor: pointer; text-transform: uppercase; background: none; border: none; padding: 0; margin-bottom: 0.5rem; transition: opacity 0.2s; display: block; }
   .hint-toggle:hover { opacity: 0.9; }
-  .hint-text { font-style: italic; font-size: 0.85rem; color: var(--parchment); opacity: 0.5; margin-bottom: 0.8rem; display: none; }
+  .hint-text { font-style: italic; font-size: 0.85rem; opacity: 0.5; margin-bottom: 0.8rem; display: none; }
   .hint-text.visible { display: block; }
 
-  /* ── 버튼 ── */
-  .btn {
-    font-family: var(--font-d); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
-    border: none; border-radius: 3px; padding: 0.8rem 1.5rem; cursor: pointer; transition: filter 0.2s;
-    display: inline-block; text-align: center;
-  }
+  .btn { font-family: var(--font-d); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; border: none; border-radius: 3px; padding: 0.8rem 1.5rem; cursor: pointer; transition: filter 0.2s; display: inline-block; text-align: center; }
   .btn:hover { filter: brightness(1.15); }
   .btn-gold { background: linear-gradient(135deg, #8B6914, #C49A2A, #8B6914); color: var(--ink); font-weight: 700; }
   .btn-ghost { background: transparent; border: 1px solid rgba(212,175,55,0.3); color: var(--gold); }
-  .btn-sm { padding: 0.5rem 1rem; font-size: 0.65rem; }
   .btn-block { width: 100%; }
 
-  /* ── 사진 업로드 ── */
-  .photo-drop {
-    border: 2px dashed rgba(212,175,55,0.25);
-    border-radius: 4px; padding: 2rem 1rem;
-    text-align: center; cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    margin-bottom: 0.8rem; position: relative;
-  }
-  .photo-drop:hover { border-color: var(--gold); background: rgba(212,175,55,0.04); }
+  .photo-drop { border: 2px dashed rgba(212,175,55,0.25); border-radius: 4px; padding: 2rem 1rem; text-align: center; cursor: pointer; transition: border-color 0.2s; margin-bottom: 0.8rem; position: relative; }
+  .photo-drop:hover { border-color: var(--gold); }
   .photo-drop input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; margin: 0; }
   .photo-drop p { font-size: 0.85rem; opacity: 0.5; }
   .photo-drop .drop-icon { font-size: 2rem; margin-bottom: 0.5rem; }
   #photoPreview { width: 100%; border-radius: 4px; margin-bottom: 0.8rem; display: none; max-height: 220px; object-fit: cover; }
 
-  /* ── 음성 ── */
   .voice-area { text-align: center; padding: 1rem 0; }
-  .spell-display {
-    font-family: var(--font-d); font-size: 1.6rem; color: var(--gold-lt);
-    text-shadow: 0 0 20px rgba(212,175,55,0.5); margin-bottom: 0.3rem;
-  }
+  .spell-display { font-family: var(--font-d); font-size: 1.6rem; color: var(--gold-lt); text-shadow: 0 0 20px rgba(212,175,55,0.5); margin-bottom: 0.3rem; }
   .spell-phonetic { font-style: italic; opacity: 0.6; font-size: 0.9rem; margin-bottom: 1.5rem; }
-  #micBtn {
-    width: 72px; height: 72px; border-radius: 50%;
-    background: radial-gradient(circle, #8B1A1A, #500000);
-    border: 2px solid rgba(212,175,55,0.4); cursor: pointer;
-    font-size: 2rem; line-height: 1; transition: transform 0.1s, box-shadow 0.2s;
-    display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;
-  }
-  #micBtn:hover { box-shadow: 0 0 20px rgba(139,26,26,0.6); }
+  #micBtn { width: 72px; height: 72px; border-radius: 50%; background: radial-gradient(circle, #8B1A1A, #500000); border: 2px solid rgba(212,175,55,0.4); cursor: pointer; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; transition: box-shadow 0.2s; }
   #micBtn.listening { animation: glow-red 1s ease-in-out infinite; }
-  @keyframes glow-red { 0%,100% { box-shadow: 0 0 10px rgba(139,26,26,0.4); } 50% { box-shadow: 0 0 30px rgba(200,50,50,0.8); } }
-  #voiceResult { min-height: 1.5rem; font-size: 0.9rem; font-style: italic; opacity: 0.7; }
-  #voiceScore { font-family: var(--font-d); font-size: 1.8rem; color: var(--gold); margin: 0.5rem 0; }
+  @keyframes glow-red { 0%,100%{box-shadow:0 0 10px rgba(139,26,26,0.4)} 50%{box-shadow:0 0 30px rgba(200,50,50,0.8)} }
 
-  /* ── 완료 상태 ── */
-  .done-banner {
-    text-align: center; padding: 1.5rem;
-    background: rgba(80,180,80,0.06);
-    border: 1px solid rgba(80,180,80,0.2);
-    border-radius: 4px;
-  }
+  .done-banner { text-align: center; padding: 1.5rem; background: rgba(80,180,80,0.06); border: 1px solid rgba(80,180,80,0.2); border-radius: 4px; }
   .done-banner .score-earned { font-family: var(--font-d); font-size: 2rem; color: var(--gold-lt); }
-  .done-banner p { font-size: 0.85rem; opacity: 0.6; margin-top: 0.3rem; }
 
-  /* ── 팀 점수 요약 ── */
-  .score-summary {
-    background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.15);
-    border-radius: 4px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .score-label { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.15em; color: var(--gold); opacity: 0.7; text-transform: uppercase; }
-  .score-num { font-family: var(--font-d); font-size: 2rem; font-weight: 700; color: var(--gold-lt); }
+  .score-summary { background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.15); border-radius: 4px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+  .section-label { font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.2em; color: var(--gold); opacity: 0.5; text-transform: uppercase; margin: 2rem 0 1rem; }
+  .error-msg { color: #ff6b6b; font-style: italic; font-size: 0.85rem; min-height: 1.2em; margin-top: 0.5rem; }
 
-  /* ── 섹션 라벨 ── */
-  .section-label {
-    font-family: var(--font-d); font-size: 0.65rem; letter-spacing: 0.2em;
-    color: var(--gold); opacity: 0.5; text-transform: uppercase; margin: 2rem 0 1rem;
-  }
+  /* 배틀 */
+  .battle-btn-wrap { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 10; }
+  .battle-fab { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #8B1A1A, #C0392B); border: 2px solid rgba(212,175,55,0.4); color: white; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(139,26,26,0.5); }
+  .battle-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 20; display: none; align-items: center; justify-content: center; padding: 1rem; }
+  .battle-modal.open { display: flex; }
+  .battle-box { background: #1E1408; border: 1px solid rgba(212,175,55,0.3); border-radius: 4px; padding: 2rem; width: 100%; max-width: 380px; }
+  .battle-box h2 { font-family: var(--font-d); font-size: 1rem; color: var(--gold); text-align: center; margin-bottom: 1.5rem; letter-spacing: 0.15em; }
+  .spell-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+  .spell-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.2); border-radius: 3px; padding: 0.8rem; cursor: pointer; text-align: center; transition: all 0.2s; color: var(--parchment); font-family: var(--font-b); }
+  .spell-btn:hover { border-color: var(--gold); background: rgba(212,175,55,0.08); }
+  .spell-btn.selected { border-color: var(--gold); background: rgba(212,175,55,0.15); }
+  .spell-btn .spell-emoji { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; }
+  .spell-btn .spell-name { font-size: 0.75rem; }
+  .battle-result { text-align: center; padding: 1.5rem 0; }
+  .battle-result .result-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+  .battle-result h3 { font-family: var(--font-d); font-size: 1.2rem; color: var(--gold-lt); margin-bottom: 0.5rem; }
 
-  @media(prefers-reduced-motion:reduce){.station-card,.btn{transition:none;}}
+  /* 배틀 알림 */
+  .battle-alert { position: fixed; top: 0; left: 0; right: 0; background: #8B1A1A; padding: 1rem 1.5rem; z-index: 30; display: none; align-items: center; justify-content: space-between; gap: 1rem; }
+  .battle-alert.show { display: flex; }
+  .battle-alert p { font-family: var(--font-d); font-size: 0.8rem; color: white; }
+  .alert-btns { display: flex; gap: 0.5rem; }
+  .btn-accept { background: #27ae60; color: white; font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.1em; border: none; border-radius: 3px; padding: 0.5rem 1rem; cursor: pointer; }
+  .btn-decline { background: rgba(255,255,255,0.2); color: white; font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.1em; border: none; border-radius: 3px; padding: 0.5rem 1rem; cursor: pointer; }
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="config.js"></script>
-<script src="store.js"></script>
 </head>
 <body>
+
+<!-- 배틀 알림 배너 -->
+<div class="battle-alert" id="battleAlert">
+  <p id="battleAlertText">배틀 신청이 왔습니다!</p>
+  <div class="alert-btns">
+    <button class="btn-accept" id="acceptBtn">수락 ⚔️</button>
+    <button class="btn-decline" id="declineBtn">거절</button>
+  </div>
+</div>
+
 <header>
   <div>
     <div class="team-id" id="teamCode">—</div>
@@ -217,223 +162,221 @@
 
 <div class="progress-track" id="progressTrack"></div>
 
-<main id="mainContent">
-  <!-- JS로 렌더링 -->
-</main>
+<main id="mainContent"></main>
 
+<!-- 배틀 FAB -->
+<div class="battle-btn-wrap">
+  <button class="battle-fab" onclick="openBattleModal()" title="배틀 신청">⚔️</button>
+</div>
+
+<!-- 배틀 모달 -->
+<div class="battle-modal" id="battleModal">
+  <div class="battle-box">
+    <h2 id="battleModalTitle">⚔️ 주문 배틀</h2>
+    <div id="battleModalContent"></div>
+    <button class="btn btn-ghost btn-block" style="margin-top:1rem" onclick="closeBattleModal()">닫기</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="config.js"></script>
+<script src="store.js"></script>
 <script>
-// ── 팀 확인 ────────────────────────────────────────────────
 const TEAM_CODE = sessionStorage.getItem('hg_team');
-if (!TEAM_CODE || !GAME_CONFIG.teams[TEAM_CODE]) {
-  window.location.href = 'index.html';
-}
+if (!TEAM_CODE || !GAME_CONFIG.teams[TEAM_CODE]) window.location.href = 'index.html';
+
 const TEAM = GAME_CONFIG.teams[TEAM_CODE];
 const HOUSE = GAME_CONFIG.houses.find(h => h.id === TEAM.house);
-const MY_STATION_ORDER = GAME_CONFIG.stationOrder[TEAM_CODE];
+const MY_ORDER = GAME_CONFIG.stationOrder[TEAM_CODE];
 
-// ── 헤더 렌더 ──────────────────────────────────────────────
 document.getElementById('teamCode').textContent = TEAM_CODE;
 document.getElementById('teamName').textContent = TEAM.displayName;
 document.getElementById('houseName').textContent = HOUSE.emoji + ' ' + HOUSE.name;
 
-// ── 타이머 ─────────────────────────────────────────────────
+// ── 타이머 ──────────────────────────────────────────────────
 let timerInterval;
-function updateTimer() {
-  if (!Store.isGameStarted()) {
-    document.getElementById('gameStatus').textContent = '게임 시작 대기 중…';
-    document.getElementById('timerDisplay').textContent = `${GAME_CONFIG.totalMinutes}:00`;
-    return;
+Store.onGameStarted(started => {
+  if (started) {
+    document.getElementById('gameStatus').textContent = '⚡ 게임 진행 중';
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      Store.getRemainingSeconds(rem => {
+        const m = Math.floor(rem/60), s = Math.floor(rem%60);
+        const el = document.getElementById('timerDisplay');
+        el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        el.classList.toggle('urgent', rem < 300);
+        if (rem <= 0) { document.getElementById('gameStatus').textContent = '🏁 게임 종료'; clearInterval(timerInterval); }
+      });
+    }, 1000);
   }
-  const rem = Store.getRemainingSeconds();
-  const m = Math.floor(rem / 60);
-  const s = Math.floor(rem % 60);
-  const el = document.getElementById('timerDisplay');
-  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  el.classList.toggle('urgent', rem < 300);
-  document.getElementById('gameStatus').textContent = rem > 0 ? '⚡ 게임 진행 중' : '🏁 게임 종료';
-}
+});
 
-// ── 진행 트랙 ──────────────────────────────────────────────
-function renderProgress() {
-  const ts = Store.getTeamState(TEAM_CODE);
-  const track = document.getElementById('progressTrack');
-  track.innerHTML = MY_STATION_ORDER.map((sid, i) => {
-    const done = ts?.stations[sid]?.completed;
-    const cls = done ? 'done' : (i === 0 ? 'active' : '');
-    return `<div class="progress-step ${cls}"></div>`;
+// ── 팀 상태 실시간 구독 ─────────────────────────────────────
+Store.onTeamState(TEAM_CODE, ts => {
+  document.getElementById('headerScore').textContent = ts.total || 0;
+  renderProgress(ts);
+  renderStations(ts);
+});
+
+// ── 진행 트랙 ───────────────────────────────────────────────
+function renderProgress(ts) {
+  document.getElementById('progressTrack').innerHTML = MY_ORDER.map((sid, i) => {
+    const done = ts?.stations?.[sid]?.completed;
+    const currentIdx = getCurrentIdx(ts);
+    return `<div class="progress-step ${done ? 'done' : i === currentIdx ? 'active' : ''}"></div>`;
   }).join('');
 }
 
-// ── 스테이션 렌더 ──────────────────────────────────────────
-function getCurrentStationIndex() {
-  const ts = Store.getTeamState(TEAM_CODE);
-  if (!ts) return 0;
-  for (let i = 0; i < MY_STATION_ORDER.length; i++) {
-    if (!ts.stations[MY_STATION_ORDER[i]]?.completed) return i;
+function getCurrentIdx(ts) {
+  for (let i = 0; i < MY_ORDER.length; i++) {
+    if (!ts?.stations?.[MY_ORDER[i]]?.completed) return i;
   }
-  return MY_STATION_ORDER.length; // all done
+  return MY_ORDER.length;
 }
 
-function renderStations() {
-  const ts = Store.getTeamState(TEAM_CODE);
-  const currentIdx = getCurrentStationIndex();
-  const main = document.getElementById('mainContent');
+// ── 스테이션 렌더 ───────────────────────────────────────────
+function renderStations(ts) {
+  const currentIdx = getCurrentIdx(ts);
+  let html = `<div class="score-summary">
+    <div><div class="score-label">팀 누적 점수</div><div class="score-num">${ts?.total || 0}</div></div>
+    <div style="text-align:right"><div class="score-label">완료</div><div class="score-num">${Object.values(ts?.stations||{}).filter(s=>s.completed).length} / ${MY_ORDER.length}</div></div>
+  </div>`;
 
-  // 팀 점수 요약
-  let html = `
-    <div class="score-summary">
-      <div>
-        <div class="score-label">팀 누적 점수</div>
-        <div class="score-num" id="teamScore">${ts?.total ?? 0}</div>
-      </div>
-      <div style="text-align:right">
-        <div class="score-label">완료한 스테이션</div>
-        <div class="score-num">${Object.values(ts?.stations||{}).filter(s=>s.completed).length} / ${MY_STATION_ORDER.length}</div>
-      </div>
-    </div>
-  `;
-
-  if (currentIdx >= MY_STATION_ORDER.length) {
-    html += `<div class="done-banner">
-      <div style="font-size:3rem;margin-bottom:1rem">🏆</div>
-      <div class="score-earned">${ts?.total ?? 0}점</div>
-      <p>모든 스테이션을 완료했습니다! 점수판을 확인하세요.</p>
-      <a href="scoreboard.html" class="btn btn-gold" style="margin-top:1.2rem;display:inline-block">점수판 보기</a>
-    </div>`;
-    main.innerHTML = html;
+  if (currentIdx >= MY_ORDER.length) {
+    html += `<div class="done-banner"><div style="font-size:3rem;margin-bottom:1rem">🏆</div><div class="score-earned">${ts?.total||0}점</div><p>모든 스테이션 완료!</p><a href="scoreboard.html" class="btn btn-gold" style="margin-top:1.2rem;display:inline-block">점수판 보기</a></div>`;
+    document.getElementById('mainContent').innerHTML = html;
     return;
   }
 
   html += `<p class="section-label">미션 스테이션</p>`;
-
-  MY_STATION_ORDER.forEach((sid, idx) => {
+  MY_ORDER.forEach((sid, idx) => {
     const station = GAME_CONFIG.stations.find(s => s.id === sid);
-    const done = ts?.stations[sid]?.completed;
+    const done = ts?.stations?.[sid]?.completed;
     const isActive = idx === currentIdx;
-    const isNext = idx === currentIdx + 1;
+    let cardClass = 'station-card' + (done ? ' done' : isActive ? ' active' : ' locked');
+    let badge = done ? '<span class="station-badge badge-done">✓ 완료</span>' : isActive ? '<span class="station-badge badge-active">▶ 현재</span>' : '<span class="station-badge badge-next">대기</span>';
 
-    let cardClass = 'station-card';
-    let badgeHtml = '';
-    if (done) { cardClass += ' done'; badgeHtml = '<span class="station-badge badge-done">✓ 완료</span>'; }
-    else if (isActive) { cardClass += ' active'; badgeHtml = '<span class="station-badge badge-active">▶ 현재</span>'; }
-    else if (isNext) { badgeHtml = '<span class="station-badge badge-next">다음</span>'; }
-    else { cardClass += ' locked'; badgeHtml = '<span class="station-badge badge-next">대기</span>'; }
-
-    html += `<div class="${cardClass}" id="station-${sid}">
+    html += `<div class="${cardClass}">
       <div class="station-header">
         <span class="station-emoji">${station.emoji}</span>
         <div class="station-meta">
-          <div class="station-num">스테이션 ${idx + 1}</div>
+          <div class="station-num">스테이션 ${idx+1}</div>
           <div class="station-name">${station.name}</div>
           <div class="station-loc">📍 ${station.location}</div>
-        </div>
-        ${badgeHtml}
+        </div>${badge}
       </div>
       <p class="station-desc">${station.description}</p>`;
 
     if (done) {
-      const earned = ts.stations[sid].score;
-      html += `<div class="done-banner">
-        <div class="score-earned">+${earned}점</div>
-        <p>미션 완료!</p>
-      </div>`;
+      html += `<div class="done-banner"><div class="score-earned">+${ts.stations[sid].score}점</div><p>미션 완료!</p></div>`;
     } else if (isActive) {
-      html += renderMissionInput(station);
+      html += renderMission(station);
     }
-
     html += `</div>`;
   });
 
-  main.innerHTML = html;
-  document.getElementById('headerScore').textContent = ts?.total ?? 0;
-  attachListeners();
+  document.getElementById('mainContent').innerHTML = html;
 }
 
-// ── 미션 타입별 입력 UI ────────────────────────────────────
-function renderMissionInput(station) {
+function renderMission(station) {
   const m = station.missions?.[0];
-  let out = `<div class="mission-area">`;
-
   if (station.type === 'quiz') {
-    out += `
+    return `<div class="mission-area">
       <div class="mission-label">미션</div>
       <p class="mission-q">${m.question}</p>
       <input type="text" id="quizInput" placeholder="정답을 입력하세요" autocomplete="off">
       <button class="hint-toggle" onclick="toggleHint(this)">💡 힌트 보기</button>
       <p class="hint-text">${m.hint}</p>
       <button class="btn btn-gold btn-block" onclick="submitQuiz(${station.id},'${m.answer}')">정답 제출</button>
-      <p class="error-msg" id="quizErr" style="color:#ff6b6b;font-style:italic;font-size:0.85rem;min-height:1.2em;margin-top:0.5rem"></p>
-    `;
-  } else if (station.type === 'photo') {
-    out += `
+      <p class="error-msg" id="quizErr"></p>
+    </div>`;
+  }
+  if (station.type === 'photo') {
+    return `<div class="mission-area">
       <div class="mission-label">미션</div>
       <p class="mission-q">${m.instruction}</p>
-      <div class="photo-drop" onclick="document.getElementById('photoInput').click()">
+      <div class="photo-drop">
         <input type="file" id="photoInput" accept="image/*" capture="environment" onchange="previewPhoto(this)">
-        <div class="drop-icon">📸</div>
-        <p>여기를 눌러 사진 촬영 또는 업로드</p>
+        <div class="drop-icon">📸</div><p>여기를 눌러 사진 촬영</p>
       </div>
       <img id="photoPreview" src="" alt="미리보기">
-      <button class="btn btn-gold btn-block" id="photoSubmitBtn" onclick="submitPhoto(${station.id})" disabled style="opacity:0.4">사진 제출하기</button>
-    `;
-  } else if (station.type === 'qr') {
-    out += `
+      <button class="btn btn-gold btn-block" id="photoSubmitBtn" onclick="submitPhoto(${station.id})" disabled style="opacity:0.4">사진 제출</button>
+    </div>`;
+  }
+  if (station.type === 'qr') {
+    return `<div class="mission-area">
       <div class="mission-label">미션</div>
       <p class="mission-q">${m.question}</p>
       <input type="text" id="quizInput" placeholder="모스부호 해독 정답" autocomplete="off">
       <button class="hint-toggle" onclick="toggleHint(this)">💡 힌트 보기</button>
       <p class="hint-text">${m.hint}</p>
-      <button class="btn btn-gold btn-block" style="margin-bottom:0.8rem" onclick="submitQuiz(${station.id},'${m.answer}')">정답 제출 후 QR 확인</button>
+      <button class="btn btn-gold btn-block" style="margin-bottom:0.8rem" onclick="unlockQR('${m.answer}')">정답 확인</button>
       <div id="qrUnlocked" style="display:none;text-align:center;padding:1rem;background:rgba(212,175,55,0.08);border-radius:4px">
-        <p style="font-family:var(--font-d);font-size:0.7rem;letter-spacing:0.15em;color:var(--gold);margin-bottom:0.8rem">QR 코드 위치가 잠금 해제됨</p>
-        <p style="font-style:italic;opacity:0.7">현장의 QR 코드를 스캔하세요 📷</p>
+        <p style="font-family:var(--font-d);font-size:0.7rem;color:var(--gold);margin-bottom:0.8rem">QR 코드를 찾아 스캔하세요 📷</p>
         <input type="text" id="qrInput" placeholder="QR 스캔 결과 입력" style="margin-top:0.8rem">
-        <button class="btn btn-gold btn-block" onclick="submitQR(${station.id})">QR 인증 완료</button>
+        <button class="btn btn-gold btn-block" onclick="submitQR(${station.id},'${station.qrSecret}')">QR 인증</button>
       </div>
-      <p class="error-msg" id="quizErr" style="color:#ff6b6b;font-style:italic;font-size:0.85rem;min-height:1.2em;margin-top:0.5rem"></p>
-    `;
-  } else if (station.type === 'voice') {
+      <p class="error-msg" id="quizErr"></p>
+    </div>`;
+  }
+  if (station.type === 'voice') {
     const spells = station.missions;
-    const randomSpell = spells[Math.floor(Math.random() * spells.length)];
-    out += `
+    const sp = spells[Math.floor(Math.random()*spells.length)];
+    return `<div class="mission-area">
       <div class="mission-label">주문을 외쳐라</div>
       <div class="voice-area">
-        <div class="spell-display">${randomSpell.spell}</div>
-        <div class="spell-phonetic">"${randomSpell.pronunciation}"</div>
-        <button id="micBtn" onclick="startVoice('${randomSpell.spell}')">🎙️</button>
+        <div class="spell-display">${sp.spell}</div>
+        <div class="spell-phonetic">"${sp.pronunciation}"</div>
+        <button id="micBtn" onclick="startVoice('${sp.spell}')">🎙️</button>
         <p id="voiceResult">버튼을 눌러 주문을 외치세요</p>
         <div id="voiceScore"></div>
         <button class="btn btn-gold" id="voiceSubmitBtn" onclick="submitVoice(${station.id})" style="display:none;margin-top:1rem">이 점수로 제출</button>
       </div>
-    `;
+    </div>`;
   }
-
-  out += `</div>`;
-  return out;
+  return '';
 }
 
-// ── 이벤트 핸들러들 ────────────────────────────────────────
-function attachListeners() {}
-
+// ── 미션 핸들러 ─────────────────────────────────────────────
 function toggleHint(btn) {
   const hint = btn.nextElementSibling;
   hint.classList.toggle('visible');
   btn.textContent = hint.classList.contains('visible') ? '💡 힌트 숨기기' : '💡 힌트 보기';
 }
 
-function submitQuiz(stationId, correctAnswer) {
+function submitQuiz(stationId, correct) {
   const val = document.getElementById('quizInput')?.value.trim();
   const err = document.getElementById('quizErr');
   if (!val) { if(err) err.textContent = '정답을 입력해 주세요.'; return; }
-
-  // 유연한 정답 체크 (공백/대소문자 무시)
-  const normalize = s => s.replace(/\s/g,'').toLowerCase();
-  if (normalize(val) === normalize(correctAnswer)) {
+  const norm = s => s.replace(/\s/g,'').toLowerCase();
+  if (norm(val) === norm(correct)) {
     const station = GAME_CONFIG.stations.find(s => s.id === stationId);
     Store.completeStation(TEAM_CODE, stationId, station.maxScore);
-    renderStations(); renderProgress();
   } else {
-    if (err) err.textContent = '틀렸습니다. 다시 시도해 보세요.';
+    if(err) err.textContent = '틀렸습니다. 다시 시도해 보세요.';
+  }
+}
+
+function unlockQR(correct) {
+  const val = document.getElementById('quizInput')?.value.trim();
+  const norm = s => s.replace(/\s/g,'').toLowerCase();
+  const err = document.getElementById('quizErr');
+  if (norm(val) === norm(correct)) {
+    document.getElementById('qrUnlocked').style.display = 'block';
+    if(err) { err.textContent = '✓ 정답! QR 코드를 찾으세요.'; err.style.color = '#5cb85c'; }
+  } else {
+    if(err) err.textContent = '틀렸습니다.';
+  }
+}
+
+function submitQR(stationId, secret) {
+  const val = document.getElementById('qrInput')?.value.trim().toUpperCase();
+  if (val === secret) {
+    const station = GAME_CONFIG.stations.find(s => s.id === stationId);
+    Store.completeStation(TEAM_CODE, stationId, station.maxScore);
+  } else {
+    alert('QR 코드 값이 올바르지 않습니다.');
   }
 }
 
@@ -443,8 +386,7 @@ function previewPhoto(input) {
   const reader = new FileReader();
   reader.onload = e => {
     const img = document.getElementById('photoPreview');
-    img.src = e.target.result;
-    img.style.display = 'block';
+    img.src = e.target.result; img.style.display = 'block';
     const btn = document.getElementById('photoSubmitBtn');
     btn.disabled = false; btn.style.opacity = '1';
   };
@@ -454,91 +396,155 @@ function previewPhoto(input) {
 function submitPhoto(stationId) {
   const station = GAME_CONFIG.stations.find(s => s.id === stationId);
   Store.completeStation(TEAM_CODE, stationId, station.maxScore);
-  renderStations(); renderProgress();
 }
 
-function submitQR(stationId) {
-  const val = document.getElementById('qrInput')?.value.trim().toUpperCase();
-  const station = GAME_CONFIG.stations.find(s => s.id === stationId);
-  if (val === station.qrSecret) {
-    Store.completeStation(TEAM_CODE, stationId, station.maxScore);
-    renderStations(); renderProgress();
-  } else {
-    alert('QR 코드 값이 올바르지 않습니다.');
-  }
-}
-
-// 퀴즈 통과 후 QR 잠금 해제
-function submitQuizUnlockQR(stationId, correctAnswer) {
-  const val = document.getElementById('quizInput')?.value.trim();
-  const normalize = s => s.replace(/\s/g,'').toLowerCase();
-  if (normalize(val) === normalize(correctAnswer)) {
-    document.getElementById('qrUnlocked').style.display = 'block';
-    document.getElementById('quizErr').textContent = '✓ 정답! 이제 현장의 QR 코드를 찾으세요.';
-    document.getElementById('quizErr').style.color = '#5cb85c';
-  } else {
-    document.getElementById('quizErr').textContent = '틀렸습니다. 다시 시도해 보세요.';
-  }
-}
-
-// ── 음성 인식 ──────────────────────────────────────────────
 let voiceFinalScore = 0;
-function startVoice(targetSpell) {
+function startVoice(target) {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    document.getElementById('voiceResult').textContent = '이 브라우저는 음성 인식을 지원하지 않습니다.';
-    return;
+    document.getElementById('voiceResult').textContent = 'Chrome 브라우저를 사용해 주세요.'; return;
   }
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recog = new SR();
-  recog.lang = 'en-US';
-  recog.interimResults = false;
-
+  const recog = new SR(); recog.lang = 'en-US';
   const btn = document.getElementById('micBtn');
   btn.classList.add('listening');
   document.getElementById('voiceResult').textContent = '듣고 있습니다…';
-
-  recog.onresult = (e) => {
+  recog.onresult = e => {
     const heard = e.results[0][0].transcript.trim();
-    const score = calcSpellScore(targetSpell, heard);
-    voiceFinalScore = score;
+    const t = target.toLowerCase().replace(/\s/g,'');
+    const h = heard.toLowerCase().replace(/\s/g,'');
+    let match = 0;
+    for (let i = 0; i < Math.min(t.length,h.length); i++) if(t[i]===h[i]) match++;
+    voiceFinalScore = Math.round((match/Math.max(t.length,h.length))*100);
     document.getElementById('voiceResult').textContent = `"${heard}"`;
-    document.getElementById('voiceScore').innerHTML = `<div class="score-num" style="font-family:var(--font-d);font-size:2rem;color:var(--gold)">${score}점</div>`;
+    document.getElementById('voiceScore').innerHTML = `<div style="font-family:var(--font-d);font-size:2rem;color:var(--gold)">${voiceFinalScore}점</div>`;
     document.getElementById('voiceSubmitBtn').style.display = 'inline-block';
     btn.classList.remove('listening');
   };
-  recog.onerror = () => {
-    document.getElementById('voiceResult').textContent = '인식 실패. 다시 시도해 주세요.';
-    btn.classList.remove('listening');
-  };
+  recog.onerror = () => { document.getElementById('voiceResult').textContent = '인식 실패. 다시 시도해 주세요.'; btn.classList.remove('listening'); };
   recog.start();
 }
 
-function calcSpellScore(target, heard) {
-  const t = target.toLowerCase().replace(/\s/g,'');
-  const h = heard.toLowerCase().replace(/\s/g,'');
-  if (t === h) return 100;
-  // 간단한 유사도 점수
-  let match = 0;
-  const minLen = Math.min(t.length, h.length);
-  for (let i = 0; i < minLen; i++) { if (t[i] === h[i]) match++; }
-  return Math.round((match / Math.max(t.length, h.length)) * 100);
-}
-
 function submitVoice(stationId) {
-  const station = GAME_CONFIG.stations.find(s => s.id === stationId);
   Store.completeStation(TEAM_CODE, stationId, voiceFinalScore);
-  renderStations(); renderProgress();
 }
 
-// ── 초기 렌더 + 폴링 ──────────────────────────────────────
-renderStations();
-renderProgress();
-updateTimer();
-setInterval(() => {
-  renderStations();
-  renderProgress();
-  updateTimer();
-}, 5000);
+// ── 배틀 시스템 ─────────────────────────────────────────────
+let pendingBattleId = null;
+
+Store.onBattleRequest(TEAM_CODE, battles => {
+  if (battles.length > 0) {
+    const b = battles[0];
+    pendingBattleId = b.id;
+    document.getElementById('battleAlertText').textContent = `⚔️ ${GAME_CONFIG.teams[b.from]?.displayName || b.from}이 배틀을 신청했습니다!`;
+    document.getElementById('battleAlert').classList.add('show');
+    document.getElementById('acceptBtn').onclick = () => acceptBattle(b.id, b.from);
+    document.getElementById('declineBtn').onclick = () => {
+      Store.declineBattle(b.id);
+      document.getElementById('battleAlert').classList.remove('show');
+    };
+  } else {
+    document.getElementById('battleAlert').classList.remove('show');
+  }
+});
+
+function acceptBattle(battleId, fromTeam) {
+  document.getElementById('battleAlert').classList.remove('show');
+  Store.acceptBattle(battleId, () => showSpellSelect(battleId));
+}
+
+function openBattleModal() {
+  document.getElementById('battleModalTitle').textContent = '⚔️ 배틀 신청';
+  document.getElementById('battleModalContent').innerHTML = `
+    <p style="font-size:0.9rem;opacity:0.7;margin-bottom:1rem;font-style:italic">상대 팀 코드를 입력하세요</p>
+    <input type="text" id="battleTargetInput" placeholder="예: SLYTH-1" style="text-transform:uppercase">
+    <button class="btn btn-gold btn-block" onclick="sendBattleRequest()">배틀 신청 ⚔️</button>
+    <p class="error-msg" id="battleErr"></p>
+  `;
+  document.getElementById('battleModal').classList.add('open');
+}
+
+function closeBattleModal() {
+  document.getElementById('battleModal').classList.remove('open');
+}
+
+function sendBattleRequest() {
+  const target = document.getElementById('battleTargetInput')?.value.trim().toUpperCase();
+  const err = document.getElementById('battleErr');
+  if (!target || !GAME_CONFIG.teams[target]) { err.textContent = '유효한 팀 코드를 입력해 주세요.'; return; }
+  if (target === TEAM_CODE) { err.textContent = '자기 팀에게 신청할 수 없습니다.'; return; }
+  if (GAME_CONFIG.teams[target].house === TEAM.house) { err.textContent = '같은 기숙사끼리는 배틀할 수 없습니다.'; return; }
+
+  Store.requestBattle(TEAM_CODE, target, result => {
+    if (result.error) { err.textContent = result.error; return; }
+    document.getElementById('battleModalContent').innerHTML = `<p style="text-align:center;font-style:italic;opacity:0.7;padding:1rem 0">상대팀의 수락을 기다리는 중…⏳</p>`;
+    Store.onBattleResult(result.battleId, b => {
+      if (b.status === 'accepted') showSpellSelect(result.battleId);
+    });
+    // 수락 감지
+    const ref = firebase.database().ref(`battles/pending/${result.battleId}/status`);
+    ref.on('value', snap => {
+      if (snap.val() === 'accepted') {
+        ref.off();
+        showSpellSelect(result.battleId);
+      }
+    });
+  });
+}
+
+const SPELLS = [
+  { name: 'Expelliarmus', emoji: '⚡' },
+  { name: 'Protego', emoji: '🛡️' },
+  { name: 'Stupefy', emoji: '💫' },
+  { name: 'Petrificus Totalus', emoji: '🧊' },
+  { name: 'Avada Kedavra', emoji: '☠️' },
+];
+
+function showSpellSelect(battleId) {
+  document.getElementById('battleModalTitle').textContent = '주문을 선택하라!';
+  document.getElementById('battleModalContent').innerHTML = `
+    <p style="font-size:0.85rem;opacity:0.6;text-align:center;margin-bottom:1rem;font-style:italic">상대방은 볼 수 없습니다</p>
+    <div class="spell-grid">
+      ${SPELLS.map(s => `<button class="spell-btn" onclick="selectSpell(this,'${s.name}','${battleId}')"><span class="spell-emoji">${s.emoji}</span><span class="spell-name">${s.name}</span></button>`).join('')}
+    </div>
+    <p id="spellWait" style="text-align:center;font-style:italic;opacity:0.6;display:none">상대방 선택 대기 중…</p>
+  `;
+  document.getElementById('battleModal').classList.add('open');
+}
+
+function selectSpell(btn, spell, battleId) {
+  document.querySelectorAll('.spell-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('spellWait').style.display = 'block';
+
+  Store.submitSpell(battleId, TEAM_CODE, spell, result => {
+    if (result.waiting) {
+      Store.onBattleResult(battleId, b => showBattleResult(b));
+    } else {
+      showBattleResult(result);
+    }
+  });
+}
+
+function showBattleResult(b) {
+  const won = b.winner === TEAM_CODE;
+  const draw = b.result === 'draw';
+  const spells = b.spells || {};
+  const mySpell = spells[TEAM_CODE];
+  const opponentCode = b.from === TEAM_CODE ? b.to : b.from;
+  const opSpell = spells[opponentCode];
+  const myEmoji = SPELLS.find(s=>s.name===mySpell)?.emoji || '✨';
+  const opEmoji = SPELLS.find(s=>s.name===opSpell)?.emoji || '✨';
+
+  document.getElementById('battleModalTitle').textContent = draw ? '무승부!' : won ? '승리! 🎉' : '패배...';
+  document.getElementById('battleModalContent').innerHTML = `
+    <div class="battle-result">
+      <div class="result-icon">${draw ? '🤝' : won ? '🏆' : '💀'}</div>
+      <div style="display:flex;justify-content:center;gap:2rem;margin:1rem 0;font-size:2rem">${myEmoji} vs ${opEmoji}</div>
+      <p style="font-size:0.85rem;opacity:0.7">${mySpell} vs ${opSpell}</p>
+      <h3 style="margin-top:1rem">${draw ? '비겼습니다!' : won ? `+${Store.BATTLE_POINTS}점 획득!` : `-${Store.BATTLE_POINTS}점...`}</h3>
+    </div>
+  `;
+}
 </script>
 </body>
 </html>
