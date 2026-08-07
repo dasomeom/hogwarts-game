@@ -10,15 +10,15 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --gold:    #D4AF37;
-    --gold-lt: #F0D060;
-    --gold-dim:#9A7B1A;
-    --parchment: #F5E6C8;
-    --ink:     #1A0A00;
+    --gold:    #8BA4D4;
+    --gold-lt: #C0D4F0;
+    --gold-dim:#4A6494;
+    --parchment: #D8E4F5;
+    --ink:     #0A0F1A;
     --deep:    #050308;
     --navy:    #0A0C1A;
-    --stone:   #1A1810;
-    --scarlet: #7A0C0C;
+    --stone:   #0E1220;
+    --scarlet: #1A2A5A;
     --font-d: 'Cinzel', serif;
     --font-b: 'Crimson Text', Georgia, serif;
   }
@@ -79,7 +79,7 @@
     content: '';
     position: absolute;
     inset: -20px;
-    background: radial-gradient(ellipse, rgba(100,120,200,0.15) 0%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(80,120,220,0.12) 0%, transparent 70%);
     pointer-events: none;
     z-index: -1;
   }
@@ -95,24 +95,33 @@
     margin-top: 1rem;
   }
 
-  /* ── 분리선 ── */
   .divider {
     width: 200px; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(140,170,220,0.4), transparent);
     margin: 1.8rem auto;
+  }
+
+  .event-tag {
+    font-family: var(--font-d);
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.65;
+    margin-top: 1rem;
   }
 
   /* ── 팀 코드 카드 ── */
   .login-card {
     width: 100%; max-width: 380px;
-    background: linear-gradient(160deg, rgba(20,15,5,0.95) 0%, rgba(8,6,2,0.98) 100%);
-    border: 1px solid rgba(212,175,55,0.2);
+    background: linear-gradient(160deg, rgba(10,15,30,0.97) 0%, rgba(5,8,18,0.99) 100%);
+    border: 1px solid rgba(140,170,220,0.2);
     border-radius: 2px;
     padding: 2rem 1.8rem;
     box-shadow:
-      0 0 0 1px rgba(212,175,55,0.05),
+      0 0 0 1px rgba(140,170,220,0.05),
       0 20px 60px rgba(0,0,0,0.8),
-      inset 0 1px 0 rgba(212,175,55,0.08);
+      inset 0 1px 0 rgba(140,170,220,0.08);
     margin: 0 auto;
     position: relative;
     overflow: hidden;
@@ -133,7 +142,7 @@
     font-size: 0.7rem;
     font-weight: 400;
     letter-spacing: 0.3em;
-    color: var(--gold);
+    color: #8BA4D4;
     text-align: center;
     margin-bottom: 1.5rem;
     text-transform: uppercase;
@@ -143,8 +152,8 @@
   .input-wrap input {
     width: 100%;
     background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(212,175,55,0.25);
-    border-bottom-color: rgba(212,175,55,0.5);
+    border: 1px solid rgba(140,170,220,0.2);
+    border-bottom-color: rgba(140,170,220,0.5);
     border-radius: 0;
     padding: 0.85rem 1rem;
     color: var(--gold-lt);
@@ -157,20 +166,20 @@
     transition: all 0.2s;
     margin-bottom: 1rem;
   }
-  .input-wrap input::placeholder { color: rgba(212,175,55,0.2); }
+  .input-wrap input::placeholder { color: rgba(140,170,220,0.2); }
   .input-wrap input:focus {
-    border-color: rgba(212,175,55,0.6);
-    background: rgba(212,175,55,0.03);
-    box-shadow: 0 4px 20px rgba(212,175,55,0.05);
+    border-color: rgba(140,170,220,0.6);
+    background: rgba(140,170,220,0.03);
+    box-shadow: 0 4px 20px rgba(100,140,220,0.08);
   }
 
   .btn-enter {
     width: 100%;
     padding: 0.9rem;
-    background: linear-gradient(180deg, #9A7B1A 0%, #7A5F10 50%, #9A7B1A 100%);
-    border: 1px solid rgba(212,175,55,0.4);
+    background: linear-gradient(180deg, #2A3F6A 0%, #1A2D52 50%, #2A3F6A 100%);
+    border: 1px solid rgba(140,170,220,0.4);
     border-radius: 1px;
-    color: #0D0A00;
+    color: #C0D4F0;
     font-family: var(--font-d);
     font-size: 0.75rem;
     font-weight: 700;
@@ -236,7 +245,7 @@
     font-family: var(--font-d);
     font-size: 0.62rem;
     letter-spacing: 0.2em;
-    color: var(--gold);
+    color: #8BA4D4;
     opacity: 0.4;
     text-decoration: none;
     text-transform: uppercase;
@@ -283,7 +292,7 @@ for (let i = 0; i < 25; i++) {
     --dx: ${(Math.random()-0.5)*80}px;
     width: ${1+Math.random()*2}px;
     height: ${1+Math.random()*2}px;
-    background: ${Math.random() > 0.5 ? '#D4AF37' : '#8BA4D4'};
+    background: ${Math.random() > 0.5 ? '#8BA4D4' : '#C0D4F0'};
     opacity: ${0.3+Math.random()*0.4};
   `;
   document.body.appendChild(p);
