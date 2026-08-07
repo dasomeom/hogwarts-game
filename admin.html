@@ -231,13 +231,16 @@ function init() {
     document.getElementById('finishedCount').textContent = finished;
   });
 
-  // 활동 로그 실시간 (모든 접속자 공유)
-  Store.onLogs(logs => {
-    latestLogs = logs;
-    renderLogs(logs);
-    // 로그가 갱신되면 팀 카드도 다시 그려서 팀별 로그 갱신
-    if (latestTeams.length) renderTeamGrid(latestTeams);
-  });
+  // 활동 로그 실시간 (모든 접속자 공유) — 3초마다 직접 폴링
+  function pollLogs() {
+    Store.fetchLogs(logs => {
+      latestLogs = logs;
+      renderLogs(logs);
+      if (latestTeams.length) renderTeamGrid(latestTeams);
+    });
+  }
+  pollLogs();
+  setInterval(pollLogs, 3000);
 }
 
 // ── 팀 그리드 렌더 ──────────────────────────────────────────

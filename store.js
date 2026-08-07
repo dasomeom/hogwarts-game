@@ -164,17 +164,13 @@ const Store = {
     db.ref('adminLogs').push({ msg, type: type || '', teamCode: teamCode || null, at: Date.now() }, callback);
   },
 
-  onLogs(callback) {
-    const poll = () => {
-      db.ref('adminLogs').once('value').then(snap => {
-        const logs = [];
-        snap.forEach(child => logs.push({ id: child.key, ...child.val() }));
-        logs.sort((a, b) => b.at - a.at);
-        callback(logs.slice(0, 50));
-      });
-    };
-    poll();
-    setInterval(poll, 3000);
+  fetchLogs(callback) {
+    db.ref('adminLogs').once('value').then(snap => {
+      const logs = [];
+      snap.forEach(child => logs.push({ id: child.key, ...child.val() }));
+      logs.sort((a, b) => b.at - a.at);
+      callback(logs.slice(0, 50));
+    });
   },
 
   // ── 리셋 ─────────────────────────────────────────────────
