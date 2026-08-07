@@ -305,6 +305,7 @@ for (let i = 0; i < 25; i++) {
   <div class="title-area title-glow">
     <img src="title.png" alt="Harry Potter and the Secret of Saenuri" class="title-img">
     <p class="event-tag">2026 · Saenuri Unplugged Conference</p>
+    <p id="indexTimer" style="font-family:var(--font-d);font-size:1.6rem;color:var(--gold-lt);text-shadow:0 0 15px rgba(140,164,212,0.4);margin-top:0.8rem">—:--</p>
   </div>
 
   <div class="divider"></div>
@@ -344,8 +345,8 @@ for (let i = 0; i < 25; i++) {
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="config.js?v=8"></script>
-<script src="store.js?v=8"></script>
+<script src="config.js?v=9"></script>
+<script src="store.js?v=9"></script>
 <script>
 // ── 배경 — 별 + 안개 흐름 ──────────────────────────────────
 (function() {
@@ -414,6 +415,24 @@ function enterTeam() {
 document.getElementById('teamCode').addEventListener('keydown', e => {
   if (e.key === 'Enter') enterTeam();
 });
+
+// ── 타이머 ──────────────────────────────────────────────────
+function updateIndexTimer() {
+  const el = document.getElementById('indexTimer');
+  Store.isGameStarted(started => {
+    if (!started) {
+      el.textContent = '게임 대기 중';
+      return;
+    }
+    Store.getRemainingSeconds(rem => {
+      const m = Math.floor(rem/60), s = Math.floor(rem%60);
+      el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      el.style.color = rem < 300 ? '#ff6b6b' : '';
+    });
+  });
+}
+updateIndexTimer();
+setInterval(updateIndexTimer, 1000);
 </script>
 </body>
 </html>
