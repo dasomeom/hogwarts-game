@@ -35,7 +35,14 @@ const Store = {
     ref.once('value', snap => {
       if (snap.val()?.completed) { if(callback) callback(); return; }
       ref.set({ score, completed: true, completedAt: Date.now() }, () => {
-        this._recalcTotal(teamCode, callback);
+        this._recalcTotal(teamCode, () => {
+          if (callback) callback();
+          db.ref(`scores/${teamCode}/total`).once('value', totalSnap => {
+            const teamName = GAME_CONFIG.teams[teamCode]?.displayName || teamCode;
+            const stationTitle = GAME_CONFIG.stations.find(s => s.id === stationId)?.title || `스테이션 ${stationId}`;
+            this.logEvent(`✅ 문제 해결 → ${teamName} / ${stationTitle} (+${score}점) · 현재 ${totalSnap.val() || 0}점`, 'success', teamCode);
+          });
+        });
       });
     });
   },
@@ -152,8 +159,9 @@ const Store = {
   },
 
   // ── 어드민 활동 로그 (모든 접속자에게 공유) ────────────────
-  logEvent(msg, type, callback) {
-    db.ref('adminLogs').push({ msg, type: type || '', at: Date.now() }, callback);
+  logEvent(msg, type, teamCode, callback) {
+    if (typeof teamCode === 'function') { callback = teamCode; teamCode = null; }
+    db.ref('adminLogs').push({ msg, type: type || '', teamCode: teamCode || null, at: Date.now() }, callback);
   },
 
   onLogs(callback) {

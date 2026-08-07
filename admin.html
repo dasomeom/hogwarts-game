@@ -91,6 +91,12 @@
   .finish-time-display { font-size: 0.8rem; color: #5cb85c; font-style: italic; margin-top: 0.4rem; }
   .hint-count { font-size: 0.75rem; color: #C0A0E8; opacity: 0.7; margin-top: 0.2rem; }
 
+  /* 팀별 개별 로그 */
+  .team-log-area { margin-top: 0.7rem; padding-top: 0.6rem; border-top: 1px solid rgba(140,164,212,0.08); max-height: 120px; overflow-y: auto; }
+  .team-log-line { font-size: 0.68rem; font-family: monospace; opacity: 0.55; margin-bottom: 0.2rem; line-height: 1.4; }
+  .team-log-line.success { color: #5cb85c; opacity: 0.8; }
+  .team-log-line.hint { color: #C0A0E8; opacity: 0.8; }
+
   /* ── 로그 ── */
   .log-area { background: #080C18; border: 1px solid rgba(140,164,212,0.1); border-radius: 4px; padding: 0.8rem; font-size: 0.78rem; font-family: monospace; max-height: 180px; overflow-y: auto; }
   .log-line { opacity: 0.6; margin-bottom: 0.25rem; }
@@ -178,6 +184,10 @@ function adminLogin() {
 }
 document.getElementById('pwInput').addEventListener('keydown', e => { if(e.key==='Enter') adminLogin(); });
 
+// ── 전역 상태 (팀 카드에서 필터된 로그 표시용) ──────────────
+let latestTeams = [];
+let latestLogs = [];
+
 // ── 초기화 ──────────────────────────────────────────────────
 function init() {
   // 타이머
@@ -208,13 +218,19 @@ function init() {
 
   // 팀 현황 실시간
   Store.onLeaderboard(({ teams }) => {
+    latestTeams = teams;
     renderTeamGrid(teams);
     const finished = teams.filter(t => t.finishTime).length;
     document.getElementById('finishedCount').textContent = finished;
   });
 
   // 활동 로그 실시간 (모든 접속자 공유)
-  Store.onLogs(renderLogs);
+  Store.onLogs(logs => {
+    latestLogs = logs;
+    renderLogs(logs);
+    // 로그가 갱신되면 팀 카드도 다시 그려서 팀별 로그 갱신
+    if (latestTeams.length) renderTeamGrid(latestTeams);
+  });
 }
 
 // ── 팀 그리드 렌더 ──────────────────────────────────────────
@@ -261,6 +277,15 @@ function renderTeamGrid(teams) {
       return `<button class="${cls}" ${disabled ? 'disabled' : ''} onclick="giveHint('${t.code}', ${st.id})">💡 ${st.id}</button>`;
     }).join('');
 
+    // 이 팀의 개별 로그 (문제 풀이 + 힌트)
+    const teamLogs = latestLogs.filter(l => l.teamCode === t.code);
+    const teamLogHtml = teamLogs.length > 0
+      ? teamLogs.slice(0, 8).map(l => {
+          const time = new Date(l.at).toLocaleTimeString('ko-KR');
+          return `<div class="team-log-line ${l.type || ''}">[${time}] ${l.msg}</div>`;
+        }).join('')
+      : `<div class="team-log-line" style="opacity:0.35">아직 활동 없음</div>`;
+
     return `<div class="team-card ${isFinished ? 'finished' : ''}">
       <div class="team-card-header">
         <div>
@@ -281,6 +306,7 @@ function renderTeamGrid(teams) {
           : `<button class="finish-btn" onclick="markFinish('${t.code}')">🏁 완료 처리</button>`
         }
       </div>
+      <div class="team-log-area">${teamLogHtml}</div>
     </div>`;
   }).join('');
 }
@@ -303,7 +329,9 @@ function giveHint(teamCode, stationId) {
       alert(result.error);
       return;
     }
-    Store.logEvent(`💡 힌트 지급 → ${teamName} / 스테이션 ${stationId} (-100점)`, 'hint');
+    Store.getTeamState(teamCode, ts => {
+      Store.logEvent(`💡 힌트 지급 → ${teamName} / 스테이션 ${stationId} (-100점) · 현재 ${ts.total}점`, 'hint', teamCode);
+    });
   });
 }
 
@@ -314,7 +342,9 @@ function markFinish(teamCode) {
   Store.markFinish(teamCode, (elapsedSeconds) => {
     const m = Math.floor(elapsedSeconds / 60);
     const s = Math.floor(elapsedSeconds % 60);
-    Store.logEvent(`🏁 완료 → ${teamName} (${m}분 ${s}초, 시간 감점 -${m*10}점)`, 'success');
+    Store.getTeamState(teamCode, ts => {
+      Store.logEvent(`🏁 완료 → ${teamName} (${m}분 ${s}초, 시간 감점 -${m*10}점) · 현재 ${ts.total}점`, 'success', teamCode);
+    });
   });
 }
 
