@@ -223,9 +223,16 @@ Store.getTeamState(TEAM_CODE, ts => {
 });
 
 // ── 실시간 구독 ─────────────────────────────────────────────
+let lastCompletedCount = -1;
+
 Store.onTeamState(TEAM_CODE, ts => {
+  const completedCount = Object.values(ts?.stations || {}).filter(v => v.completed).length;
   renderProgress(ts);
-  renderMain(ts);
+  // 완료 개수가 바뀔 때만 renderMain 호출
+  if (completedCount !== lastCompletedCount) {
+    lastCompletedCount = completedCount;
+    renderMain(ts);
+  }
 });
 
 // ── 진행 트랙 ───────────────────────────────────────────────
