@@ -4,20 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>점수판 — 해리포터와 새누리의 비밀</title>
+<link rel="icon" href="images/harry.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --gold:#D4AF37; --gold-lt:#F0D060; --parchment:#F5E6C8;
-    --ink:#1A0A00; --deep:#0D0800; --stone:#1E1408;
+    --gold:#8BA4D4; --gold-lt:#C0D4F0; --parchment:#D8E4F5;
+    --ink:#0A0F1A; --deep:#050308;
     --font-d:'Cinzel',serif; --font-b:'Crimson Text',Georgia,serif;
   }
   body { background:var(--deep); color:var(--parchment); font-family:var(--font-b); min-height:100vh; }
 
   /* ── 헤더 ── */
   header {
-    background:linear-gradient(180deg,#1A0E04,#0D0800);
-    border-bottom:1px solid rgba(212,175,55,0.2);
+    background:linear-gradient(180deg,#080C18,#050308);
+    border-bottom:1px solid rgba(140,164,212,0.2);
     padding:1.2rem 2rem; text-align:center;
     position:relative;
   }
@@ -33,7 +34,7 @@
   #globalTimer {
     position:absolute; right:1.5rem; top:50%; transform:translateY(-50%);
     font-family:var(--font-d); font-size:1.4rem; color:var(--gold-lt);
-    text-shadow:0 0 15px rgba(212,175,55,0.4);
+    text-shadow:0 0 15px rgba(140,164,212,0.4);
   }
   #globalTimer.urgent { color:#ff6b6b; }
 
@@ -49,7 +50,7 @@
     position:relative; overflow:hidden;
     transition:transform 0.3s;
   }
-  .house-card.rank-1 { border-color:var(--gold); box-shadow:0 0 20px rgba(212,175,55,0.2); }
+  .house-card.rank-1 { border-color:var(--gold); box-shadow:0 0 20px rgba(140,164,212,0.2); }
   .house-card .emoji { font-size:2rem; display:block; margin-bottom:0.4rem; }
   .house-card .h-name { font-family:var(--font-d); font-size:0.7rem; letter-spacing:0.1em; opacity:0.7; text-transform:uppercase; }
   .house-card .h-score { font-family:var(--font-d); font-size:2rem; font-weight:700; color:var(--gold-lt); margin:0.3rem 0; }
@@ -58,7 +59,7 @@
 
   /* ── 팀 순위표 ── */
   .teams-section { padding:1.2rem 1.5rem 4rem; max-width:900px; margin:0 auto; }
-  .leaderboard { border:1px solid rgba(212,175,55,0.15); border-radius:4px; overflow:hidden; }
+  .leaderboard { border:1px solid rgba(140,164,212,0.15); border-radius:4px; overflow:hidden; }
   .lb-row {
     display:grid; grid-template-columns:2.5rem 1fr 5rem 4rem;
     align-items:center; gap:0.5rem;
@@ -67,8 +68,8 @@
     transition:background 0.2s;
   }
   .lb-row:last-child { border-bottom:none; }
-  .lb-row:hover { background:rgba(212,175,55,0.04); }
-  .lb-row.rank-1 { background:rgba(212,175,55,0.08); }
+  .lb-row:hover { background:rgba(140,164,212,0.04); }
+  .lb-row.rank-1 { background:rgba(140,164,212,0.08); }
   .lb-row.rank-2 { background:rgba(192,192,192,0.05); }
   .lb-row.rank-3 { background:rgba(205,127,50,0.05); }
 
@@ -116,47 +117,50 @@
 <script src="store.js?v=4"></script>
 <script>
 function render() {
-  const { teams, houseScores } = Store.getLeaderboard();
+  Store.onLeaderboard(({ teams, houseScores }) => {
+    // ── 타이머 ────────────────────────────────────────────────
+    const timerEl = document.getElementById('globalTimer');
+    Store.isGameStarted(started => {
+      if (started) {
+        Store.getRemainingSeconds(rem => {
+          const m = Math.floor(rem/60), s = Math.floor(rem%60);
+          timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+          timerEl.classList.toggle('urgent', rem < 300);
+        });
+      } else {
+        timerEl.textContent = '대기 중';
+      }
+    });
 
-  // ── 타이머 ────────────────────────────────────────────────
-  const timerEl = document.getElementById('globalTimer');
-  if (Store.isGameStarted()) {
-    const rem = Store.getRemainingSeconds();
-    const m = Math.floor(rem/60), s = Math.floor(rem%60);
-    timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    timerEl.classList.toggle('urgent', rem < 300);
-  } else {
-    timerEl.textContent = '대기 중';
-  }
-
-  // ── 기숙사 ───────────────────────────────────────────────
-  const sortedHouses = [...GAME_CONFIG.houses].sort((a,b) => houseScores[b.id] - houseScores[a.id]);
-  document.getElementById('housesGrid').innerHTML = sortedHouses.map((h, i) => `
-    <div class="house-card rank-${i+1}" style="background:linear-gradient(160deg,${h.color}33,${h.color}11)">
-      ${i === 0 ? '<span class="crown">👑</span>' : ''}
-      <span class="emoji">${h.emoji}</span>
-      <div class="h-name">${h.name}</div>
-      <div class="h-score">${houseScores[h.id]}</div>
-      <div class="h-rank">${['🥇 1위','🥈 2위','🥉 3위','4위'][i]}</div>
-    </div>
-  `).join('');
-
-  // ── 팀 순위 ──────────────────────────────────────────────
-  document.getElementById('leaderboard').innerHTML = teams.map((t, i) => {
-    const house = GAME_CONFIG.houses.find(h => h.id === t.house);
-    const rankStr = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}`;
-    return `<div class="lb-row rank-${i+1}">
-      <div class="lb-rank">${rankStr}</div>
-      <div class="lb-team">
-        <div class="lb-team-name">${t.displayName}</div>
-        <div class="lb-team-house">${house?.name}</div>
+    // ── 기숙사 ───────────────────────────────────────────────
+    const sortedHouses = [...GAME_CONFIG.houses].sort((a,b) => houseScores[b.id] - houseScores[a.id]);
+    document.getElementById('housesGrid').innerHTML = sortedHouses.map((h, i) => `
+      <div class="house-card rank-${i+1}" style="background:linear-gradient(160deg,${h.color}33,${h.color}11)">
+        ${i === 0 ? '<span class="crown">👑</span>' : ''}
+        <span class="emoji">${h.emoji}</span>
+        <div class="h-name">${h.name}</div>
+        <div class="h-score">${houseScores[h.id]}</div>
+        <div class="h-rank">${['🥇 1위','🥈 2위','🥉 3위','4위'][i]}</div>
       </div>
-      <div class="lb-stations">${t.stationsCompleted} / ${GAME_CONFIG.stations.length} 완료</div>
-      <div class="lb-score">${t.total}점</div>
-    </div>`;
-  }).join('');
+    `).join('');
 
-  document.getElementById('lastUpdated').textContent = `마지막 갱신: ${new Date().toLocaleTimeString('ko-KR')}`;
+    // ── 팀 순위 ──────────────────────────────────────────────
+    document.getElementById('leaderboard').innerHTML = teams.map((t, i) => {
+      const house = GAME_CONFIG.houses.find(h => h.id === t.house);
+      const rankStr = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}`;
+      return `<div class="lb-row rank-${i+1}">
+        <div class="lb-rank">${rankStr}</div>
+        <div class="lb-team">
+          <div class="lb-team-name">${t.displayName}</div>
+          <div class="lb-team-house">${house?.name}</div>
+        </div>
+        <div class="lb-stations">${t.stationsCompleted} / ${GAME_CONFIG.stations.length} 완료</div>
+        <div class="lb-score">${t.total}점</div>
+      </div>`;
+    }).join('');
+
+    document.getElementById('lastUpdated').textContent = `마지막 갱신: ${new Date().toLocaleTimeString('ko-KR')}`;
+  });
 }
 
 render();
