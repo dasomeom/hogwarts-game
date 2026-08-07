@@ -57,10 +57,17 @@
   .ctrl-card h3 { font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.12em; color: var(--gold); opacity: 0.6; text-transform: uppercase; margin-bottom: 0.6rem; }
   .ctrl-card .big { font-family: var(--font-d); font-size: 1.8rem; color: var(--gold-lt); margin-bottom: 0.5rem; }
 
-  /* ── 팀 그리드 ── */
-  .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.8rem; }
+  /* ── 기숙사별 4컬럼 레이아웃 ── */
+  .houses-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; align-items: start; }
+  .house-column { display: flex; flex-direction: column; gap: 0.7rem; }
+  .house-column-header { font-family: var(--font-d); font-size: 0.75rem; letter-spacing: 0.1em; text-align: center; padding: 0.5rem; border-radius: 3px; margin-bottom: 0.2rem; }
+  .house-column-header.gryffindor { background: rgba(116,0,1,0.15); color: #e08080; }
+  .house-column-header.slytherin { background: rgba(26,71,42,0.2); color: #7ed8a0; }
+  .house-column-header.ravenclaw { background: rgba(14,26,64,0.3); color: #8BA4D4; }
+  .house-column-header.hufflepuff { background: rgba(236,185,57,0.12); color: #ECB939; }
+
   .team-card {
-    background: #0C1020; border: 1px solid rgba(140,164,212,0.12); border-radius: 4px; padding: 1rem 1.1rem;
+    background: #0C1020; border: 1px solid rgba(140,164,212,0.12); border-radius: 4px; padding: 0.9rem 1rem;
     transition: border-color 0.2s;
   }
   .team-card.finished { border-color: rgba(100,200,100,0.3); }
@@ -159,7 +166,7 @@
 
   <!-- 팀 현황 -->
   <p class="section-label">팀 현황 — 힌트 지급 / 완료 처리</p>
-  <div class="team-grid" id="teamGrid"></div>
+  <div class="houses-grid" id="teamGrid"></div>
 
   <!-- 로그 -->
   <p class="section-label">활동 로그</p>
@@ -235,10 +242,13 @@ function init() {
 
 // ── 팀 그리드 렌더 ──────────────────────────────────────────
 function renderTeamGrid(teams) {
-  document.getElementById('teamGrid').innerHTML = teams.map(t => {
+  // 팀 코드 순서로 고정 정렬 (config.js에 정의된 순서, 점수 무관)
+  const teamCodeOrder = Object.keys(GAME_CONFIG.teams);
+  const sortedTeams = [...teams].sort((a, b) => teamCodeOrder.indexOf(a.code) - teamCodeOrder.indexOf(b.code));
+
+  const cardHtml = t => {
     const house = GAME_CONFIG.houses.find(h => h.id === t.house);
     const isFinished = !!t.finishTime;
-    const hintCount = t.hintCount || 0;
 
     // 스테이션 도트
     const dots = GAME_CONFIG.stations.map(st => {
@@ -256,10 +266,10 @@ function renderTeamGrid(teams) {
       finishDisplay = `<div class="finish-time-display">✓ ${mins}분 ${secs}초 완료 (시간 감점: -${timePenalty}점)</div>`;
     }
 
-    // 힌트 표시: 사용된 힌트 목록 (스테이션 + 시각)
+    // 힌트 표시
     const hintsUsed = Object.values(t.hints || {});
     const hintDisplay = hintsUsed.length > 0
-      ? `<div class="hint-count">힌트 ${hintsUsed.length}/${3}회 사용 (-${hintsUsed.length * 100}점): ` +
+      ? `<div class="hint-count">힌트 ${hintsUsed.length}/3회 사용 (-${hintsUsed.length * 100}점): ` +
         hintsUsed.map(h => {
           const time = new Date(h.at).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
           return `S${h.stationId}(${time})`;
@@ -269,7 +279,6 @@ function renderTeamGrid(teams) {
     const hintLimitReached = hintsUsed.length >= 3;
     const usedStationIds = new Set(hintsUsed.map(h => h.stationId));
 
-    // 스테이션별 힌트 버튼 (1~6)
     const hintButtons = GAME_CONFIG.stations.slice(0, 6).map(st => {
       const alreadyUsed = usedStationIds.has(st.id);
       const disabled = hintLimitReached || alreadyUsed;
@@ -277,7 +286,7 @@ function renderTeamGrid(teams) {
       return `<button class="${cls}" ${disabled ? 'disabled' : ''} onclick="giveHint('${t.code}', ${st.id})">💡 ${st.id}</button>`;
     }).join('');
 
-    // 이 팀의 개별 로그 (문제 풀이 + 힌트)
+    // 이 팀의 개별 로그
     const teamLogs = latestLogs.filter(l => l.teamCode === t.code);
     const teamLogHtml = teamLogs.length > 0
       ? teamLogs.slice(0, 8).map(l => {
@@ -288,10 +297,7 @@ function renderTeamGrid(teams) {
 
     return `<div class="team-card ${isFinished ? 'finished' : ''}">
       <div class="team-card-header">
-        <div>
-          <div class="team-card-name">${t.displayName}</div>
-          <div class="team-card-house">${house?.emoji} ${house?.name}</div>
-        </div>
+        <div class="team-card-name">${t.displayName}</div>
         <div class="team-card-score">${t.total}점</div>
       </div>
       <div class="station-dots">${dots}</div>
@@ -308,7 +314,17 @@ function renderTeamGrid(teams) {
       </div>
       <div class="team-log-area">${teamLogHtml}</div>
     </div>`;
+  };
+
+  const columnsHtml = GAME_CONFIG.houses.map(house => {
+    const houseTeams = sortedTeams.filter(t => t.house === house.id);
+    return `<div class="house-column">
+      <div class="house-column-header ${house.id}">${house.emoji} ${house.name}</div>
+      ${houseTeams.map(cardHtml).join('')}
+    </div>`;
   }).join('');
+
+  document.getElementById('teamGrid').innerHTML = columnsHtml;
 }
 
 // ── 게임 시작 ──────────────────────────────────────────────
