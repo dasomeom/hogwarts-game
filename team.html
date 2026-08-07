@@ -409,24 +409,24 @@ function renderMain(ts) {
           const line1 = '마지막 호크룩스는 해리 포터 자신이다.';
           const line2 = '그를 찾아라. 그리고 그의 눈을 바라보며 외쳐라.';
           const spell = 'AVADA KEDAVRA';
-          typeWriter(missionEl, line1, 40, () => {
+          typeWriter(missionEl, line1, 80, () => {
             missionEl.innerHTML += '<br><br>';
             setTimeout(() => {
               const part2 = document.createElement('span');
               missionEl.appendChild(part2);
-              typeWriter(part2, line2, 40, () => {
+              typeWriter(part2, line2, 80, () => {
                 missionEl.innerHTML += '<br><br>';
                 setTimeout(() => {
                   const spellEl = document.createElement('span');
                   spellEl.style.cssText = 'font-family:var(--font-d);font-size:1.1rem;letter-spacing:0.1em;color:var(--gold-lt)';
                   missionEl.appendChild(spellEl);
-                  typeWriter(spellEl, spell, 120, () => {
+                  typeWriter(spellEl, spell, 200, () => {
                     if (finalInput) finalInput.style.display = 'block';
                     if (finalBtn) finalBtn.style.display = 'block';
                   });
-                }, 400);
+                }, 600);
               });
-            }, 300);
+            }, 500);
           });
         } else {
           missionEl.innerHTML = `마지막 호크룩스는 해리 포터 자신이다.<br><br>그를 찾아라. 그리고 그의 눈을 바라보며 외쳐라.<br><br><span style="font-family:var(--font-d);font-size:1.1rem;letter-spacing:0.1em;color:var(--gold-lt)">AVADA KEDAVRA</span>`;
