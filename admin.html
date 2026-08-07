@@ -3,47 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>어드민 — 호그와트 챌린지</title>
+<title>어드민 — 해리포터와 새누리의 비밀</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --gold: #D4AF37; --gold-lt: #F0D060; --parchment: #F5E6C8;
-    --ink: #1A0A00; --deep: #0D0800; --stone: #1E1408;
+    --gold: #8BA4D4; --gold-lt: #C0D4F0; --parchment: #D8E4F5;
+    --ink: #0A0F1A; --deep: #050308; --stone: #0C1020;
     --font-d: 'Cinzel', serif; --font-b: 'Crimson Text', Georgia, serif;
   }
   body { background: var(--deep); color: var(--parchment); font-family: var(--font-b); min-height: 100vh; }
 
   /* ── 로그인 ── */
   #loginOverlay { position: fixed; inset: 0; background: var(--deep); z-index: 100; display: flex; align-items: center; justify-content: center; }
-  .login-box { background: #1E1408; border: 1px solid rgba(212,175,55,0.25); border-radius: 4px; padding: 2.5rem 2rem; width: 320px; text-align: center; }
+  .login-box { background: #0C1020; border: 1px solid rgba(140,164,212,0.25); border-radius: 4px; padding: 2.5rem 2rem; width: 320px; text-align: center; }
   .login-box h2 { font-family: var(--font-d); font-size: 0.9rem; color: var(--gold); letter-spacing: 0.2em; margin-bottom: 1.5rem; }
 
   input[type="password"], input[type="text"], input[type="number"], select {
-    width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.25); border-radius: 3px;
+    width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(140,164,212,0.25); border-radius: 3px;
     padding: 0.75rem 1rem; color: var(--parchment); font-family: var(--font-b); font-size: 1rem; outline: none;
     transition: border-color 0.2s; margin-bottom: 0.8rem;
   }
-  input:focus, select:focus { border-color: var(--gold); }
+  input:focus, select:focus { border-color: rgba(140,164,212,0.6); }
   #loginErr { color: #ff6b6b; font-size: 0.85rem; font-style: italic; min-height: 1.2em; margin-top: 0.3rem; }
 
   .btn { font-family: var(--font-d); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; border: none; border-radius: 3px; padding: 0.75rem 1.4rem; cursor: pointer; transition: filter 0.2s; }
   .btn:hover { filter: brightness(1.15); }
-  .btn-gold { background: linear-gradient(135deg, #8B6914, #C49A2A, #8B6914); color: var(--ink); font-weight: 700; }
-  .btn-ghost { background: transparent; border: 1px solid rgba(212,175,55,0.3); color: var(--gold); }
-  .btn-danger { background: #8B1A1A; color: #fff; }
-  .btn-green { background: #1a5c2a; color: #7ed87e; border: 1px solid #2a8c3a; }
+  .btn-gold { background: linear-gradient(135deg, #1A2D52, #2A3F6A, #1A2D52); color: #C0D4F0; font-weight: 700; border: 1px solid rgba(140,164,212,0.3); }
+  .btn-ghost { background: transparent; border: 1px solid rgba(140,164,212,0.3); color: var(--gold); }
+  .btn-danger { background: #3A1010; border: 1px solid rgba(180,60,60,0.4); color: #ff9999; }
+  .btn-green { background: #0e2a1a; color: #7ed87e; border: 1px solid #1a5c2a; }
   .btn-block { width: 100%; }
   .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.6rem; }
 
   /* ── 헤더 ── */
   header {
-    background: linear-gradient(180deg, #1A0E04, #0D0800);
-    border-bottom: 1px solid rgba(212,175,55,0.2);
+    background: linear-gradient(180deg, #080C18, #050308);
+    border-bottom: 1px solid rgba(140,164,212,0.2);
     padding: 0.9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
   }
   header h1 { font-family: var(--font-d); font-size: 0.95rem; color: var(--gold-lt); letter-spacing: 0.1em; }
-  #adminTimer { font-family: var(--font-d); font-size: 1.6rem; color: var(--gold); text-shadow: 0 0 15px rgba(212,175,55,0.4); }
+  #adminTimer { font-family: var(--font-d); font-size: 1.6rem; color: var(--gold); text-shadow: 0 0 15px rgba(140,164,212,0.4); }
   #adminTimer.urgent { color: #ff6b6b; }
 
   /* ── 레이아웃 ── */
@@ -52,14 +52,14 @@
 
   /* ── 게임 컨트롤 ── */
   .ctrl-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
-  .ctrl-card { background: #1E1408; border: 1px solid rgba(212,175,55,0.15); border-radius: 4px; padding: 1.2rem; flex: 1; min-width: 140px; text-align: center; }
+  .ctrl-card { background: #0C1020; border: 1px solid rgba(140,164,212,0.15); border-radius: 4px; padding: 1.2rem; flex: 1; min-width: 140px; text-align: center; }
   .ctrl-card h3 { font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.12em; color: var(--gold); opacity: 0.6; text-transform: uppercase; margin-bottom: 0.6rem; }
   .ctrl-card .big { font-family: var(--font-d); font-size: 1.8rem; color: var(--gold-lt); margin-bottom: 0.5rem; }
 
   /* ── 팀 그리드 ── */
   .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.8rem; }
   .team-card {
-    background: #1E1408; border: 1px solid rgba(212,175,55,0.12); border-radius: 4px; padding: 1rem 1.1rem;
+    background: #0C1020; border: 1px solid rgba(140,164,212,0.12); border-radius: 4px; padding: 1rem 1.1rem;
     transition: border-color 0.2s;
   }
   .team-card.finished { border-color: rgba(100,200,100,0.3); }
@@ -73,30 +73,29 @@
   /* 진행 도트 */
   .station-dots { display: flex; gap: 3px; margin-bottom: 0.7rem; }
   .dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.08); }
-  .dot.done { background: var(--gold); }
-  .dot.final { background: #ff6b6b; }
+  .dot.done { background: #2A3F6A; border: 1px solid #8BA4D4; }
+  .dot.final { background: #6B3A8A; border: 1px solid #A070D0; }
 
   /* 액션 버튼 행 */
   .team-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .hint-btn { background: rgba(139,26,26,0.3); border: 1px solid rgba(139,26,26,0.5); color: #ff9999; font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer; transition: background 0.2s; }
-  .hint-btn:hover { background: rgba(139,26,26,0.5); }
-  .finish-btn { background: rgba(27,92,42,0.4); border: 1px solid rgba(42,140,58,0.5); color: #7ed87e; font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer; transition: background 0.2s; }
-  .finish-btn:hover { background: rgba(27,92,42,0.6); }
+  .hint-btn { background: rgba(60,30,80,0.4); border: 1px solid rgba(140,80,180,0.4); color: #C0A0E8; font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer; transition: background 0.2s; }
+  .hint-btn:hover { background: rgba(60,30,80,0.7); }
+  .finish-btn { background: rgba(20,40,80,0.5); border: 1px solid rgba(80,120,200,0.4); color: #8BA4D4; font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer; transition: background 0.2s; }
+  .finish-btn:hover { background: rgba(20,40,80,0.8); }
   .finish-btn:disabled { opacity: 0.35; cursor: not-allowed; }
   .finished-tag { font-family: var(--font-d); font-size: 0.58rem; color: #5cb85c; letter-spacing: 0.08em; padding: 0.35rem 0.5rem; }
 
-  /* finish time 표시 */
   .finish-time-display { font-size: 0.8rem; color: #5cb85c; font-style: italic; margin-top: 0.4rem; }
-  .hint-count { font-size: 0.75rem; color: #ff9999; opacity: 0.7; margin-top: 0.2rem; }
+  .hint-count { font-size: 0.75rem; color: #C0A0E8; opacity: 0.7; margin-top: 0.2rem; }
 
   /* ── 로그 ── */
-  .log-area { background: #120C04; border: 1px solid rgba(212,175,55,0.1); border-radius: 4px; padding: 0.8rem; font-size: 0.78rem; font-family: monospace; max-height: 180px; overflow-y: auto; }
+  .log-area { background: #080C18; border: 1px solid rgba(140,164,212,0.1); border-radius: 4px; padding: 0.8rem; font-size: 0.78rem; font-family: monospace; max-height: 180px; overflow-y: auto; }
   .log-line { opacity: 0.6; margin-bottom: 0.25rem; }
   .log-line.success { color: #5cb85c; opacity: 0.85; }
   .log-line.warn { color: var(--gold); opacity: 0.85; }
-  .log-line.hint { color: #ff9999; opacity: 0.85; }
+  .log-line.hint { color: #C0A0E8; opacity: 0.85; }
 
-  .divider { height: 1px; background: linear-gradient(90deg,transparent,rgba(212,175,55,0.15),transparent); margin: 1.5rem 0; }
+  .divider { height: 1px; background: linear-gradient(90deg,transparent,rgba(140,164,212,0.15),transparent); margin: 1.5rem 0; }
 </style>
 </head>
 <body>
