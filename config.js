@@ -76,7 +76,7 @@ const GAME_CONFIG = {
       image: "images/ring.png",
       type: "quiz",
       maxScore: 100,
-      answer: "7183",
+      answer: "7718",
       hint: "force",
       missions: [{ question: "", hint: "" }]
     },
