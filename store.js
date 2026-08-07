@@ -166,8 +166,8 @@ const Store = {
 
   fetchLogs(callback) {
     db.ref('adminLogs').once('value').then(snap => {
-      const logs = [];
-      snap.forEach(child => logs.push({ id: child.key, ...child.val() }));
+      const val = snap.val() || {};
+      const logs = Object.entries(val).map(([id, data]) => ({ id, ...data }));
       logs.sort((a, b) => b.at - a.at);
       callback(logs.slice(0, 50));
     });
