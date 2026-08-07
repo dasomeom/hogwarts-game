@@ -210,31 +210,31 @@
 
   /* ── 기숙사 배지 ── */
   .houses {
-    display: flex; gap: 0.7rem; justify-content: center;
+    display: flex; gap: 1rem; justify-content: center;
     margin-top: 2.5rem; flex-wrap: wrap;
   }
   .house-badge {
-    display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
-    padding: 0.7rem 1rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    padding: 1rem;
     border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 2px;
+    border-radius: 3px;
     background: rgba(255,255,255,0.02);
     font-family: var(--font-d);
-    font-size: 0.58rem;
+    font-size: 0.6rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--parchment);
-    opacity: 0.5;
-    transition: opacity 0.3s, border-color 0.3s;
-    min-width: 72px; text-align: center;
+    opacity: 0.65;
+    transition: opacity 0.3s, border-color 0.3s, transform 0.3s;
+    min-width: 100px; text-align: center;
     cursor: default;
   }
-  .house-badge:hover { opacity: 0.9; }
+  .house-badge:hover { opacity: 1; transform: translateY(-3px); }
   .house-badge.gryffindor:hover { border-color: #740001; }
   .house-badge.slytherin:hover  { border-color: #1A472A; }
   .house-badge.ravenclaw:hover  { border-color: #0E1A40; }
   .house-badge.hufflepuff:hover { border-color: #ECB939; }
-  .house-badge .emoji { font-size: 1.5rem; }
+  .house-img { width: 64px; height: 64px; object-fit: contain; }
 
   /* ── 하단 링크 ── */
   .nav-links {
@@ -329,10 +329,10 @@ for (let i = 0; i < 25; i++) {
 
   <!-- 기숙사 -->
   <div class="houses">
-    <div class="house-badge gryffindor"><span class="emoji">🦁</span>Gryffindor</div>
-    <div class="house-badge slytherin"><span class="emoji">🐍</span>Slytherin</div>
-    <div class="house-badge ravenclaw"><span class="emoji">🦅</span>Ravenclaw</div>
-    <div class="house-badge hufflepuff"><span class="emoji">🦡</span>Hufflepuff</div>
+    <div class="house-badge gryffindor"><img src="images/gryffindor.png" alt="Gryffindor" class="house-img">Gryffindor</div>
+    <div class="house-badge slytherin"><img src="images/slytherin.png" alt="Slytherin" class="house-img">Slytherin</div>
+    <div class="house-badge ravenclaw"><img src="images/ravenclaw.png" alt="Ravenclaw" class="house-img">Ravenclaw</div>
+    <div class="house-badge hufflepuff"><img src="images/hufflepuff.png" alt="Hufflepuff" class="house-img">Hufflepuff</div>
   </div>
 
   <nav class="nav-links">
@@ -344,8 +344,8 @@ for (let i = 0; i < 25; i++) {
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="config.js?v=5"></script>
-<script src="store.js?v=5"></script>
+<script src="config.js?v=6"></script>
+<script src="store.js?v=6"></script>
 <script>
 // ── 배경 — 별 + 안개 흐름 ──────────────────────────────────
 (function() {

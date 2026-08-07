@@ -180,10 +180,9 @@
 <canvas id="bg-canvas"></canvas>
 
 <header>
-  <div>
-    <div class="team-id" id="teamCode">—</div>
+  <div style="display:flex;align-items:center;gap:0.8rem">
+    <img id="houseLogo" src="" alt="" style="width:36px;height:36px;object-fit:contain">
     <div class="team-name" id="teamName">팀 이름</div>
-    <div class="house-tag" id="houseName">기숙사</div>
   </div>
   <a href="scoreboard.html" style="font-family:var(--font-d);font-size:0.6rem;letter-spacing:0.1em;color:var(--gold);opacity:0.45;text-decoration:none;text-transform:uppercase">점수판 →</a>
 </header>
@@ -208,9 +207,9 @@ if (!TEAM_CODE || !GAME_CONFIG.teams[TEAM_CODE]) window.location.href = 'index.h
 const TEAM = GAME_CONFIG.teams[TEAM_CODE];
 const HOUSE = GAME_CONFIG.houses.find(h => h.id === TEAM.house);
 
-document.getElementById('teamCode').textContent = TEAM_CODE;
-document.getElementById('teamName').textContent = TEAM.displayName;
-document.getElementById('houseName').textContent = HOUSE.emoji + ' ' + HOUSE.name;
+document.getElementById('houseLogo').src = `images/${HOUSE.id}.png`;
+document.getElementById('houseLogo').alt = HOUSE.name;
+document.getElementById('teamName').textContent = TEAM.name;
 
 // ── 타이머 ──────────────────────────────────────────────────
 let timerInterval;
