@@ -64,7 +64,7 @@ const GAME_CONFIG = {
       image: "images/diary.png",
       type: "auto",
       maxScore: 100,
-      answer: "7154",
+      answerHash: "cc6d62e311160e5f415bd1c750c00ceafda1403ff516c00f87b1cee982d98ff5",
       hint: "glUe",
       missions: []
     },
@@ -76,7 +76,7 @@ const GAME_CONFIG = {
       image: "images/ring.png",
       type: "quiz",
       maxScore: 100,
-      answer: "7718",
+      answerHash: "983e067313ee2931dc17522a857dba344d838b37be92c42a9f0a41a48ab75060",
       hint: "force",
       missions: [{ question: "", hint: "" }]
     },
@@ -88,7 +88,7 @@ const GAME_CONFIG = {
       image: "images/locket.png",
       type: "quiz",
       maxScore: 100,
-      answer: "2572",
+      answerHash: "2d087552bf9d679fa4a8eebf4b2478174b3f1384b07dc5adc286ad9b0117674e",
       hint: "rinSe",
       missions: [{ question: "", hint: "" }]
     },
@@ -100,7 +100,7 @@ const GAME_CONFIG = {
       image: "images/cup.png",
       type: "quiz",
       maxScore: 100,
-      answer: "2106",
+      answerHash: "483aab8b1f38f23d19a40260181ae0450e1dfb83e6d7398b50a33a8d1e3872ec",
       hint: "pun",
       missions: [{ question: "", hint: "" }]
     },
@@ -112,7 +112,7 @@ const GAME_CONFIG = {
       image: "images/diadem.png",
       type: "quiz",
       maxScore: 100,
-      answer: "1517",
+      answerHash: "4091f2c5c45d0cb95c6b43919f9f07f62f7f6c6fb46ca207264b2aee4ee6e4f9",
       hint: "nudge",
       missions: [{ question: "", hint: "" }]
     },
@@ -124,7 +124,7 @@ const GAME_CONFIG = {
       image: "images/nagini.png",
       type: "quiz",
       maxScore: 100,
-      answer: "1245",
+      answerHash: "8c244b370747c1930a4e0967254778ddbb69f6a409e62beebe5f92191a09a3a1",
       hint: "Cane",
       missions: [{ question: "", hint: "" }]
     },
@@ -136,7 +136,7 @@ const GAME_CONFIG = {
       image: "images/harry.png",
       type: "final",
       maxScore: 1000,
-      answer: "Saenuri Unplugged Conference",
+      answerHash: "a3a60e2bf0d49a25b3394fb244decde5234f5d4ed0edbdceedce3c2dd5a932d0",
       hint: "",
       missions: []
     },

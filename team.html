@@ -201,8 +201,8 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="config.js?v=5"></script>
-<script src="store.js?v=5"></script>
+<script src="config.js?v=14"></script>
+<script src="store.js?v=14"></script>
 <script>
 const TEAM_CODE = sessionStorage.getItem('hg_team');
 if (!TEAM_CODE || !GAME_CONFIG.teams[TEAM_CODE]) window.location.href = 'index.html';
@@ -565,24 +565,33 @@ function toggleHint(btn) {
   btn.textContent = hint.classList.contains('visible') ? '💡 힌트 숨기기' : '💡 힌트 보기';
 }
 
-function submitQuiz(stationId) {
+// ── SHA-256 해시 헬퍼 ────────────────────────────────────────
+async function sha256(text) {
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function submitQuiz(stationId) {
   const val = document.getElementById(`quiz-${stationId}`)?.value.trim();
   const err = document.getElementById(`err-${stationId}`);
   if (!val) { if(err) err.textContent = '정답을 입력해 주세요.'; return; }
   const station = GAME_CONFIG.stations.find(s => s.id === stationId);
-  if (val === station.answer) {
+  const hash = await sha256(val);
+  if (hash === station.answerHash) {
     Store.completeStation(TEAM_CODE, stationId, station.maxScore);
   } else {
     if(err) err.textContent = '틀렸습니다. 다시 시도해 보세요.';
   }
 }
 
-function submitFinal() {
+async function submitFinal() {
   const val = document.getElementById('finalInput')?.value.trim();
   const err = document.getElementById('finalErr');
   if (!val) { if(err) err.textContent = '정답을 입력해 주세요.'; return; }
   const finalStation = GAME_CONFIG.stations[6];
-  if (val === finalStation.answer) {
+  const hash = await sha256(val);
+  if (hash === finalStation.answerHash) {
     Store.completeStation(TEAM_CODE, 7, finalStation.maxScore);
   } else {
     if(err) err.textContent = '틀렸습니다. 대소문자를 확인하세요.';
