@@ -79,8 +79,8 @@
 
   /* 액션 버튼 행 */
   .team-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .hint-btn { background: rgba(60,30,80,0.4); border: 1px solid rgba(140,80,180,0.4); color: #C0A0E8; font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer; transition: background 0.2s; }
-  .hint-btn:hover { background: rgba(60,30,80,0.7); }
+  .hint-btn { background: rgba(60,30,80,0.4); border: 1px solid rgba(140,80,180,0.4); color: #C0A0E8; font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.55rem; cursor: pointer; transition: background 0.2s; }
+  .hint-btn:hover:not(:disabled) { background: rgba(60,30,80,0.7); }
   .finish-btn { background: rgba(20,40,80,0.5); border: 1px solid rgba(80,120,200,0.4); color: #8BA4D4; font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer; transition: background 0.2s; }
   .finish-btn:hover { background: rgba(20,40,80,0.8); }
   .finish-btn:disabled { opacity: 0.35; cursor: not-allowed; }
@@ -235,9 +235,25 @@ function renderTeamGrid(teams) {
       finishDisplay = `<div class="finish-time-display">✓ ${mins}분 ${secs}초 완료 (시간 감점: -${timePenalty}점)</div>`;
     }
 
-    const hintDisplay = hintCount > 0
-      ? `<div class="hint-count">힌트 ${hintCount}회 사용 (-${hintCount * 100}점)</div>`
-      : '';
+    // 힌트 표시: 사용된 힌트 목록 (스테이션 + 시각)
+    const hintsUsed = Object.values(t.hints || {});
+    const hintDisplay = hintsUsed.length > 0
+      ? `<div class="hint-count">힌트 ${hintsUsed.length}/${3}회 사용 (-${hintsUsed.length * 100}점): ` +
+        hintsUsed.map(h => {
+          const time = new Date(h.at).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+          return `S${h.stationId}(${time})`;
+        }).join(', ') + `</div>`
+      : `<div class="hint-count" style="opacity:0.4">힌트 0/3회 사용</div>`;
+
+    const hintLimitReached = hintsUsed.length >= 3;
+    const usedStationIds = new Set(hintsUsed.map(h => h.stationId));
+
+    // 스테이션별 힌트 버튼 (1~6)
+    const hintButtons = GAME_CONFIG.stations.slice(0, 6).map(st => {
+      const alreadyUsed = usedStationIds.has(st.id);
+      const disabled = hintLimitReached || alreadyUsed;
+      return `<button class="hint-btn" ${disabled ? 'disabled style="opacity:0.35;cursor:not-allowed"' : ''} onclick="giveHint('${t.code}', ${st.id})">💡 ${st.id}</button>`;
+    }).join('');
 
     return `<div class="team-card ${isFinished ? 'finished' : ''}">
       <div class="team-card-header">
@@ -250,8 +266,10 @@ function renderTeamGrid(teams) {
       <div class="station-dots">${dots}</div>
       ${finishDisplay}
       ${hintDisplay}
-      <div class="team-actions">
-        <button class="hint-btn" onclick="giveHint('${t.code}')">💡 힌트 지급 (-100점)</button>
+      <div class="team-actions" style="margin-top:0.5rem">
+        ${hintButtons}
+      </div>
+      <div class="team-actions" style="margin-top:0.5rem">
         ${isFinished
           ? `<span class="finished-tag">✓ 완료 처리됨</span>`
           : `<button class="finish-btn" onclick="markFinish('${t.code}')">🏁 완료 처리</button>`
@@ -270,11 +288,16 @@ function startGame() {
 }
 
 // ── 힌트 지급 ──────────────────────────────────────────────
-function giveHint(teamCode) {
+function giveHint(teamCode, stationId) {
   const teamName = GAME_CONFIG.teams[teamCode]?.displayName;
-  if (!confirm(`${teamName}에게 힌트를 지급할까요? (-100점)`)) return;
-  Store.giveHint(teamCode, () => {
-    addLog(`💡 힌트 지급 → ${teamName} (-100점)`, 'hint');
+  const stationTitle = GAME_CONFIG.stations.find(s => s.id === stationId)?.title;
+  if (!confirm(`${teamName}에게 스테이션 ${stationId} (${stationTitle}) 힌트를 지급할까요? (-100점)`)) return;
+  Store.giveHint(teamCode, stationId, (result) => {
+    if (result.error) {
+      alert(result.error);
+      return;
+    }
+    addLog(`💡 힌트 지급 → ${teamName} / 스테이션 ${stationId} (-100점)`, 'hint');
   });
 }
 

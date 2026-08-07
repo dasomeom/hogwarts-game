@@ -58,10 +58,23 @@ const Store = {
     }, () => this._recalcTotal(teamCode, callback));
   },
 
-  // ── 힌트 지급 (어드민) ───────────────────────────────────
-  giveHint(teamCode, callback) {
-    db.ref(`scores/${teamCode}/hintCount`).transaction(count => (count || 0) + 1, () => {
-      this._recalcTotal(teamCode, callback);
+  // ── 힌트 지급 (어드민) — 스테이션별 기록, 최대 3회 ────────
+  MAX_HINTS: 3,
+
+  giveHint(teamCode, stationId, callback) {
+    db.ref(`scores/${teamCode}/hints`).once('value', snap => {
+      const hints = snap.val() || {};
+      const count = Object.keys(hints).length;
+      if (count >= this.MAX_HINTS) {
+        if (callback) callback({ error: `힌트는 팀당 최대 ${this.MAX_HINTS}회까지만 지급할 수 있습니다.` });
+        return;
+      }
+      const ref = db.ref(`scores/${teamCode}/hints`).push();
+      ref.set({ stationId, at: Date.now() }, () => {
+        this._recalcTotal(teamCode, () => {
+          if (callback) callback({ success: true });
+        });
+      });
     });
   },
 
@@ -90,7 +103,7 @@ const Store = {
       }, 0);
 
       // 힌트 감점: -100점/회
-      const hintPenalty = (data.hintCount || 0) * 100;
+      const hintPenalty = Object.keys(data.hints || {}).length * 100;
 
       // 시간 감점: -10점/분
       const timePenalty = data.finishTime
@@ -126,7 +139,8 @@ const Store = {
           stationsCompleted: Object.values(data.stations || {}).filter(s => s.completed).length,
           stations: data.stations || {},
           finishTime: data.finishTime || null,
-          hintCount: data.hintCount || 0,
+          hints: data.hints || {},
+          hintCount: Object.keys(data.hints || {}).length,
         };
       });
       teams.sort((a, b) => b.total - a.total);
