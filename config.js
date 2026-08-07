@@ -147,4 +147,3 @@ const GAME_CONFIG = {
     { id: "secret_room", name: "비밀의 방 발견",   points: 30 },
   ]
 };
- 
