@@ -140,6 +140,17 @@
 
   .locked-msg { font-style: italic; opacity: 0.5; font-size: 0.85rem; padding: 1rem; text-align: center; }
 
+  /* 힌트 단어 순차 페이드인 */
+  @keyframes hint-appear {
+    0% { opacity: 0; transform: translateY(6px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .hint-word {
+    font-family: var(--font-b); font-size: 1.3rem; color: #7ed87e;
+    margin-right: 0.8rem; display: inline-block;
+    opacity: 0; animation: hint-appear 0.5s ease forwards;
+  }
+
   /* 최종 완료 */
   .final-done-banner {
     text-align: center; padding: 2.5rem 1rem;
@@ -224,14 +235,25 @@ Store.getTeamState(TEAM_CODE, ts => {
 
 // ── 실시간 구독 ─────────────────────────────────────────────
 let lastCompletedCount = -1;
+let finalSequenceStarted = false;
 
 Store.onTeamState(TEAM_CODE, ts => {
-  const completedCount = Object.values(ts?.stations || {}).filter(v => v.completed).length;
+  const stations = ts?.stations || {};
+  const completedCount = Object.values(stations).filter(v => v.completed).length;
+  const allSixDone = [1,2,3,4,5,6].every(id => stations[id]?.completed);
+
   renderProgress(ts);
+
   // 완료 개수가 바뀔 때만 renderMain 호출
   if (completedCount !== lastCompletedCount) {
     lastCompletedCount = completedCount;
     renderMain(ts);
+  }
+
+  // 6개 완료됐을 때 딱 한 번만 힌트+미션 시퀀스 시작
+  if (allSixDone && !finalSequenceStarted) {
+    finalSequenceStarted = true;
+    startFinalSequence();
   }
 });
 
@@ -401,62 +423,66 @@ function renderMain(ts) {
     });
   }
 
-  if (allSixDone) {
-    finalSectionRendered = true;
-    setTimeout(() => {
-      const hintsEl = document.getElementById('hintsDisplay');
-      const missionEl = document.getElementById('missionText');
-      const finalInput = document.getElementById('finalInput');
-      const finalBtn = document.getElementById('finalSubmitBtn');
-
-      // 힌트 단어 항상 표시
-      if (hintsEl && hintsEl.children.length === 0) {
-        GAME_CONFIG.stations.slice(0, 6).forEach(st => {
-          const span = document.createElement('span');
-          span.style.cssText = 'font-family:var(--font-b);font-size:1.3rem;color:#7ed87e;margin-right:0.8rem';
-          span.textContent = st.hint;
-          hintsEl.appendChild(span);
-        });
-      }
-
-      // 미션 텍스트 + 입력창
-      if (missionEl && !missionEl.dataset.done) {
-        missionEl.dataset.done = '1';
-        if (!typedHints.has('final')) {
-          typedHints.add('final');
-          const line1 = '마지막 호크룩스는 해리 포터 자신이다.';
-          const line2 = '그를 찾아라. 그리고 그의 눈을 바라보며 외쳐라.';
-          const spell = 'AVADA KEDAVRA';
-          typeWriter(missionEl, line1, 80, () => {
-            missionEl.innerHTML += '<br><br>';
-            setTimeout(() => {
-              const part2 = document.createElement('span');
-              missionEl.appendChild(part2);
-              typeWriter(part2, line2, 80, () => {
-                missionEl.innerHTML += '<br><br>';
-                setTimeout(() => {
-                  const spellEl = document.createElement('span');
-                  spellEl.style.cssText = 'font-family:var(--font-d);font-size:1.1rem;letter-spacing:0.1em;color:var(--gold-lt)';
-                  missionEl.appendChild(spellEl);
-                  typeWriter(spellEl, spell, 200, () => {
-                    if (finalInput) finalInput.style.display = 'block';
-                    if (finalBtn) finalBtn.style.display = 'block';
-                  });
-                }, 600);
-              });
-            }, 500);
-          });
-        } else {
-          missionEl.innerHTML = `마지막 호크룩스는 해리 포터 자신이다.<br><br>그를 찾아라. 그리고 그의 눈을 바라보며 외쳐라.<br><br><span style="font-family:var(--font-d);font-size:1.1rem;letter-spacing:0.1em;color:var(--gold-lt)">AVADA KEDAVRA</span>`;
-          if (finalInput) finalInput.style.display = 'block';
-          if (finalBtn) finalBtn.style.display = 'block';
-        }
-      }
-    }, 100);
-  }
 }
 
-// ── 알파벳 풀 (힌트 단어들 셔플) ───────────────────────────
+// ── 최종 시퀀스 (딱 한 번만 실행) ──────────────────────────
+function startFinalSequence() {
+  setTimeout(() => {
+    const hintsEl = document.getElementById('hintsDisplay');
+    const missionEl = document.getElementById('missionText');
+    const finalInput = document.getElementById('finalInput');
+    const finalBtn = document.getElementById('finalSubmitBtn');
+    if (!hintsEl || !missionEl) return;
+
+    // 힌트 단어를 JS로 하나씩 추가 (HTML에 미리 없음)
+    const hints = GAME_CONFIG.stations.slice(0, 6);
+    let idx = 0;
+    function addNextHint() {
+      if (idx >= hints.length) {
+        // 힌트 다 끝나면 0.5초 후 미션 텍스트
+        setTimeout(typeMission, 500);
+        return;
+      }
+      const st = hints[idx++];
+      const span = document.createElement('span');
+      span.style.cssText = 'font-family:var(--font-b);font-size:1.3rem;color:#7ed87e;margin-right:0.8rem;opacity:0;transition:opacity 0.4s';
+      span.textContent = st.hint;
+      hintsEl.appendChild(span);
+      // 살짝 딜레이 후 페이드인
+      setTimeout(() => { span.style.opacity = '1'; }, 50);
+      setTimeout(addNextHint, 900);
+    }
+    addNextHint();
+
+    function typeMission() {
+      if (!missionEl.dataset.done) {
+        missionEl.dataset.done = '1';
+        const line1 = '마지막 호크룩스는 해리 포터 자신이다.';
+        const line2 = '그를 찾아라. 그리고 그의 눈을 바라보며 외쳐라.';
+        const spell = 'AVADA KEDAVRA';
+        typeWriter(missionEl, line1, 80, () => {
+          missionEl.innerHTML += '<br><br>';
+          setTimeout(() => {
+            const part2 = document.createElement('span');
+            missionEl.appendChild(part2);
+            typeWriter(part2, line2, 80, () => {
+              missionEl.innerHTML += '<br><br>';
+              setTimeout(() => {
+                const spellEl = document.createElement('span');
+                spellEl.style.cssText = 'font-family:var(--font-d);font-size:1.1rem;letter-spacing:0.1em;color:var(--gold-lt)';
+                missionEl.appendChild(spellEl);
+                typeWriter(spellEl, spell, 200, () => {
+                  if (finalInput) finalInput.style.display = 'block';
+                  if (finalBtn) finalBtn.style.display = 'block';
+                });
+              }, 600);
+            });
+          }, 500);
+        });
+      }
+    }
+  }, 200);
+}
 function buildLetterPool() {
   const hints = GAME_CONFIG.stations.slice(0, 6).map(s => s.hint).join('');
   let letters = hints.split('');
