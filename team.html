@@ -240,6 +240,9 @@ function renderProgress(ts) {
 }
 
 // ── 메인 렌더 ───────────────────────────────────────────────
+let finalSectionRendered = false;
+let finalDoneBannerRendered = false;
+
 function renderMain(ts) {
   const completedIds = new Set(
     Object.entries(ts?.stations || {}).filter(([,v]) => v.completed).map(([k]) => Number(k))
@@ -247,7 +250,14 @@ function renderMain(ts) {
   const allSixDone = [1,2,3,4,5,6].every(id => completedIds.has(id));
   const finalDone = completedIds.has(7);
 
+  // 이미 최종 완료 배너 렌더됐으면 다시 쓰지 않음
+  if (finalDoneBannerRendered) return;
+
+  // 이미 7번 섹션 렌더됐으면 mainContent 건드리지 않음
+  if (finalSectionRendered && !finalDone) return;
+
   if (finalDone) {
+    finalDoneBannerRendered = true;
     const verse = TEAM.verse || '';
     const message = TEAM.message || '';
     const [text, ref] = verse.includes('—') ? verse.split('—') : [verse, ''];
@@ -263,20 +273,20 @@ function renderMain(ts) {
     if (!typedHints.has('done')) {
       typedHints.add('done');
       if (message) {
-        typeWriter(document.getElementById('typeMsg'), message, 30, () => {
+        typeWriter(document.getElementById('typeMsg'), message, 50, () => {
           setTimeout(() => {
-            typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 40, () => {
+            typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 60, () => {
               setTimeout(() => {
-                typeWriter(document.getElementById('typeRef'), ref.trim(), 50);
-              }, 300);
+                typeWriter(document.getElementById('typeRef'), ref.trim(), 70);
+              }, 400);
             });
-          }, 500);
+          }, 700);
         });
       } else {
-        typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 40, () => {
+        typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 60, () => {
           setTimeout(() => {
-            typeWriter(document.getElementById('typeRef'), ref.trim(), 50);
-          }, 300);
+            typeWriter(document.getElementById('typeRef'), ref.trim(), 70);
+          }, 400);
         });
       }
     } else {
@@ -385,6 +395,7 @@ function renderMain(ts) {
   }
 
   if (allSixDone) {
+    finalSectionRendered = true;
     setTimeout(() => {
       const hintsEl = document.getElementById('hintsDisplay');
       const missionEl = document.getElementById('missionText');
