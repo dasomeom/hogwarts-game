@@ -151,11 +151,25 @@ const Store = {
     });
   },
 
+  // ── 어드민 활동 로그 (모든 접속자에게 공유) ────────────────
+  logEvent(msg, type, callback) {
+    db.ref('adminLogs').push({ msg, type: type || '', at: Date.now() }, callback);
+  },
+
+  onLogs(callback) {
+    db.ref('adminLogs').limitToLast(50).on('value', snap => {
+      const logs = [];
+      snap.forEach(child => logs.push({ id: child.key, ...child.val() }));
+      logs.sort((a, b) => b.at - a.at);
+      callback(logs);
+    });
+  },
+
   // ── 리셋 ─────────────────────────────────────────────────
   reset(callback) {
     db.ref('scores').remove(() => {
       db.ref('game').remove(() => {
-        if (callback) callback();
+        db.ref('adminLogs').remove(callback);
       });
     });
   },

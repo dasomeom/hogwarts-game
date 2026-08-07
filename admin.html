@@ -81,6 +81,8 @@
   .team-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .hint-btn { background: rgba(60,30,80,0.4); border: 1px solid rgba(140,80,180,0.4); color: #C0A0E8; font-family: var(--font-d); font-size: 0.6rem; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.55rem; cursor: pointer; transition: background 0.2s; }
   .hint-btn:hover:not(:disabled) { background: rgba(60,30,80,0.7); }
+  .hint-btn:disabled { opacity: 0.3; cursor: not-allowed; background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.25); }
+  .hint-btn-used:disabled { background: rgba(80,180,80,0.06); border-color: rgba(80,180,80,0.25); color: rgba(80,180,80,0.5); opacity: 0.6; }
   .finish-btn { background: rgba(20,40,80,0.5); border: 1px solid rgba(80,120,200,0.4); color: #8BA4D4; font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer; transition: background 0.2s; }
   .finish-btn:hover { background: rgba(20,40,80,0.8); }
   .finish-btn:disabled { opacity: 0.35; cursor: not-allowed; }
@@ -210,6 +212,9 @@ function init() {
     const finished = teams.filter(t => t.finishTime).length;
     document.getElementById('finishedCount').textContent = finished;
   });
+
+  // 활동 로그 실시간 (모든 접속자 공유)
+  Store.onLogs(renderLogs);
 }
 
 // ── 팀 그리드 렌더 ──────────────────────────────────────────
@@ -252,7 +257,8 @@ function renderTeamGrid(teams) {
     const hintButtons = GAME_CONFIG.stations.slice(0, 6).map(st => {
       const alreadyUsed = usedStationIds.has(st.id);
       const disabled = hintLimitReached || alreadyUsed;
-      return `<button class="hint-btn" ${disabled ? 'disabled style="opacity:0.35;cursor:not-allowed"' : ''} onclick="giveHint('${t.code}', ${st.id})">💡 ${st.id}</button>`;
+      const cls = alreadyUsed ? 'hint-btn hint-btn-used' : 'hint-btn';
+      return `<button class="${cls}" ${disabled ? 'disabled' : ''} onclick="giveHint('${t.code}', ${st.id})">💡 ${st.id}</button>`;
     }).join('');
 
     return `<div class="team-card ${isFinished ? 'finished' : ''}">
@@ -283,7 +289,7 @@ function renderTeamGrid(teams) {
 function startGame() {
   if (confirm('게임을 시작할까요? 모든 팀의 타이머가 동시에 시작됩니다.')) {
     Store.startGame();
-    addLog('⚡ 게임 시작!', 'success');
+    Store.logEvent('⚡ 게임 시작!', 'success');
   }
 }
 
@@ -297,7 +303,7 @@ function giveHint(teamCode, stationId) {
       alert(result.error);
       return;
     }
-    addLog(`💡 힌트 지급 → ${teamName} / 스테이션 ${stationId} (-100점)`, 'hint');
+    Store.logEvent(`💡 힌트 지급 → ${teamName} / 스테이션 ${stationId} (-100점)`, 'hint');
   });
 }
 
@@ -308,7 +314,7 @@ function markFinish(teamCode) {
   Store.markFinish(teamCode, (elapsedSeconds) => {
     const m = Math.floor(elapsedSeconds / 60);
     const s = Math.floor(elapsedSeconds % 60);
-    addLog(`🏁 완료 → ${teamName} (${m}분 ${s}초, 시간 감점 -${m*10}점)`, 'success');
+    Store.logEvent(`🏁 완료 → ${teamName} (${m}분 ${s}초, 시간 감점 -${m*10}점)`, 'success');
   });
 }
 
@@ -316,7 +322,6 @@ function markFinish(teamCode) {
 function resetGame() {
   if (confirm('정말 모든 데이터를 초기화할까요? 되돌릴 수 없습니다.')) {
     Store.reset(() => {
-      addLog('⚠️ 전체 리셋 완료', 'warn');
       document.getElementById('startBtn').disabled = false;
       document.getElementById('startBtn').textContent = '⚡ 게임 시작';
       document.getElementById('gameStateDisplay').textContent = '대기';
@@ -325,14 +330,17 @@ function resetGame() {
   }
 }
 
-// ── 로그 ───────────────────────────────────────────────────
-function addLog(msg, type='') {
+// ── 로그 (Firebase 실시간 공유) ─────────────────────────────
+function renderLogs(logs) {
   const logArea = document.getElementById('logArea');
-  const time = new Date().toLocaleTimeString('ko-KR');
-  const div = document.createElement('div');
-  div.className = `log-line ${type}`;
-  div.textContent = `[${time}] ${msg}`;
-  logArea.insertBefore(div, logArea.firstChild);
+  if (logs.length === 0) {
+    logArea.innerHTML = '<div class="log-line">아직 활동 없음...</div>';
+    return;
+  }
+  logArea.innerHTML = logs.map(log => {
+    const time = new Date(log.at).toLocaleTimeString('ko-KR');
+    return `<div class="log-line ${log.type || ''}">[${time}] ${log.msg}</div>`;
+  }).join('');
 }
 </script>
 </body>
