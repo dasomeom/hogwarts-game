@@ -165,11 +165,11 @@ const Store = {
   },
 
   onLogs(callback) {
-    db.ref('adminLogs').limitToLast(50).on('value', snap => {
+    db.ref('adminLogs').on('value', snap => {
       const logs = [];
       snap.forEach(child => logs.push({ id: child.key, ...child.val() }));
       logs.sort((a, b) => b.at - a.at);
-      callback(logs);
+      callback(logs.slice(0, 50));
     });
   },
 
