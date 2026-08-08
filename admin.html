@@ -90,7 +90,7 @@
   .hint-btn:hover:not(:disabled) { background: rgba(60,30,80,0.7); }
   .hint-btn:disabled { opacity: 0.3; cursor: not-allowed; background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.25); }
   .hint-btn-used:disabled { background: rgba(80,180,80,0.06); border-color: rgba(80,180,80,0.25); color: rgba(80,180,80,0.5); opacity: 0.6; }
-  .finish-btn { background: rgba(20,40,80,0.5); border: 1px solid rgba(80,120,200,0.4); color: #8BA4D4; font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer; transition: background 0.2s; }
+  .finish-btn { flex-shrink: 0; white-space: nowrap; background: rgba(20,40,80,0.5); border: 1px solid rgba(80,120,200,0.4); color: #8BA4D4; font-family: var(--font-d); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; padding: 0.35rem 0.7rem; cursor: pointer; transition: background 0.2s; }
   .finish-btn:hover { background: rgba(20,40,80,0.8); }
   .finish-btn:disabled { opacity: 0.35; cursor: not-allowed; }
   .finished-tag { font-family: var(--font-d); font-size: 0.58rem; color: #5cb85c; letter-spacing: 0.08em; padding: 0.35rem 0.5rem; }
@@ -176,8 +176,8 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="config.js?v=21"></script>
-<script src="store.js?v=21"></script>
+<script src="config.js?v=22"></script>
+<script src="store.js?v=22"></script>
 <script>
 // ── 로그인 ──────────────────────────────────────────────────
 function adminLogin() {
@@ -303,17 +303,17 @@ function renderTeamGrid(teams) {
         <div class="team-card-name">${t.displayName}</div>
         <div class="team-card-score">${t.total}점</div>
       </div>
-      <div class="station-dots">${dots}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:0.6rem;margin-bottom:0.7rem">
+        <div class="station-dots" style="margin-bottom:0">${dots}</div>
+        ${isFinished
+          ? `<span class="finished-tag">✓ 완료</span>`
+          : `<button class="finish-btn" onclick="markFinish('${t.code}')">🏁 완료 처리</button>`
+        }
+      </div>
       ${finishDisplay}
       ${hintDisplay}
       <div class="team-actions" style="margin-top:0.5rem">
         ${hintButtons}
-      </div>
-      <div class="team-actions" style="margin-top:0.5rem">
-        ${isFinished
-          ? `<span class="finished-tag">✓ 완료 처리됨</span>`
-          : `<button class="finish-btn" onclick="markFinish('${t.code}')">🏁 완료 처리</button>`
-        }
       </div>
       <div class="team-log-area">${teamLogHtml}</div>
     </div>`;
