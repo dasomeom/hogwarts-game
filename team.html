@@ -201,8 +201,8 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="config.js?v=14"></script>
-<script src="store.js?v=14"></script>
+<script src="config.js?v=18"></script>
+<script src="store.js?v=18"></script>
 <script>
 const TEAM_CODE = sessionStorage.getItem('hg_team');
 if (!TEAM_CODE || !GAME_CONFIG.teams[TEAM_CODE]) window.location.href = 'index.html';
@@ -317,8 +317,9 @@ function renderMain(ts) {
         <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.3),transparent);margin-bottom:1.5rem"></div>
         <p id="typeVerse" style="font-family:var(--font-b);font-size:1.2rem;line-height:1.7;color:var(--parchment);font-style:italic;margin-bottom:0.8rem"></p>
         <p id="typeRef" style="font-family:var(--font-d);font-size:0.65rem;letter-spacing:0.15em;color:var(--gold);opacity:0.8"></p>
+        <div id="finalInstruction" style="margin-top:1.8rem;padding:1rem 1.2rem;background:rgba(140,164,212,0.06);border:1px solid rgba(140,164,212,0.25);border-radius:3px;font-family:var(--font-b);font-size:0.85rem;line-height:1.6;color:var(--parchment);opacity:0;transition:opacity 0.6s"></div>
       </div>`;
-    // 타이핑 순서: 메시지 → 성경구절 → 출처 (최초 1회만)
+    // 타이핑 순서: 메시지 → 성경구절 → 출처 → 안내문구 (최초 1회만)
     if (!typedHints.has('done')) {
       typedHints.add('done');
       if (message) {
@@ -326,7 +327,9 @@ function renderMain(ts) {
           setTimeout(() => {
             typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 60, () => {
               setTimeout(() => {
-                typeWriter(document.getElementById('typeRef'), ref.trim(), 70);
+                typeWriter(document.getElementById('typeRef'), ref.trim(), 70, () => {
+                  setTimeout(showFinalInstruction, 500);
+                });
               }, 400);
             });
           }, 700);
@@ -334,7 +337,9 @@ function renderMain(ts) {
       } else {
         typeWriter(document.getElementById('typeVerse'), `"${text.trim()}"`, 60, () => {
           setTimeout(() => {
-            typeWriter(document.getElementById('typeRef'), ref.trim(), 70);
+            typeWriter(document.getElementById('typeRef'), ref.trim(), 70, () => {
+              setTimeout(showFinalInstruction, 500);
+            });
           }, 400);
         });
       }
@@ -342,6 +347,15 @@ function renderMain(ts) {
       if (message) document.getElementById('typeMsg').textContent = message;
       document.getElementById('typeVerse').textContent = `"${text.trim()}"`;
       document.getElementById('typeRef').textContent = ref.trim();
+      showFinalInstruction();
+    }
+
+    function showFinalInstruction() {
+      const el = document.getElementById('finalInstruction');
+      if (el) {
+        el.textContent = '이 말씀을 가슴 깊이 새겨라. 그리고 학생회장 앞에 나아가, 그 앞에서 선포하라.';
+        el.style.opacity = '1';
+      }
     }
     return;
   }
@@ -572,29 +586,81 @@ async function sha256(text) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+// ── 시도 제한 (3회 틀리면 30초 대기) ────────────────────────
+const attemptTracker = {};
+
+function checkCooldown(key) {
+  const t = attemptTracker[key];
+  if (t && t.lockUntil && Date.now() < t.lockUntil) {
+    return Math.ceil((t.lockUntil - Date.now()) / 1000);
+  }
+  return 0;
+}
+
+function recordWrongAttempt(key) {
+  if (!attemptTracker[key]) attemptTracker[key] = { wrong: 0, lockUntil: 0 };
+  attemptTracker[key].wrong++;
+  if (attemptTracker[key].wrong % 3 === 0) {
+    attemptTracker[key].lockUntil = Date.now() + 30000;
+  }
+}
+
+function startCooldownDisplay(errEl, key) {
+  const tick = () => {
+    const remaining = checkCooldown(key);
+    if (remaining > 0) {
+      errEl.textContent = `너무 많이 틀렸습니다. ${remaining}초 후 다시 시도하세요.`;
+      setTimeout(tick, 1000);
+    } else {
+      errEl.textContent = '';
+    }
+  };
+  tick();
+}
+
 async function submitQuiz(stationId) {
-  const val = document.getElementById(`quiz-${stationId}`)?.value.trim();
+  const key = `station-${stationId}`;
   const err = document.getElementById(`err-${stationId}`);
+  const remaining = checkCooldown(key);
+  if (remaining > 0) { startCooldownDisplay(err, key); return; }
+
+  const val = document.getElementById(`quiz-${stationId}`)?.value.trim();
   if (!val) { if(err) err.textContent = '정답을 입력해 주세요.'; return; }
   const station = GAME_CONFIG.stations.find(s => s.id === stationId);
   const hash = await sha256(val);
   if (hash === station.answerHash) {
     Store.completeStation(TEAM_CODE, stationId, station.maxScore);
   } else {
-    if(err) err.textContent = '틀렸습니다. 다시 시도해 보세요.';
+    recordWrongAttempt(key);
+    const nowRemaining = checkCooldown(key);
+    if (nowRemaining > 0) {
+      startCooldownDisplay(err, key);
+    } else if (err) {
+      err.textContent = '틀렸습니다. 다시 시도해 보세요.';
+    }
   }
 }
 
 async function submitFinal() {
-  const val = document.getElementById('finalInput')?.value.trim();
+  const key = 'final';
   const err = document.getElementById('finalErr');
+  const remaining = checkCooldown(key);
+  if (remaining > 0) { startCooldownDisplay(err, key); return; }
+
+  const val = document.getElementById('finalInput')?.value.trim();
   if (!val) { if(err) err.textContent = '정답을 입력해 주세요.'; return; }
   const finalStation = GAME_CONFIG.stations[6];
   const hash = await sha256(val);
   if (hash === finalStation.answerHash) {
     Store.completeStation(TEAM_CODE, 7, finalStation.maxScore);
   } else {
-    if(err) err.textContent = '틀렸습니다. 대소문자를 확인하세요.';
+    recordWrongAttempt(key);
+    const nowRemaining = checkCooldown(key);
+    if (nowRemaining > 0) {
+      startCooldownDisplay(err, key);
+    } else if (err) {
+      err.textContent = '틀렸습니다. 대소문자를 확인하세요.';
+    }
   }
 }
 
