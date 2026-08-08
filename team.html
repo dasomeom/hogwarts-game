@@ -191,7 +191,7 @@
 </header>
 
 <div class="timer-bar">
-  <span id="gameStatus">게임 대기 중</span>
+  <span id="gameStatus">The Game Awaits</span>
   <span id="timerDisplay">80:00</span>
 </div>
 
@@ -201,8 +201,8 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="config.js?v=18"></script>
-<script src="store.js?v=18"></script>
+<script src="config.js?v=20"></script>
+<script src="store.js?v=20"></script>
 <script>
 const TEAM_CODE = sessionStorage.getItem('hg_team');
 if (!TEAM_CODE || !GAME_CONFIG.teams[TEAM_CODE]) window.location.href = 'index.html';
@@ -222,7 +222,7 @@ Store.onGameStarted(started => {
   const statusEl = document.getElementById('gameStatus');
   const timerEl = document.getElementById('timerDisplay');
   if (!started) {
-    statusEl.textContent = '게임 대기 중';
+    statusEl.textContent = 'The Game Awaits';
     timerEl.textContent = `${String(GAME_CONFIG.totalMinutes).padStart(2,'0')}:00`;
     return;
   }

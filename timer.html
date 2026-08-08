@@ -123,7 +123,7 @@
   <img src="title.png" alt="Harry Potter and the Secret of Saenuri" class="title-img">
   <p class="event-tag">2026 · Saenuri Unplugged Conference</p>
   <div id="timerDisplay">—:--</div>
-  <p id="gameStatus">게임 대기 중</p>
+  <p id="gameStatus">The Game Awaits</p>
 </div>
 
 <div id="doneOverlay">
@@ -133,8 +133,8 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="config.js?v=18"></script>
-<script src="store.js?v=18"></script>
+<script src="config.js?v=20"></script>
+<script src="store.js?v=20"></script>
 <script>
 // ── 배경 별 ────────────────────────────────────────────────
 (function() {
@@ -232,7 +232,7 @@ Store.onGameStarted(started => {
   const doneOverlay = document.getElementById('doneOverlay');
 
   if (!started) {
-    statusEl.textContent = '게임 대기 중';
+    statusEl.textContent = 'The Game Awaits';
     timerEl.textContent = `${String(GAME_CONFIG.totalMinutes).padStart(2,'0')}:00`;
     return;
   }
